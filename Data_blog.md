@@ -57,7 +57,7 @@ Fact table ở giữa và xung quanh là các Dimension tables, trong đó:
 * Fact table: là table chứa các dữ liệu xảy ra trên thế giới như product orders, v.v	
 * Dimension table: là các table mang thuộc tính để mô tả cho fact table như màu sắc, kích thước, v.v
 
-Tìm hiểu thêm về Star chema [tại đây](https://en.wikipedia.org/wiki/Snowflake_schema)
+Tìm hiểu thêm về Star chema [tại đây](https://en.wikipedia.org/wiki/Star_schema)
 
 
 *Ví dụ thực tế:*
