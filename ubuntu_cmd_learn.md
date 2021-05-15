@@ -38,7 +38,15 @@ Ví dụ: Di chuyển và đổi tên tập tin `*test1.txt` trong `/root` sang 
 mv /root/test1.txt /etc/test.txt
 ```
 
-![](img/robo3t.png)
+Mở file xem dùng lệnh:
+```
+cat <đường dẫn hoặc tên file trong thư mục hiện hành>
+```
+
+Edit file hoặc tạo file mới dùng lệnh:
+``` 
+nano <đường dẫn hoặc tên file trong thư mục hiện hành>
+```
 
 
 Cập nhật phiên bản, ví dụ npm 7.13.0: 
@@ -117,14 +125,14 @@ chmod +x <đường dẫn file>
 Tìm hiểu thêm các quyền [tại đây](https://blogd.net/linux/lam-viec-voi-tap-tin-va-thu-muc-tren-linux/)
 
 ### Các loại đường dẫn
-~/ : thay cho home
-/thư mục/... : là đường dẫn tuyệt đối
-thư mục/.../ : đường dẫn tương đối
-./ : thư mục hiện hành, nhưng đôi khi có các câu lệnh như "git ./ bấm tiếp tab" sẽ gợi ý ra các file có thể áp dụng, nếu "git" thôi thì sẽ được list ra các câu lệnh có thể dùng với git.
+* ~/ : thay cho home
+* /thư mục/... : là đường dẫn tuyệt đối
+* thư mục/.../ : là đường dẫn tương đối
+* ./ : chỉ thư mục hiện hành, nhưng đôi khi có các câu lệnh như "git ./ bấm tiếp tab" sẽ gợi ý ra các file có thể áp dụng, nếu "git" thôi thì sẽ được list ra các câu lệnh có thể dùng với git, ví dụ ./vscode.sh
 
 
 Cre: 
-https://askubuntu.com/questions/975178/duplicate-icons-in-the-dock-of-gnome-shell-ubuntu-17-10/9752 30#975230
+https://askubuntu.com/questions/975178/duplicate-icons-in-the-dock-of-gnome-shell-ubuntu-17-10/975230#975230
 https://askubuntu.com/questions/990833/cannot-add-custom-launcher-to-dock-add-to-favorites
 https://vinasupport.com/chmod-la-gi-huong-dan-su-dung-lenh-chmod-tren-linux-unix/
 https://blogd.net/linux/lam-viec-voi-tap-tin-va-thu-muc-tren-linux/
