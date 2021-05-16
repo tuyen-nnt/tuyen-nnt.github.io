@@ -156,4 +156,64 @@ Một số ghi chú cho Parallel computing:
 
 Bài viết về Parallel computing đến đây là kết thúc, các bạn có thể xem qua 1 số đoạn code liên quan đến chủ đề này ở repo data-engineering của mình nhé! 
 
+-----------------------------------------
 
+## III. Parallel computation framework
+
+### 1. Hadoop
+
+Hadoop là tập hợp các dự án open-source được maintain bởi Apache Software Foudation. Có 2 dự án phổ biến thường được nhắc đến là **MapReduce** và **HDFS**. 
+
+
+#### a. Nói về HDFS  
+Đây là tên gọi của hệ thống phân tán tập tin (distributed file system). Cũng là các tập tin trong máy tính nhưng được điều đặc biệt là nó được phân tán trên nhiều máy tính khác nhau. 
+
+HDFS là một phần thiết yếu trong Big data để lưu trữ dữ liệu lớn.
+
+![](img/hdfs.png)
+
+#### b. Nói về MapReduce 
+Đây là một trong các mô hình đầu tiên phổ biến trong việc xử lý Big data.
+Cách hoạt động của nó là chia task lớn thành nhiều task nhỏ rồi phân tán khối lượng dữ liệu và dữ liệu đến các đơn vị xử lý (processing unit).
+Tuy nhiên, MapReduce có một số khuyết điểm có thể kể đến như khó viết các job để chia task và phân tán chẳng hạn.
+> Chương trình phần mềm **Hive** và một só phần mềm khác ra đời để giải quyết khó khăn trên.
+
+Hive như là lớp vỏ trên cùng trong hệ sinh thái của Hadoop giúp các dữ liệu đến từ những nguồn khác nhau có thể truy vấn bằng cách sử dụng ngôn ngữ truy vấn có cấu trúc Hive SQL (HQL).
+
+Ví dụ đoạn truy vấn Hive SQL:
+![](img/hive-sql.png)
+
+> **Nhận xét:** trông chả khác câu lệnh SQL thông thường phải không ? ^^ Tuy nhiên sau tấm màn đó thì mọi thứ sẽ khác. Câu truy vấn trên sẽ chuyển đổi thành job có nhiệm vụ phân tán đến tập hợp các máy tính đấy (cluster). 
+
+### 2. Spark framework
+Ngoài Hadoop, ta còn có Spark, cũng có nhiệm vụ phân tán các task xử lý dữ liệu giữa các cluster, ngày nay được sử dụng phổ biến hơn.
+
+Trong khi hệ thống Hadoop MapReduce cần ổ đĩa đắt tiền để ghi dữ liệu giữa các job, thì Spark lại sử dụng một cách tối ưu bộ nhớ xử lý tránh sử dụng ổ đĩa để ghi dữ liệu.
+
+Spark ra đời đã cho thấy những hạn chế của MapReduce, trong đó bao gồm việc MapReduce hạn chế tương tác của người dùng khi truy cập phân tích dữ liệu và mỗi bước build sẽ phải dựa trên bước trước đó. => không linh hoạt, khó tương tác hơn Spark.
+
+
+#### a. Kiến trúc của Spark
+
+Dựa trên RDDs (Resilient distributed datasets)
+
+RDD là một loại cấu trúc dữ liệu có nhiệm vụ duy trì các dữ liệu được phân tán giữa nhiều node.
+
+Không giống với DataFrame, RDDs không có các cột. Về khái niệm thì có thể xem nó là một dãy các tuples, ví dụ về tuple "day":
+```
+day = ('monday', 'tuesday', 'wednesday' , 'thursday', 'friday', 'saturday' , 'sunday')
+```
+
+Với các dữ liệu có cấu trúc RDD ta có thể thực thi 2 loại lệnh :
+* Chuyển đổi: dùng method .map() hoặc .filter() => output ra các dạng dữ liệu đã được chuyển đổi
+* Hành động: dùng method .count() hoặc .first() => ra 1 output duy nhất (số, chữ, v.v) 
+
+Spark framework có nhiều interface ứng với các ngôn ngữ lập trình, phổ biến nhất là PySpark dùng ngôn ngữ Python. Ngoài ra còn có các ngôn ngữ khác như Scala, R.
+
+> **PySpark dùng host dựa trên Dataframe trừu tượng, đó là lí do nếu chúng ta thường sử dụng thư viện pandas của dataframe sẽ dễ làm quen hơn vì hoạt động của PySpark sẽ tương tự thế. 
+
+>> Tóm lại là các công việc về parallel computing từ đơn giản đến phức tạp cứ để nhà Spark lo :smile: còn chaỵ như thế nào là tùy bạn.
+
+Xem ví dụ về PySpark khi tính trung bình các vận động viên theo nhóm tuổi nhé:
+
+![](img/pyspark-eg.png)
