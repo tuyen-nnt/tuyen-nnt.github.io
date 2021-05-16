@@ -6,7 +6,7 @@
 
 Database là tập hợp dữ liệu lớn được tổ chức đặc biệt để tìm kiếm và rút trích dữ liệu nhanh.
 
-//Up hình database ở đây
+![](img/database.png)
 
 Các đặc điểm của nó:
 * Lưu trữ dữ liệu
@@ -63,6 +63,35 @@ Tìm hiểu thêm về Star chema [tại đây](https://en.wikipedia.org/wiki/St
 
 *Ví dụ thực tế:*
 Giả sử ta có database mô tả cấu trúc dữ liệu cho hệ thống bán hàng ở 1 cửa hàng quần áo:
+![](img/star-chema.png)
+
+Giả sử ta có bảng invoice lưu dữ liệu bán hàng (fact table) có các cột sau:
+
+| id (primary key) | created_date_time | items_id | payment_method | customer_id | card_id |
+|  -------------------  |  -------------------  | -------------------  |-------------------  |-------------------  |------------------- |
+| 123 | 12:00:00 | 12/12/2021 | 1 | Bank | 111 | 9116 |
+
+
+Ta sẽ có các bảng dimension sau để bảng invoice liên kết mối quan hệ nhằm mô tả chi tiết các giao dịch invoice:
+
+Bảng Item
+
+| id | item_name | category | color | price |
+| ------- | ------- | ------- | ------- | ------- | 
+| 1 | Quần đùi lửng | Quần | Đen | 200000 |
+
+Bảng Customer 
+
+| id | name | birthday | card_id | is_valid | num_of_orders |
+| ------- | ------- | ------- | ------- | ------- |  ------- | 
+| 111 | Thanh Tuyền | 09/XX/XXXX | 9116 | 0 | 5 |
+
+
+Bảng Card
+
+| id | customer_id | point | expired_date | 
+| ------- | ------- | ------- | ------- | 
+| 9116 | 111 | 2100 | 31/12/2025 |
 
 
 ****************
@@ -82,7 +111,8 @@ Trước tiên ta đi từ ý tưởng của việc tạo ra parallel computing.
 * Các máy tính làm việc song song với nhau trên các task phụ, do đó các task được hoàn thành nhanh hơn
 
 Chúng ta hãy cùng xem ví dụ vận hành shop may đồ:
-<chèn hình ảnh>
+
+![](img/tailorshop.png)
 
 Đặt mục tiêu may 100 cái áo, thì shop nhận thấy:
 * Nhân viên may giỏi nhất nhóm may 1 cái áo trong 20 phút => 12 cái áo trong 4 tiếng
@@ -105,16 +135,16 @@ Tóm lại, lợi ích của parallel computing:
 * Yêu cầu chưa đủ lớn để áp dụng
 * Cần nhiều processing units hơn
 * Đôi khi tách ra sẽ gặp vấn đề về program runtime, yêu cầu tốn nhiều thời gian để xử lý giao tiếp giữa các processes hơn so với không tách ra. Việc có nhiều chương trình hơn sẽ khiến thời gian contact switch giữa các chương trình nhiều hơn không phù hợp khi yêu cầu chưa đủ lớn. Xem hình bên dưới:
-"chèn hình ảnh"
+
 
 #### Code Python để chia thành nhiều task phụ
 ##### Sử dụng API **multiprocessing.Pool**
 
-"chèn hình ảnh"
+![](img/pool.png)
 
 ##### Sử dụng DASK framework để tránh viết API dưới hệ thống 
 
-"chèn hình ảnh"
+![](img/dask.png)
 
 
 
