@@ -126,8 +126,8 @@ Tìm hiểu thêm các quyền [tại đây](https://blogd.net/linux/lam-viec-vo
 
 ### Các loại đường dẫn
 * ~/ : thay cho home
-* /thư mục/... : là đường dẫn tuyệt đối
-* thư mục/.../ : là đường dẫn tương đối
+* /thư mục/... : là đường dẫn tuyệt đối, phải tuyệt đối chính xác, không rút gọn
+* thư mục/.../ : là đường dẫn tương đối, đôi khi không có đoạn thư mục đầu vì đã ở trong thư mục đó rồi, v.v
 * ./ : chỉ thư mục hiện hành, nhưng đôi khi có các câu lệnh như "git ./ bấm tiếp tab" sẽ gợi ý ra các file có thể áp dụng, nếu "git" thôi thì sẽ được list ra các câu lệnh có thể dùng với git, ví dụ ./vscode.sh
 
 
