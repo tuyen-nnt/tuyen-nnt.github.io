@@ -23,7 +23,7 @@ Một số quy tắc nên ghi nhớ khi viết commit message :
 
  
 
-##Sai lầm #1: 
+## Sai lầm #1: 
 Chúng ta có khuynh hướng trộn lẫn chủ đề với phần thân của một commit message : Cách viết phần chủ đề chung với phần thân của thông điệp là một cách làm sai. Khi bạn nhận thấy commit message quá dài để giải thích thì có nghĩa là commit đang thực hiện quá nhiều thứ sẽ phá vỡ nó đi. 
 
 Bạn viết: 
@@ -38,7 +38,7 @@ Thay vì nên viết:
  
  
 
-##Sai lầm #2: 
+## Sai lầm #2: 
 Không giới hạn chủ đề tối đa 50 kí tự, phần thân của commit message tối đa 72 kí tự: Luôn đảm bảo chủ đề của commit không bao giờ vượt quá 50 kí tự và đây là qui tắc ngón tay cái. Thêm nhiều hơn số kí tự nên có sẽ có khuynh hướng sẽ bị Github cắt bớt đi, và vì những gì chúng ta đang cố gắng truyền tải là để một user nào đó trong nháy mắt biết được một commit đang làm gì.
 
 Một vài commit message yêu cầu giải thích nhiều hơn đặc biệt là khi dòng chủ đề có nội dung mơ hồ, do đó thêm nội dung phần thân sẽ hữu ích trong những trường hợp này. Luôn cố gắng giới hạn số lượng kí tự phần thân tối đa 72 kí tự, và hãy để phần thân giải thích những gì commit đang thực hiện và tại sao lại làm như vậy. 
@@ -46,7 +46,7 @@ Một vài commit message yêu cầu giải thích nhiều hơn đặc biệt l�
 
  
 
-##Sai lầm #3: 
+## Sai lầm #3: 
 
 Không viết hoa cho chủ đề của commit 
 
@@ -61,7 +61,7 @@ Thay vì nên viết:
  
 
 
-##Sai lầm #4:
+## Sai lầm #4:
 Kết thúc dòng chủ đề bằng dấu chấm 
 
 Bạn viết: 
@@ -73,7 +73,7 @@ Thay vì nên viết:
  
  
 
-##Sai lầm #5: 
+## Sai lầm #5: 
 Không sử dụng câu mệnh lệnh ở dòng chủ đề: 
 
 Mọi git commit đúng chuẩn nên đặt ở dạng mệnh lệnh. “Đơn giản điều này có nghĩa là câu được viết theo dạng một hành động”. Một dòng chủ đề git commit thích hợp nên hoàn thành đúng cấu trúc cho câu sau đây: 
@@ -93,7 +93,7 @@ Từ đó, ta nhận thấy sẽ không đúng với những dạng không mện
 
  
 
-##Sai lầm #6: 
+## Sai lầm #6: 
 Phần thân giải thích Cái gì, Tại sao với Như thế nào: Như đã giải thích ở số **#2** trên, luôn đảm bảo phần thân của commit giải thích chính xác cái gì và tại sao commit đó đang thực hiện. Giải thích tại sao sự thay đổi đó là cần thiết, và khía cạnh khác mà nó mang lại. Thay vì miêu tả cách mà bạn giải quyết vấn đề trên.
 
 
@@ -113,6 +113,8 @@ Tạm dịch là:  Khi gặp cháy thì phải git commit, git push, rồi mới
 
 **Cre:** https://code.likeagirl.io/useful-tips-for-writing-better-git-commit-messages-808770609503?fbclid=IwAR16siuZjdzxxQ4z9gz89BST5DPxINisBxzxVB-emDa-tuLl26KdkV15vsI
 
+
+
 Bài viết về git commit đến đây là hết rồi, mời các bạn xem thêm các bài viết khác nhé ! 
 
-Tuyen Nguyen
+***Tuyen Nguyen***
