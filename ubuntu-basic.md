@@ -117,12 +117,13 @@ Cửa sổ dconf hiện lên, tại mục **Customize value** gõ tại vị tr�
  *Lưu ý: các tên file cách nhau bởi dấu phẩy*
 
 ### Một số lưu ý trong lúc thực hiện:
-* Khi file **.sh** không có quyền thực thi (kiểm tra quyền bằng câu lệnh `ls -l <tên_file>`, dùng tên file nếu đang ở trngo thư mục chứa file còn không dùng đường dẫn đến file), ta cần thêm quyền thực thi (quyền mở file) bằng cách gõ câu lệnh sau:
+* Khi file **.sh** không có quyền thực thi (kiểm tra quyền bằng câu lệnh `ls -l <tên_file>`, dùng tên file nếu đang ở trong thư mục chứa file còn không dùng đường dẫn đến file), ta cần thêm quyền thực thi (quyền mở file) bằng cách gõ câu lệnh sau:
 
 ```
 chmod +x <đường dẫn file>
 ```
-Tìm hiểu thêm các quyền [tại đây](https://blogd.net/linux/lam-viec-voi-tap-tin-va-thu-muc-tren-linux/)
+Tìm hiểu thêm các quyền [tại đây](https://vinasupport.com/chmod-la-gi-huong-dan-su-dung-lenh-chmod-tren-linux-unix/)
+Tìm hiểu thêm các lệnh khác [tại đây](https://blogd.net/linux/lam-viec-voi-tap-tin-va-thu-muc-tren-linux/)
 
 ### Các loại đường dẫn
 * ~/ : thay cho home
