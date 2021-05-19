@@ -77,7 +77,20 @@ sudo dpkg -i remarkable_1.87_all.deb
 sudo apt-get install -f
 ```
 
+Reset lai cau commit truoc do
+```
+~/BigO$ git reset --soft HEAD^^C
+```
 
+Overide commit da push^C
+```
+~/BigO$ git push origin +master
+```
+
+Push lên brach master
+```
+~/BigO$ git push origin +master 
+```
 
 ## 2. Cách pin ứng dụng lên thanh dock ubuntu
 * Bước 1: Tải file tar ứng dụng về và giải nén bằng lệnh tar -xvzf [tên_file]
