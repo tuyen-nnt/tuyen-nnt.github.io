@@ -1,7 +1,7 @@
 # Làm quen với Ubuntu
 
 ## 1. Một số câu lệnh thường dùng 
-
+#### Part 1
 
 Tải ứng dụng trên ubuntu: 
 ```
@@ -77,22 +77,132 @@ sudo dpkg -i remarkable_1.87_all.deb
 sudo apt-get install -f
 ```
 
-Reset lai cau commit truoc do
+Reset lai cau commit trước đó
 ```
-~/BigO$ git reset --soft HEAD^^C
+git reset --soft HEAD^^C
 ```
 
-Overide commit da push^C
+Overide commit đã push^C
 ```
-~/BigO$ git push origin +master
+git push origin +master
 ```
 
 Push lên brach master
 ```
-~/BigO$ git push origin +master 
+git push origin +master 
+```
+---------------------------------
+#### Part 2: update 23.05.2021
+
+Xem lịch sử viết cmd:
+``
+cat ~/.bash_history
+``
+
+Giải nén với file taz
+``
+tar -xvzf ... 
+``
+
+Giải nén với file taz:
+``
+tar -xvf ... 
+``
+
+Giải nén với file deb:
+``
+sudo dpkg -i ... 
+``
+
+Để xem nó là dạng file gì :
+``
+file .... 
+``
+
+Xem là file hay thư mục và các quyền:
+``
+ls -l 
+``
+Nếu cần quyền root để thực thi thì đổi sang quyền owner cho user
+```
+sudo chown -R tuyen:tuyen . 
+//thay đổi owner cho user, dấu "." chỉ tất cả các file trong thư mục hiện hành, tuyen là user : tuyen là user group
+chmod +x 
 ```
 
-## 2. Cách pin ứng dụng lên thanh dock ubuntu
+Để bổ sung cấu hình cho hệ thống:
+```
+sudo nano hosts
+Ex:
+# Một ứng dụng cần config
+<ip> www.XXX.com
+<ip> licxxxx.XXXX.com
+voi ip la so dang XXX.X.X.X
+//Lưu ý dùng quyền sudo với những file của hệ thống
+``` 
+
+
+Giải nén file .deb dùng lệnh:
+``
+sudo dpkg -i remarkable_1.87_all.deb
+``
+
+
+
+## 2. Cài đặt server tải package apt-get về từ VN để nhanh hơn dùng mặc định của nước ngoài
+
+```
+cd /etc/apt
+ls
+
+sudo cp sources.list sourceslist.bak
+//back-up file
+
+sudo sed -i 's/vn.archive.ubuntu.com/mirror.bizflycloud.vn/' sources.list
+//thay thế tất cả link /vn.archive.ubuntu.com = link mirror.bizflycloud.vn trong file sources.list
+
+cat sources.list
+
+sudo apt-get update
+
+sudo rm sourceslist.bak 
+```
+
+## 3. Compile ứng dụng từ source code thủ công
+
+Đối với những ứng dụng dùng apt-get gặp vấn đề version hoặc không tương thích với máy, ta sẽ chuyển sang dùng cách này.
+Tuy nhiên cách này nếu may mắn sẽ compile nhanh, ngược lại có nhiều trường hợp thiếu thư viện khi ./configure dẫn đến mất nhiều thời gian.
+Đó là lí do nhiều người sẽ cài đặt Docker để compile từ source code nhanh => mình sẽ hướng dẫn ở phần sau.
+
+* B1: Download source code về từ git dùng git clone
+``
+git clone <đường dẫn>
+``
+* B2: ``cd `` vào thư mục ứng dụng
+* B3: Cấu hình cho ứng dụng chạy trên máy bạn, ở bước này đòi hỏi sự kiên nhẫn để cài đặt thêm những thư viện cần, chú ý xem lỗi từ cmd để fix chính xác.
+``
+./configure
+``
+Khi tải thêm thư viện thì cú pháp:
+```
+sudo apt-get install <tên thư viện>-dev
+//Lưu ý phải có -dev vì -dev là source code của mấy cái thư viện
+```
+
+* B4: Compile từ source code thành file binary
+```
+make
+//Trong quá trình runtime nếu được yêu cầu tải thêm thư viện thì đuôi thư viện ko cần -dev nữa, vì các file config đã được compile ra binary hết rồi, ko còn là source code nữa 
+=> do vậy bỏ đuôi -dev để tương thích
+```
+
+
+* B5: Install file binary vô hệ thống hay nói cách khác là chuyển những file đã được compile ở trên vô hệ thống
+``
+sudo make install
+``
+
+## 4. Cách pin ứng dụng lên thanh dock ubuntu
 * Bước 1: Tải file tar ứng dụng về và giải nén bằng lệnh tar -xvzf [tên_file]
 * Bước 2: Tạo file tên ứng dụng có đuôi **.desktop** trong thư mục *.local/share/applications*, ví dụ webstorm.sh bằng lệnh *nano [tên_file]*
 * Bước 3: Mở file .desktop và paste dòng sau:
