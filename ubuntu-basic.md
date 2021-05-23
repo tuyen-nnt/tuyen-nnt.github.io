@@ -256,8 +256,14 @@ Tìm hiểu thêm các lệnh khác [tại đây](https://blogd.net/linux/lam-vi
 
 
 Cre: 
+* Part 1:
 https://askubuntu.com/questions/975178/duplicate-icons-in-the-dock-of-gnome-shell-ubuntu-17-10/975230#975230
 https://askubuntu.com/questions/990833/cannot-add-custom-launcher-to-dock-add-to-favorites
 https://vinasupport.com/chmod-la-gi-huong-dan-su-dung-lenh-chmod-tren-linux-unix/
 https://blogd.net/linux/lam-viec-voi-tap-tin-va-thu-muc-tren-linux/
+
+* Part 2:
+https://www.liquidweb.com/kb/how-to-install-software-from-source-on-ubuntu/
+https://help.ubuntu.com/community/CompilingEasyHowTo
+https://help.ubuntu.com/community/CompilingEasyHowTo
 
