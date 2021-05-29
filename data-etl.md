@@ -92,7 +92,7 @@ extract_table_to_pandas("customer", db_engine)
 ### 1. Các hình thức chuyển đổi dữ liệu
 Có thể thực hiện 1 hoặc nhiều các hình thức trong giai đoạn chuyển đổi dữ liệu đã rút trích:
 
-* Chọn thể hiện 1 hay nhiều cột
+* Select 1 hay nhiều cột
 * Phiên dịch dữ liệu thành code. Ví dụ như New York sẽ biến thành NY
 * Kiểm tra dữ liệu có đúng không, nếu dữ liệu không đúng với kiểu dữ liệu hoặc dữ liệu muốn nhận từ cột, ta có thể bỏ record đó đi. Ví dụ như cột ngày nhưng lại chứa giá trị khác ngày.
 * Tách dữ liệu của 1 cột thành nhiều cột
@@ -110,6 +110,7 @@ Nhưng trước hết chúng ta cần đẩy dữ liệu lên Spark:
 ``jbdc:``để nhắn nhủ với Spark là phải dùng JBDC để kết nối, sau đó, ta input vào tên của bảng và cuối cùng trong ``properties`` chúng ta đặt thông tin kết nối vào.
 
  Dưới đây là 2 bảng cần join với nhau thông qua ``customer_id`` để tính rating trung bình của mỗi customer dành cho các phim:
+ 
  ![](img/rating-join.png)
  
  Và làm sao để dùng PySpark join và tính toán dữ liệu? Xem ảnh dưới nhé:
