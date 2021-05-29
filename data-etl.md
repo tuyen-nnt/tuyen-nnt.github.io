@@ -105,6 +105,7 @@ Bạn có thể dùng package ``pandas`` để chuyển đổi dữ liệu nếu
 
 Nếu dữ liệu lớn, thông thường người ta sẽ dùng **PySpark**. Ta có ví dụ chuyển đổi dữ liệu bằng cách join các bảng với nhau. 
 Nhưng trước hết chúng ta cần đẩy dữ liệu lên Spark:
+
 ![](img/extract-pyspark.png)
 
 ``jbdc:``để nhắn nhủ với Spark là phải dùng JBDC để kết nối, sau đó, ta input vào tên của bảng và cuối cùng trong ``properties`` chúng ta đặt thông tin kết nối vào.
@@ -113,13 +114,12 @@ Nhưng trước hết chúng ta cần đẩy dữ liệu lên Spark:
  
  ![](img/rating-join.png)
  
+ 
  Và làm sao để dùng PySpark join và tính toán dữ liệu? Xem ảnh dưới nhé:
+ 
 ![](img/join-pyspark.png)
 
 Mình sẽ cho ra thêm các bài viết tìm hiểu sâu hơn về PySpark trong thời gian tới, các bạn hãy cùng chờ đợi nhé! 
-
-
-
 
 
 
