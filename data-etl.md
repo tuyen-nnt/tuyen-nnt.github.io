@@ -89,7 +89,7 @@ extract_table_to_pandas("customer", db_engine)
 ```
 
 ## 2. TRANSFORM DATA
-### 1. Các hình thức chuyển đổi dữ liệu
+### 1. Một số phương thức chuyển đổi dữ liệu
 Có thể thực hiện 1 hoặc nhiều các hình thức trong giai đoạn chuyển đổi dữ liệu đã rút trích:
 
 * Select 1 hay nhiều cột
@@ -122,6 +122,7 @@ Nhưng trước hết chúng ta cần đẩy dữ liệu lên Spark:
 Mình sẽ cho ra thêm các bài viết tìm hiểu sâu hơn về PySpark trong thời gian tới, các bạn hãy cùng chờ đợi nhé! 
 
 
+## III. LOAD DATA
 
 
 

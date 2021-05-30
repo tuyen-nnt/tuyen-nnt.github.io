@@ -4,67 +4,73 @@
 #### Part 1
 
 Tải ứng dụng trên ubuntu: 
-```
+``
 sudo apt-get install alacarte
-```
+``
 
 Uninstall ứng dụng: 
-```
+``
 sudo apt-get remove alacarte
-```
+``
 
 Đổi tên file:
 
 
-```
+``
  mv [đường dẫn với tên cũ] [đường dẫn với tên mới]
-```
+``
 
 Ví dụ: Đổi tên tập tin `test1.txt` trong /root thành `test.txt`:
 
 
-```
+``
 mv /root/test1.txt /root/test.txtmv 
-```
+``
 
 Di chuyển file:
-```
+``
 mv [đường dẫn nguồn] [đường dẫn đích]
-```
+``
 
 Ví dụ: Di chuyển và đổi tên tập tin `*test1.txt` trong `/root` sang `/etc `đổi tên thành `test.txt`: 
 
-```
+``
 mv /root/test1.txt /etc/test.txt
-```
+``
 
 Mở file xem dùng lệnh:
-```
+``
 cat <đường dẫn hoặc tên file trong thư mục hiện hành>
-```
+``
 
 Edit file hoặc tạo file mới dùng lệnh:
-``` 
+``
 nano <đường dẫn hoặc tên file trong thư mục hiện hành>
-```
+``
 
+Tìm file trong thư mục hiện hành:
+```
+find . [tên file]
+find . 
+//list ra tất cả các file trong thư mục
+```
 
 Cập nhật phiên bản, ví dụ npm 7.13.0: 
-```
+``
 npm install -g npm@7.13.0
-```
+``
 
 Mở OVPN: 
 
-```
+``
 sudo openvpn --config Downloads/client.ovpn
-```
+``
 
 
-Mở ứng dụng sau khi cd vào folder chứa ứng dụng dùng lệnh sau để mở file thực thi : 
-```
+Mở ứng dụng sau khi cd vào folder chứa file thực thi, dùng lệnh sau để mở ứng dụng : 
+``
 ./datagrip.sh
-```
+``
 
 Tải Remarkable để viết markdown thông qua wget thay vì snap hoặc apt-get :
 ```
