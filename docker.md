@@ -94,6 +94,7 @@ sẽ cho kết quả ra file hello.txt trên.
  - Chạy ``node app.js``
  
  Với docker, ta chỉ cần:
+ 
  * Bước 1:
 
  - Vào thư mục project trên vscode ``code .``
@@ -113,7 +114,7 @@ sẽ cho kết quả ra file hello.txt trên.
  * Bước 2:
  - TA nói docker đóng gói úng dụng thành image
  ``docker build -t hello-docker . ``
- trong đó, dấu . chỉ cho docker biết chỗ nào chứa Docker
+ trong đó, dấu . chỉ cho docker biết chỗ nào chứa Dockerfile
  hello-docker là tên repos docker mình tự tạo để quản lý
  
  Để xem có bao nhiêu docker đang chạy:
