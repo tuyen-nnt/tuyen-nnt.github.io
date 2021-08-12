@@ -10,6 +10,9 @@ Các bước build Jekyll cho blog này: https://bootstrapstarter.com/jekyll-the
 * B2: Tải Ruby https://www.ruby-lang.org/en/documentation/installation/
 * B3: cd vào thư mục theme rồi ``gem install bundler``
 * B4: ``bundle install``
+
+Kết quả build thành công:
+
 ![](img/bundle-install.png)
 
 * B5: Sửa lại ``_config.yml`` theo blog của mình
