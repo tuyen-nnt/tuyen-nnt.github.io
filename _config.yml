@@ -13,10 +13,6 @@ include: ["_pages"]
 permalink: /:title/
 email: tuyendev96@gmail.com
 
-# Build settings
-markdown: kramdown
-remote_theme:  wowthemesnet/jekyll-theme-memoirs
-
 
 # Authors
 authors:
