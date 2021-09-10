@@ -3,7 +3,7 @@ layout: post
 title:  "Learn Linux commands on Ubuntu"
 author: tuyennnt
 categories: [ Linux, Ubuntu ]
-image: img/import1.png
+image: img/linux.png
 ---
 
 # Làm quen với Ubuntu
