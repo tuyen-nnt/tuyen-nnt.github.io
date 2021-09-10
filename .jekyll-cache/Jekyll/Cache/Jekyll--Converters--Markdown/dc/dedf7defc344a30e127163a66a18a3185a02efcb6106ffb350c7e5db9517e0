@@ -1,0 +1,40 @@
+I"�<h4 id="cách-run-ubuntu">Cách RUN UBUNTU</h4>
+<p><code>docker  run ubuntu</code>
+ //nếu chưa pull ubuntu image về thì sẽ pull rồi start, còn nếu pull rồi thì nó sẽ start container này luôn 
+ =&gt; nếu khi start mà thấy chưa có interact gì thì nó sẽ stop container lại luôn</p>
+
+<p><code>docker ps</code>
+ //xem list các tiến trình đang chạy của container hoặc các container đang chạy</p>
+
+<p><code>docker ps -a</code>
+ //xem các container đã dừng lại</p>
+
+<p><code>docker run -it ubuntu</code>
+ // start container với interaction mode và load ubuntu image lên trong cái container này</p>
+
+<p>Các câu lệnh:
+ <code>history</code>
+ <code>!2</code> //để output cmd thứ 2 trong list history
+ <code>ls -1</code>
+ //líst ds theo dạng dọc</p>
+
+<p><code>ls -l</code>
+ //list ds chi tiet</p>
+
+<p><code>touch &lt;tên file&gt;</code>
+ //lệnh tạo file</p>
+
+<p><code>mkdir &lt;tên thư mục&gt;</code>
+ //lệnh tạo thư mục</p>
+
+<p><code>mv &lt;tên file hoặc địa chỉ&gt; &lt;tên file hoặc địa chỉ&gt;</code>
+ //đổi tên hoặc di chuyển</p>
+
+<p><code>cat &lt;tên file&gt;</code></p>
+
+<p><code>more &lt;tên file hoặc địa chỉ&gt;</code>
+ //xem nội dung theo từng page, bấm phím space để qua trang tiếp theo nhưng ko scroll up lên được, nhấn enter để chạy từng line để xem</p>
+
+<p><code>less &lt;tên file hoặc địa chỉ&gt;</code>
+ //</p>
+:ET

@@ -1,0 +1,122 @@
+I"�<h1 id="mẹo-viết-commit-message-hữu-ích-khi-dùng-git">Mẹo viết commit message hữu ích khi dùng git</h1>
+
+<p>Git là một hệ thống quản lý phiên bản phân tán phổ biến với mục đích theo dõi sự thay đổi của các tập tin trên máy tính và phối hợp công việc nhóm trên những tập tin này. Là một lập trình viên thì một trong những công cụ cơ bản mà chúng tôi không thể bỏ qua chính là việc sử dụng git trong quy trình làm việc. Sau đây là một trong những sai lầm mà dân lập trình hay mắc phải, về mặt kỹ thuật thì không hẳn nhưng chúng ta hãy tự hỏi rằng “Nếu bạn có thể làm tốt hơn thì tại sao không làm?”</p>
+
+<p>Một số quy tắc nên ghi nhớ khi viết commit message :</p>
+
+<ol>
+  <li>
+    <p>Tách dòng chủ đề ra khỏi phần thân bằng một dòng trống</p>
+  </li>
+  <li>
+    <p>Giới hạn dòng chủ đề tối đa 50 kí tự</p>
+  </li>
+  <li>
+    <p>Viết hoa dòng chủ đề</p>
+  </li>
+  <li>
+    <p>Sử dụng câu mệnh lệnh ở dòng chủ đề</p>
+  </li>
+  <li>
+    <p>Không kết thúc dòng chủ đề bằng dấu chấm</p>
+  </li>
+  <li>
+    <p>Gói gọn phần thân tối đa 72 kí tự</p>
+  </li>
+  <li>
+    <p>Sử dụng phần thân để giải thích “Cái gì”,  “Tại sao” với “Như thế nào”</p>
+  </li>
+</ol>
+
+<h2 id="sai-lầm-1">Sai lầm #1:</h2>
+<p>Chúng ta có khuynh hướng trộn lẫn chủ đề với phần thân của một commit message : Cách viết phần chủ đề chung với phần thân của thông điệp là một cách làm sai. Khi bạn nhận thấy commit message quá dài để giải thích thì có nghĩa là commit đang thực hiện quá nhiều thứ sẽ phá vỡ nó đi.</p>
+
+<p>Bạn viết:</p>
+
+<blockquote>
+  <p>git commit –m “added new css styling for danger button in order to differentiate between the primary button and other button styles.”</p>
+</blockquote>
+
+<p>Thay vì nên viết:</p>
+
+<blockquote>
+  <p>git commit –m “Add new feature”</p>
+</blockquote>
+
+<h2 id="sai-lầm-2">Sai lầm #2:</h2>
+<p>Không giới hạn chủ đề tối đa 50 kí tự, phần thân của commit message tối đa 72 kí tự: Luôn đảm bảo chủ đề của commit không bao giờ vượt quá 50 kí tự và đây là qui tắc ngón tay cái. Thêm nhiều hơn số kí tự nên có sẽ có khuynh hướng sẽ bị Github cắt bớt đi, và vì những gì chúng ta đang cố gắng truyền tải là để một user nào đó trong nháy mắt biết được một commit đang làm gì.</p>
+
+<p>Một vài commit message yêu cầu giải thích nhiều hơn đặc biệt là khi dòng chủ đề có nội dung mơ hồ, do đó thêm nội dung phần thân sẽ hữu ích trong những trường hợp này. Luôn cố gắng giới hạn số lượng kí tự phần thân tối đa 72 kí tự, và hãy để phần thân giải thích những gì commit đang thực hiện và tại sao lại làm như vậy.</p>
+
+<h2 id="sai-lầm-3">Sai lầm #3:</h2>
+
+<p>Không viết hoa cho chủ đề của commit</p>
+
+<p>Bạn viết:</p>
+
+<blockquote>
+  <p>git commit –m “added new feature”</p>
+</blockquote>
+
+<p>Thay vì nên viết:</p>
+<blockquote>
+  <p>git commit –m “Add new feature”</p>
+</blockquote>
+
+<p><img src="img/sailam-3.png" alt="" /></p>
+
+<h2 id="sai-lầm-4">Sai lầm #4:</h2>
+<p>Kết thúc dòng chủ đề bằng dấu chấm</p>
+
+<p>Bạn viết:</p>
+
+<blockquote>
+  <p>git commit –m “Modified codebase.”
+Thay vì nên viết: 
+git commit –m “Modify codebase”</p>
+</blockquote>
+
+<h2 id="sai-lầm-5">Sai lầm #5:</h2>
+<p>Không sử dụng câu mệnh lệnh ở dòng chủ đề:</p>
+
+<p>Mọi git commit đúng chuẩn nên đặt ở dạng mệnh lệnh. “Đơn giản điều này có nghĩa là câu được viết theo dạng một hành động”. Một dòng chủ đề git commit thích hợp nên hoàn thành đúng cấu trúc cho câu sau đây:</p>
+
+<blockquote>
+  <p>If applied, this commit will “your subject line here”</p>
+</blockquote>
+
+<p>Ví dụ:</p>
+
+<blockquote>
+  <p>If applied, this commit will “Add auth to X”</p>
+</blockquote>
+
+<p>Từ đó, ta nhận thấy sẽ không đúng với những dạng không mệnh lệnh:</p>
+
+<blockquote>
+  <p>If applied, this commit will “added auth to Y”</p>
+</blockquote>
+
+<h2 id="sai-lầm-6">Sai lầm #6:</h2>
+<p>Phần thân giải thích Cái gì, Tại sao với Như thế nào: Như đã giải thích ở số <strong>#2</strong> trên, luôn đảm bảo phần thân của commit giải thích chính xác cái gì và tại sao commit đó đang thực hiện. Giải thích tại sao sự thay đổi đó là cần thiết, và khía cạnh khác mà nó mang lại. Thay vì miêu tả cách mà bạn giải quyết vấn đề trên.</p>
+
+<p><em>Một số câu nói vui về git:</em></p>
+
+<ul>
+  <li>Why did the commit cross the rebase? To git to the other repo</li>
+</ul>
+
+<p>Tạm dịch là:  Sao commit qua được rebase? Vì ta git đến repo khác :v</p>
+
+<ul>
+  <li>In case of fire: git commit, git push, leave the building</li>
+</ul>
+
+<p>Tạm dịch là:  Khi gặp cháy thì phải git commit, git push, rồi mới rời khỏi tòa nhà :v</p>
+
+<p><strong>Cre:</strong> https://code.likeagirl.io/useful-tips-for-writing-better-git-commit-messages-808770609503?fbclid=IwAR16siuZjdzxxQ4z9gz89BST5DPxINisBxzxVB-emDa-tuLl26KdkV15vsI</p>
+
+<p>Bài viết về git commit đến đây là hết rồi, mời các bạn xem thêm các bài viết khác nhé !</p>
+
+<p><strong><em>Tuyen Nguyen</em></strong></p>
+:ET

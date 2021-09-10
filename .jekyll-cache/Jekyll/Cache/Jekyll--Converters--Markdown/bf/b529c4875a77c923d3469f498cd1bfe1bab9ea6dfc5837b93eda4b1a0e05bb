@@ -1,0 +1,140 @@
+I"�<h1 id="tìm-hiểu-về-etl">Tìm hiểu về ETL</h1>
+
+<h2 id="i-extract-data">I. EXTRACT DATA</h2>
+
+<h3 id="1-các-cách-để-trích-xuất-dữ-liệu">1. Các cách để trích xuất dữ liệu</h3>
+<p>Có 3 cách:</p>
+
+<p><img src="img/extract.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Trích xuất từ file text, như file .txt or .csv
+Text file có 3 loại là : 
+	* Text thuần
+	* Flat file (là file có .tsv hoặc .csv cách nhau bởi dấu “,” hoặc “tab” giữa các giá trị). Những file này có dòng thể hiện các record và cột thể hiện attribute của record.
+	*File JSON: bán cấu trúc, có 4 kiểu dữ liệu atomic là number, string, boolean và null và 2 kiểu dữ liệu dạng composite là array và object.
+	JSON có package hỗ trợ là “json” để import data
+	<img src="img/load-json.png" alt="" /></p>
+  </li>
+  <li>
+    <p>Trích xuất từ web hoặc APIs của web services, như là Hacker News API
+<img src="img/web-extract.png" alt="" /></p>
+    <ul>
+      <li>Thông qua web:</li>
+    </ul>
+
+    <p><img src="img/data-web.png" alt="" /></p>
+  </li>
+</ul>
+
+<p>Ví dụ: bạn tìm kiếm thông tin trên google.com thì trình duyệt của bạn sẽ gửi request của bạn đến server của google và google sẽ trả về dữ liệu mà bạn đang tìm kiếm.</p>
+
+<pre><code>* Thông qua API của web:
+</code></pre>
+
+<p>Không phải lúc nào các trang web cũng trả về kết quả mà người thường có thể đọc ngay, mà các trang web đó sẽ trả về định dạng JSON thông qua API mà chúng ta request.</p>
+
+<p>Ta xem ví dụ request API từ trang Hackernews:
+<img src="img/api-request.png" alt="" />
+Ta import package “request” rồi dùng method .get() để chèn vào link web cần lấy file JSON. 
+Sau đó ta dùng method .json() để phân tích file JSON từ kết quả đã lấy được và chuyển hóa nó thành Python object.</p>
+
+<ul>
+  <li>Trích xuất từ một database trên web services 
+Hầu hết các ứng dụng web đều có database để backup và để không bị ảnh hưởng khi tắt server, v.v. Cần phân biệt 2 loại database chính trong trường hợp này:
+    <ul>
+      <li><em>Application database</em> : dùng cho trường hợp có nhiều giao dịch được cập nhật, loại này còn có tên gọi là <em>OLTP</em> (online transaction processing)</li>
+      <li><em>Analytical database</em>: được xây dựng cho việc phân tích dữ liệu còn gọi là <em>OLAP</em> (online analytical processing)</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="2-trích-xuất-dữ-liệu-từ-database-như-thế-nào">2. Trích xuất dữ liệu từ database như thế nào?</h3>
+
+<ul>
+  <li>Dùng URI/chuỗi connection, cú pháp như sau:
+    <pre><code>[database_type]://[user[:password]@][host][:port]
+</code></pre>
+  </li>
+  <li>Trong Python, ta dùng connection URI thông qua package <code>sqlalchemy</code> để tạo <em>database engine</em> :</li>
+</ul>
+
+<p><img src="img/create-engine.png" alt="" /></p>
+
+<p>Từ engine đã được tạo ra, ta có thể dùng nó để đặt vào 1 số package hỗ trợ nó tương tác với database, đặc biệt là package <code>pandas</code>.</p>
+
+<ul>
+  <li>import requests
+```</li>
+</ul>
+
+<h1 id="lấy-dữ-liệu-từ-bài-viết-của-hackernews-về-f12-inspect-để-lấy-url-của-nó">Lấy dữ liệu từ bài viết của Hackernews về, F12 inspect để lấy URL của nó</h1>
+<p>resp = requests.get(“https://hacker-news.firebaseio.com/v0/item/16222426.json”)</p>
+
+<h1 id="in-dữ-liệu-vừa-parse-thành-file-json-ra-màn-hình">in dữ liệu vừa parse thành file json ra màn hình</h1>
+<p>print(resp.json())</p>
+
+<h1 id="parse-dữ-liệu-ra-rồi-gán-value-của-key-score-vào-biến-post_score-sau-đó-in-cái-biến-ra">parse dữ liệu ra rồi gán value của key “score” vào biến post_score, sau đó in cái biến ra</h1>
+<p>post_score = resp.json()[“score”]
+print(post_score)</p>
+<pre><code>
+
+* Một số ví dụ mở rộng hơn (xem phần 3 để hiểu hơn):
+
+Đọc dữ liệu từ database của postgreSQL, hàm extract dùng SQL query có nhiệm vụ chuyển từ dữ liệu bảng thành kiểu object mà pandas dùng (là dataframe)
+
+</code></pre>
+<h1 id="function-to-extract-table-to-a-pandas-dataframe">Function to extract table to a pandas DataFrame</h1>
+<p>def extract_table_to_pandas(tablename, db_engine):
+    query = “SELECT * FROM {}”.format(tablename)
+    return pd.read_sql(query, db_engine)</p>
+
+<h1 id="connect-to-the-database-using-the-connection-uri-sử-dụng-package-sqlalchemy">Connect to the database using the connection URI, sử dụng package sqlalchemy</h1>
+<p>connection_uri = “postgresql://repl:password@localhost:5432/pagila” 
+db_engine = sqlalchemy.create_engine(connection_uri)</p>
+
+<h1 id="extract-the-film-table-into-a-pandas-dataframe-lưu-ý-nhớ-để-tên-bảng-dạng-chuỗi">Extract the film table into a pandas DataFrame, lưu ý nhớ để tên bảng dạng chuỗi</h1>
+<p>extract_table_to_pandas(“film”, db_engine)</p>
+
+<h1 id="extract-the-customer-table-into-a-pandas-dataframe">Extract the customer table into a pandas DataFrame</h1>
+<p>extract_table_to_pandas(“customer”, db_engine)
+```</p>
+
+<h2 id="2-transform-data">2. TRANSFORM DATA</h2>
+<h3 id="1-một-số-phương-thức-chuyển-đổi-dữ-liệu">1. Một số phương thức chuyển đổi dữ liệu</h3>
+<p>Có thể thực hiện 1 hoặc nhiều các hình thức trong giai đoạn chuyển đổi dữ liệu đã rút trích:</p>
+
+<ul>
+  <li>Select 1 hay nhiều cột</li>
+  <li>Phiên dịch dữ liệu thành code. Ví dụ như New York sẽ biến thành NY</li>
+  <li>Kiểm tra dữ liệu có đúng không, nếu dữ liệu không đúng với kiểu dữ liệu hoặc dữ liệu muốn nhận từ cột, ta có thể bỏ record đó đi. Ví dụ như cột ngày nhưng lại chứa giá trị khác ngày.</li>
+  <li>Tách dữ liệu của 1 cột thành nhiều cột</li>
+  <li>Join dữ liệu từ các nguồn, các bảng khác nhau.</li>
+</ul>
+
+<h3 id="2-một-số-ví-dụ">2. Một số ví dụ</h3>
+
+<p>Bạn có thể dùng package <code>pandas</code> để chuyển đổi dữ liệu nếu lượng dữ liệu nhỏ. Ta có ví dụ tách dữ liệu từ 1 cột thành 2 cột sử dụng pandas:
+<img src="img/split-pandas.png" alt="" /></p>
+
+<p>Nếu dữ liệu lớn, thông thường người ta sẽ dùng <strong>PySpark</strong>. Ta có ví dụ chuyển đổi dữ liệu bằng cách join các bảng với nhau. 
+Nhưng trước hết chúng ta cần đẩy dữ liệu lên Spark:</p>
+
+<p><img src="img/extract-pyspark.png" alt="" /></p>
+
+<p><code>jbdc:</code>để nhắn nhủ với Spark là phải dùng JBDC để kết nối, sau đó, ta input vào tên của bảng và cuối cùng trong <code>properties</code> chúng ta đặt thông tin kết nối vào.</p>
+
+<p>Dưới đây là 2 bảng cần join với nhau thông qua <code>customer_id</code> để tính rating trung bình của mỗi customer dành cho các phim:</p>
+
+<p><img src="img/rating-join.png" alt="" /></p>
+
+<p>Và làm sao để dùng PySpark join và tính toán dữ liệu? Xem ảnh dưới nhé:</p>
+
+<p><img src="img/join-pyspark.png" alt="" /></p>
+
+<p>Mình sẽ cho ra thêm các bài viết tìm hiểu sâu hơn về PySpark trong thời gian tới, các bạn hãy cùng chờ đợi nhé!</p>
+
+<h2 id="iii-load-data">III. LOAD DATA</h2>
+
+:ET

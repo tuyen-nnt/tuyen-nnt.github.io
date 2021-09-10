@@ -1,0 +1,6 @@
+I"�<h4 id="1-import--load--tạo-httpget-request">1. Import + Load + Tạo HTTP/GET REQUEST</h4>
+<ul>
+  <li>Lưu file mềm xuống local:
+<code>urlretrieve(url, 'filename.csv')</code></li>
+</ul>
+:ET

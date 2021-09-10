@@ -1,0 +1,40 @@
+I"<p>Phân biệt các attribute quan trọng sau để build giao diện trong react native:</p>
+
+<ul>
+  <li>flexDirection: “row” hoặc “column”</li>
+  <li>justify-content : “center”
+main/primary axis phụ thuộc vào flexDirection, ta có space-evenly</li>
+  <li>
+    <p>align-items : “center”
+căn chỉnh secondary axis cho mỗi line, có các loại như center, baseline,…</p>
+  </li>
+  <li>flexWrap: “wrap” 
+để các component ko bị chèn ép mất đi</li>
+  <li>
+    <p>align-Content : căn chỉnh toàn bộ nội dung của 1 block trên secondary axis, chỉ hoạt động khi có flexWrap.</p>
+  </li>
+  <li>align-self</li>
+  <li>flex: 1</li>
+  <li>flexBasis: 100,
+ //width (nếu main là row) or height, phụ thuộc vào primary axis (main)</li>
+  <li>flexGrow: 1 
+ //giống flex : 1, trải ra đầy màn hình</li>
+  <li>
+    <p>flexShrink: 1
+ //giống flex : -1, co lại để ko tràn màn hình</p>
+  </li>
+  <li>
+    <p>bottom, right, left, top : di chuyển qua trái, phải bao nhiêu pixel</p>
+  </li>
+  <li>position: “absolute” hoặc “relative”
+ //giá trị mặc định trong react native là “relative”</li>
+</ul>
+
+<p>*Dimensions: import thư viện này trong react
+ DIP công thức như sau:
+ Physical Pixels = DIPs x Scale Factor
+ vd điện thoại có scale là 2 và point điểm ảnh là 320x480 thì View đối với Width có giá trị 150 là 150x2=300
+ =&gt; nghĩa là bề ngang là 1/2 màn hình
+ <img src="img/dip-react.png" alt="" /></p>
+
+:ET

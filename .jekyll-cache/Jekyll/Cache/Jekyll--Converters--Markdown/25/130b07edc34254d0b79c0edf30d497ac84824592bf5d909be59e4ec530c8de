@@ -1,0 +1,3 @@
+I"-<h4 id="1-dictionaries">1. Dictionaries</h4>
+<p>Là tập hợp các cặp <code>key:value</code> khi cần kết nối dữ liệu với nhau như 1 table để tra cứu nhanh và có thể chỉ ra unique keys khi tra cứu, thay vì nối 2 list lại để lấy index rồi tra cứu value.</p>
+:ET

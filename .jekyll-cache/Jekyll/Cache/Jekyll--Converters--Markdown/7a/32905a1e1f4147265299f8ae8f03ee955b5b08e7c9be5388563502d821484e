@@ -1,0 +1,30 @@
+I"�<h2 id="fork-jekyll-theme--play">Fork Jekyll theme &amp; Play</h2>
+
+<p>Đây là theme blog mình đang sử dụng: https://github.com/tuyen-nnt/jekyll-theme-memoirs</p>
+
+<p>Các bước build Jekyll cho blog này: https://bootstrapstarter.com/jekyll-theme-memoirs/
+(Tìm hiểu thêm tại: https://jekyllrb.com/docs/)</p>
+
+<ul>
+  <li>B1: git clone https://github.com/wowthemesnet/jekyll-theme-memoirs.git</li>
+  <li>B2: Tải Ruby https://www.ruby-lang.org/en/documentation/installation/</li>
+  <li>B3: cd vào thư mục theme rồi <code>gem install bundler</code></li>
+  <li>B4: <code>bundle install</code></li>
+</ul>
+
+<p>Kết quả build thành công:</p>
+
+<p><img src="img/bundle-install.png" alt="" /></p>
+
+<ul>
+  <li>B5: Sửa lại <code>_config.yml</code> theo blog của mình</li>
+  <li>B6: <code>bundle exec jekyll serve --watch</code></li>
+  <li>B7: Xem web blog tại http://127.0.0.1:4000/jekyll-theme-memoirs (nếu folder vẫn giữ tên cũ)</li>
+  <li>B8: Thêm blogs định dạng <code>.md</code> vào folder <code>_posts</code>. Trước mỗi bài viết sẽ có ô YAML là định dạng chung, bạn chỉ cần điền vào thông tin của mình là được (nhưng vẫn giữ form nhé). Chi tiết xem link các bước thực hiện.</li>
+</ul>
+
+<p>Tìm hiểu về Bundler install: https://bundler.io/</p>
+
+<p>Tìm hiểu về Gemfile: https://bundler.io/gemfile.html</p>
+
+:ET

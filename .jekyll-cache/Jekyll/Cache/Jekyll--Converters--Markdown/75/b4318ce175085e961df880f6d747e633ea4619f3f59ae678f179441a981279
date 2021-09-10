@@ -1,0 +1,283 @@
+I"+<h4 id="1-dictionaries">1. Dictionaries</h4>
+<p>Là tập hợp các cặp <code>key:value</code> khi cần kết nối dữ liệu với nhau như 1 table để tra cứu nhanh và có thể chỉ ra unique keys khi tra cứu, thay vì nối 2 list lại để lấy index rồi tra cứu value.</p>
+
+<ul>
+  <li>
+    <p>So sánh giữa list và dict:
+<img src="img/list-vs-dict.png" alt="" /></p>
+  </li>
+  <li>
+    <p>Cú pháp tạo dict như sau:</p>
+  </li>
+</ul>
+
+<p><code>my_dict = {
+	key:value,
+	key:value
+}</code></p>
+
+<ul>
+  <li>
+    <p>Access dict như sau:
+<code>my_dict['key']</code> =&gt; cho ra value của key đó.</p>
+  </li>
+  <li>
+    <p>Thêm key:value vào dict:
+<code>world["sealand"] = 0.25</code></p>
+  </li>
+  <li>
+    <p>Check xem dict đã được thêm key ở trên vào chưa: 
+<code>sealand in world</code> =&gt; trả về True/False.
+Với ‘seadland’ là key và word là tên dict.</p>
+  </li>
+  <li>
+    <p>Cập nhật lại giá trị cho key <code>sealand</code>:
+<code>world['sealand'] = 0.28</code>
+Vì key trong dict là unique nên Python hiểu là bạn muốn thay đổi giá trị chứ không phải tạo mới cặp key:value.</p>
+  </li>
+  <li>
+    <p>Xóa cặp key:value:
+<code>del(world['sealand'])</code></p>
+  </li>
+  <li>
+    <p>Dict trong dict:
+Cũng như list có thể chứa list trong list. Xem ví dụ:</p>
+    <pre><code># Dictionary of dictionaries
+europe = { 'spain': { 'capital':'madrid', 'population':46.77 },
+         'france': { 'capital':'paris', 'population':66.03 },
+         'germany': { 'capital':'berlin', 'population':80.62 },
+         'norway': { 'capital':'oslo', 'population':5.084 } }
+</code></pre>
+    <p>Để access giá trị của dict, ta sẽ dùng dấu [] như trong array:</p>
+  </li>
+</ul>
+
+<p><code>europe['spain']['population']</code></p>
+
+<p>=&gt; Vậy để add thêm cặp key:dict vào trong dict trên thì làm thế nào?</p>
+
+<pre><code># Create sub-dictionary data
+data = {
+    'capital':'rome',
+    'population':59.83
+}
+
+# Add data to europe under key 'italy'
+europe['italy'] = data
+</code></pre>
+
+<p>Ta chỉ cần tách ra tạo dict phụ trước và gán nó vào biến lưu object value. Sau đó ta thêm cặp key:value vào dict như bình thường.</p>
+
+<p>Lưu ý:</p>
+
+<ul>
+  <li>Keys không được trùng nhau trong 1 dict, vì nếu trùng, nó sẽ chỉ lấy giá trị cuối cùng.</li>
+  <li>Keys phải là immutable object (không đổi), còn list thì mutable nên list cũng không được là key trong dict.</li>
+</ul>
+
+<h4 id="2-pandas">2. Pandas</h4>
+
+<h5 id="tabular-dataset-trong-python">Tabular dataset trong Python</h5>
+<p>row = observations</p>
+
+<p>column = variable</p>
+
+<ul>
+  <li>Để làm việc với dạng data này thì cần cấu trúc dạng chữ nhật.</li>
+</ul>
+
+<p>=&gt; 2D Numpy array</p>
+
+<p>=&gt; Nhưng với các dữ liệu có nhiều thông tin với nhiều datatype khác nhau như str, float,… thì Numpy chưa hiệu quả.</p>
+
+<p>Vậy nên pandas package chính là solution và quen thuộc trong Data science.</p>
+
+<ul>
+  <li>Nó được build dựa trên Numpy.</li>
+  <li>Là tool ở cấp độ cao trong thao tác với dữ liệu.</li>
+  <li>Pandas lưu dữ liệu bảng trong object gọi là Dataframe.</li>
+</ul>
+
+<p>Cách tạo dataframe từ dictionary:</p>
+<pre><code>import pandas as pd
+brics = pd.DataFrame(dict)
+</code></pre>
+<p><img src="img/create-df.png" alt="" /></p>
+
+<p>Để tạo index cho observations trong df, ta dùng attribute <code>index</code> và gán 1 list với thứ tự chính xác các index mong muốn:</p>
+<pre><code>brics.index = [...,...]
+</code></pre>
+<p><img src="img/index-df.png" alt="" /></p>
+
+<h5 id="csv-file">CSV file</h5>
+<p>Nhưng thực tế trong Data science, ta phải đối mặt với lượng data khổng lồ tùy trường hợp cụ thể, nên thông thường ta không tự tạo dataframe. Giả sử các data đến từ file có <code>.csv</code> viết tắt của comma separated values.</p>
+
+<ul>
+  <li>Để import vào môi trường Python ta dùng cú pháp:</li>
+</ul>
+
+<pre><code>brics = pd.read_csv("path/to/brics.csv")
+</code></pre>
+<ul>
+  <li>Tuy nhiên đối với file có index, khi import vào thì cột index đầu tiên sẽ bị ngầm hiểu là cột đầu của dữ liệu chính. Để tránh điều này, ta phải thêm argument <code>index_col=0</code>, kết quả:</li>
+</ul>
+
+<p><img src="img/csv-import.png" alt="" /></p>
+
+<ul>
+  <li>Để thay đổi index tự động từ 0-n bằng label được định nghĩa trong 1 list tạo riêng tự chọn, ta dùng cú pháp:
+```
+    <h1 id="definition-of-row_labels">Definition of row_labels</h1>
+    <p>row_labels = [‘US’, ‘AUS’, ‘JPN’, ‘IN’, ‘RU’, ‘MOR’, ‘EG’]</p>
+  </li>
+</ul>
+
+<h1 id="specify-row-labels-of-cars">Specify row labels of cars</h1>
+<p>cars.index = row_labels</p>
+<pre><code>
+##### Cách để access Dataframe
+Ta input vào label hoặc index của column hoặc row. Ví dụ cụ thể ta có df là cars, xem cú pháp dưới đây: 
+
+* Access COLUMN (cột):
+	* Dùng [] : 
+	- Nếu muốn output là Series object: ``cars['country', ... ]``
+	- Nếu muốn output là Dataframe, dùng double ngoặc vuông:
+``cars[['country', ... ]]``
+&gt; Nhìn ở góc khác, ta đang input vào ngoặc vuông 1 list chứa column labels.
+
+	* Dùng ``loc`` (chọn 1 phần data dựa trên label-based) hoặc ``iloc`` (chọn data dựa trên integer position-based)
+	- cars.loc['country', ...] hoặc cars.loc[['country', ...]] 
+	- car.iloc[0, ..., ...] hoặc car.iloc[[0, ..., ...]]
+	
+* Access ROW (quan sát)	
+	* Chỉ có cách là dùng [] nhưng input vào số:
+	- Nếu muốn lấy row từ index 1 đến 3:
+``cars[1:4]`` 
+	* Dùng loc hoặc iloc và input vào index của row thay vì tên cột như truy cập vào column.
+
+* Access ROWs &amp; COLUMNs bất kì:
+	* Sử dụng loc và iloc tiện lợi:
+	- Ta chỉ cần đặt vào label của row và column trong loc hoặc iloc theo thứ tự ``row, column``. 
+	- Nếu chọn nhiều hơn 1 label trong row hoặc column, ta biến argument row hoặc column thành list.
+
+Xem	 hình ví dụ:
+	
+![](img/loc-iloc.png)
+
+	
+&gt; Nhận xét: 
+
+- Dấu ngoặc vuông``[]`` có giới hạn chức năng và lý tưởng nhất là sử dụng trong 2D Numpy array để access value dễ dàng nhất.	
+- Nếu muốn dấu``[]``có thể mở rộng khả năng access value trong pandas như  dấu``[]``trong 2D Numpy array, thì ta cần sử dụng ``loc`` và ``iloc``.
+
+![](img/iloc-loc.png)
+	
+	
+##### Filter dataframe
+
+* Bước 1: Access cột trả về series object.
+
+* Bước 2: Xác định điều kiện filter và trả về Boolean Series. Nếu &gt; 2 điều kiện thì phải sử dụng Numpy variants của toán tử and, or, not.
+
+* Bước 3: Dùng Boolean Series là kết quả của bước 1 làm input trong dấu ngoặc vuông của Dataframe. Kết quả trả về các record thỏa điều kiện.
+
+&gt; You'll want to build up a boolean Series, that you can then use to subset the cars DataFrame to select certain observations. If you want to do this in a one-liner, that's perfectly fine!
+
+
+#### 3. LOOP
+
+##### WHILE
+
+
+##### FOR 
+
+</code></pre>
+<p>for var in seq :
+	expression</p>
+<pre><code>
+Trong đó ``var`` là biến bất kỳ có thể đặt tên sao cũng được. Python dùng nó để quét lần lượt cái phần tử trong ``seq``.
+
+
+FOR còn dùng để lặp từng char trong string.
+![](img/string-loop.png)
+
+* enumerate() : cung cấp 2 giá trị cho mỗi lần lặp gồm ``index`` và ``value (giá trị)``.
+
+![](img/enumerate-for.png)
+
+
+
+Mỗi data structure sẽ có cách loop các nhau và cách định nghĩa sequence khác nhau (seq). Cụ thể các bạn xem dưới đây nhé:
+
+##### Loop với List của Lists 
+* Nếu list mà bạn cần lặp là list của list, thì dùng cách như sau:
+
+</code></pre>
+<h1 id="house-list-of-lists">house list of lists</h1>
+<p>house = [[“hallway”, 11.25], 
+         [“kitchen”, 18.0], 
+         [“living room”, 20.0], 
+         [“bedroom”, 10.75], 
+         [“bathroom”, 9.50]]</p>
+
+<h1 id="build-a-for-loop-from-scratch">Build a for loop from scratch</h1>
+<h1 id="x-quét-từng-list-trong-list-dùng--để-truy-cập-phần-tử-của-sub-list">x quét từng list trong list, dùng [] để truy cập phần tử của sub-list</h1>
+
+<p>for x in house :
+    print(“the “ + x[0] + “ is “ + str(x[1]) + “ sqm”)
+```</p>
+
+<h5 id="loop-với-dictionary">Loop với Dictionary</h5>
+<p>Sử dụng method <code>items()</code> :</p>
+
+<p><code>for key, val in my_dict.items() :</code></p>
+
+<h5 id="loop-với-numpy-array">Loop với Numpy array</h5>
+<p>Sử dụng function <code>np.nditer(my_array)</code> đặc biệt là với 2D array.</p>
+
+<p><code>for val in np.nditer(my_array) :</code></p>
+
+<ul>
+  <li>
+    <p>Với 1D array ta có thể sử dụng loop thông thường, nhưng với 2D thì nó sẽ in ra 2D array thay vì ra các giá trị cần lấy trong loop.</p>
+  </li>
+  <li>
+    <p>Dùng <code>nditer</code> sẽ giúp in ra từng giá trị từ trái sang phải từ trên xuống dưới của 2D array.</p>
+  </li>
+</ul>
+
+<h5 id="pandas-dataframe">Pandas DataFrame</h5>
+
+<p><code>iterrows()</code> : Trong mỗi lần lặp, method này sẽ generate ra 2 giá trị:</p>
+<ul>
+  <li>Label của row (nếu ko có thì là index tự động)</li>
+  <li>Data của row (là Pandas Series có index/label là tên cột - còn gọi là fieldname)</li>
+</ul>
+
+<p><img src="img/iterrows.png" alt="" /></p>
+
+<p>Để loop in ra giá trị của cột mong muốn cho mỗi lần lặp, ta chỉ cần:</p>
+
+<p>print(row[“tên cột”])</p>
+
+<ul>
+  <li>Thêm cột vào Dataframe bằng loop:</li>
+</ul>
+
+<p>Ví dụ ta muốn thêm cột tính độ dài của cột “country”:
+<code>brics.loc[lab, "tên cột mới"] = len(row["country"])</code></p>
+
+<p><img src="img/new-col.png" alt="" /></p>
+
+<blockquote>
+  <p>Nhận xét: Cách này tốt trong trường hợp ít record. Vì ta đang tạo ra Series object cho mỗi vòng lặp và nó sẽ không hiệu quả với các dataset khổng lồ, thậm chí gây ra vấn đề khi xử lý dữ liệu.</p>
+</blockquote>
+
+<p>Vậy nên, cách tốt nhất là ta sử dụng function <code>apply(tên function)</code> cho mỗi cột mà ta muốn tính toán rồi gán vào cột mới trong dataframe:</p>
+
+<p><code>brics["cột mới"] = brics["country"].apply(len)</code></p>
+
+<blockquote>
+  <p>Cách hoạt động: Function <code>apply()</code> sẽ gọi function <code>len()</code> mà mỗi giá trị của cột country sẽ là input để tính độ dài từng country. Kết quả trả về là 1 array mà chúng ta có thể dễ dàng lưu thành cột mới trong Dataframe.</p>
+</blockquote>
+:ET

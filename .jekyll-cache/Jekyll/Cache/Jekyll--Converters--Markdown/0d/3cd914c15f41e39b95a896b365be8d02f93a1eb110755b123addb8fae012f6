@@ -1,0 +1,164 @@
+I"Y<h4 id="cách-run-ubuntu">Cách RUN UBUNTU</h4>
+<p><code>docker  run ubuntu</code>
+ //nếu chưa pull ubuntu image về thì sẽ pull rồi start, còn nếu pull rồi thì nó sẽ start container này luôn 
+ =&gt; nếu khi start mà thấy chưa có interact gì thì nó sẽ stop container lại luôn</p>
+
+<p><code>docker ps</code>
+ //xem list các tiến trình đang chạy của container hoặc các container đang chạy</p>
+
+<p><code>docker ps -a</code>
+ //xem các container đã dừng lại</p>
+
+<p><code>docker run -it ubuntu</code>
+ // start container với interaction mode và load ubuntu image lên trong cái container này</p>
+
+<p>Các câu lệnh:
+ <code>history</code>
+ <code>!2</code> //để output cmd thứ 2 trong list history
+ <code>ls -1</code>
+ //líst ds theo dạng dọc</p>
+
+<p><code>ls -l</code>
+ //list ds chi tiet</p>
+
+<p><code>touch &lt;tên file&gt;</code>
+ //lệnh tạo file</p>
+
+<p><code>mkdir &lt;tên thư mục&gt;</code>
+ //lệnh tạo thư mục</p>
+
+<p><code>mv &lt;tên file hoặc địa chỉ&gt; &lt;tên file hoặc địa chỉ&gt;</code>
+ //đổi tên hoặc di chuyển</p>
+
+<p><code>cat &lt;tên file&gt;</code></p>
+
+<p><code>more &lt;tên file hoặc địa chỉ&gt;</code>
+ //xem nội dung theo từng page, bấm phím space để qua trang tiếp theo nhưng ko scroll up lên được, nhấn enter để chạy từng line để xem</p>
+
+<p><code>less &lt;tên file hoặc địa chỉ&gt;</code>
+ //</p>
+
+<p><code>cat &lt;tên file&gt; &gt; &lt;tên file khác&gt;</code>
+//copy nội dung file này vào file khác</p>
+
+<p><code>cat &lt;tên file&gt; &lt;tên file khác&gt; &gt; &lt;tên combined file&gt;</code>	
+//combine nội dung 2 file vào file khác</p>
+
+<p>dấu <code>&gt;</code> áp dụng cho hầu hết các câu lệnh
+vd: echo hello &gt; hello.txt
+ls -l /etc &gt; hello.txt
+sẽ cho kết quả ra file hello.txt trên.</p>
+
+<p>Trong Linux, mọi thứ đều ở duới dangj file, từ process, devices, hoặc địa chỉ thư mục đều là files</p>
+
+<p>Cấu trúc Linux:</p>
+<ul>
+  <li>/</li>
+  <li>bin: chưa các file binaries, chương trình</li>
+  <li>boot: các file liên quan booting</li>
+  <li>dev: devices</li>
+  <li>etc: editable text configuration, chứa file config</li>
+  <li>home: thư mục của user</li>
+  <li>root: chỉ có root mới vào được thư mục này</li>
+  <li>lib: libary files như software library dependencies</li>
+  <li>var: như biến, chứa các file được update thường xuyên như log,…</li>
+  <li>proc: chứa các tiến trình đang running</li>
+</ul>
+
+<h4 id="các-bước-để-sử-dụng-docker">Các bước để sử dụng Docker</h4>
+
+<ul>
+  <li>Cài đặt Docker</li>
+  <li>Tạo 1 program và Tạo file plain text Dockerfile ghi hướng dẫn để đưa cho docker đóng gói ứng dụng thành 1 image. Image chứa tất cả mọi thứ để chương trình chạy.
+ IMAGE bao gồm:
+    <ul>
+      <li>A cut-down OS</li>
+      <li>Môi trường runtime (vd như Node, Python)</li>
+      <li>File ứng dụng</li>
+      <li>Thư viện thứ 3</li>
+      <li>Biến môi trường
+ =&gt; Sau khi có cái Image này, ta sẽ nói với Docker để start container 
+ Container như 1 process, nhưng là process đăc biệt vì nó có file system được cung cấp bởi Image. Ứng dụng của chúng ta sẽ được chạy trong cái process/container này.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Ok giờ chúng ta start docker.
+ Thay vì chạy ứng dụng như bình thường, ta gọi Docker để chạy bên trong cái container nhé</p>
+
+<p><code>docker run ..</code></p>
+
+<p>Ví dụ sự khác nhau :</p>
+
+<p>Để chạy 1 chương trình JS đơn giản, ta cần phải qua 4 bước:</p>
+<ul>
+  <li>Start OS</li>
+  <li>Cài Node</li>
+  <li>Copy file ứng dụng</li>
+  <li>Chạy <code>node app.js</code></li>
+</ul>
+
+<p>Với docker, ta chỉ cần:</p>
+
+<ul>
+  <li>
+    <p>Bước 1:</p>
+  </li>
+  <li>Vào thư mục project trên vscode <code>code .</code></li>
+  <li>Tạo file <code>Dockerfile</code> không ext, và input các thông tin sau:
+ ```
+ FROM node:alpine
+    <blockquote>
+      <p>chọn image node trên trang docker hub và : distribution của linux, ở đây chọn alpine vì nó nhẹ nhất 
+ COPY . /app 
+copy tất cả file execute vào thư mục app tạo mới, vào rồi copy vào trong image
+hoặc có thể hiểu là trong cái image có file system, và chúng ta tạo thư mục app bên trong file system đó, trong thư mục app chứa tất cả các file của program
+ WORKDIR /app
+tạo đường dẫn rút gọn
+ CMD node /app.js
+câu lệnh chạy ứng dụng, để docker biết mà chạy câu nào khi run</p>
+    </blockquote>
+  </li>
+  <li>Bước 2:</li>
+  <li>TA nói docker đóng gói úng dụng thành image
+ <code>docker build -t hello-docker .</code>
+ trong đó, dấu . chỉ cho docker biết chỗ nào chứa Dockerfile
+ hello-docker là tên repos docker mình tự tạo để quản lý</li>
+</ul>
+
+<p>Để xem có bao nhiêu docker đang chạy:
+ <code>docker image ls</code>
+ kết quả câu lệnh có cột SIZE chỉ size của OS (alpine) + ứng dụng + node</p>
+
+<ul>
+  <li>BƯớc 3:
+ Chạy thử docker image
+ <code>docker run hello-docker</code>
+ ta có thể chạy ở thư mục nào cũng được, vì image đã chứa mọi thứ cần</li>
+</ul>
+
+<p>*BƯớc 4
+ Publish lên docker hub hub.docker.com</p>
+
+<hr />
+
+<p>KHi ở máy khác, ta muốn pull image về chạy:</p>
+
+<ul>
+  <li>BƯớc 1:</li>
+  <li>Kiểm tra version docker, nếu chưa download thì chạy lệnh install
+ <code>docker vesion</code></li>
+</ul>
+
+<p>*Bước 2:
+ Kéo image về
+ <code>docker pull senrie/hello-docker</code></p>
+
+<p>Kiểm tra lại = cách:
+ <code>docker image ls</code></p>
+
+<p>*Bước 3:
+ Chạy chương trình trên machine 
+ <code>docker run senrie/hello-docker</code></p>
+
+:ET
