@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<link rel="icon" href="https://tuyen-nnt.github.io/assets/images/logo.png">
+
+<title>How to write effective git-commit? | Tuyen Nguyen</title>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>How to write effective git-commit? | My Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="How to write effective git-commit?" />
+<meta name="author" content="Tuyen" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Mẹo viết commit message hữu ích khi dùng git" />
+<meta property="og:description" content="Mẹo viết commit message hữu ích khi dùng git" />
+<meta property="og:site_name" content="My Blog" />
+<meta property="og:image" content="/https://tuyen-nnt.github.io/img/git.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-07-31T00:00:00+07:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="/https://tuyen-nnt.github.io/img/git.png" />
+<meta property="twitter:title" content="How to write effective git-commit?" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","author":{"@type":"Person","name":"Tuyen"},"mainEntityOfPage":{"@type":"WebPage","@id":"/https://tuyen-nnt.github.io/git-commit/"},"image":"/https://tuyen-nnt.github.io/img/git.png","headline":"How to write effective git-commit?","dateModified":"2019-07-31T00:00:00+07:00","datePublished":"2019-07-31T00:00:00+07:00","url":"/https://tuyen-nnt.github.io/git-commit/","description":"Mẹo viết commit message hữu ích khi dùng git","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/https://tuyen-nnt.github.io/assets/images/ava.png"},"name":"Tuyen"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    
+<link href="https://tuyen-nnt.github.io/assets/css/prism.css" rel="stylesheet">
+
+<link href="https://tuyen-nnt.github.io/assets/css/theme.css" rel="stylesheet">
+
+<script src="https://tuyen-nnt.github.io/assets/js/jquery.min.js"></script>
+
+</head>
+
+
+
+
+<body>
+	<!-- defer loading of font and font awesome -->
+	<noscript id="deferred-styles">
+		<link href="https://fonts.googleapis.com/css?family=Sen:400,700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+	</noscript>
+
+<!-- Begin Sidebar Navigation
+================================================== -->
+
+<div class="sidebar">    
+</div>   
+<div class="nav-icon">
+    <div class="hamburger-bar"></div>
+</div>
+<div id="blackover-nav" class="blackover"></div>
+<nav id="menu">
+    <ul>
+        <h3>Navigation</h3>
+        <li><a href="https://tuyen-nnt.github.io/">Home</a></li>
+        <li><a href="https://tuyen-nnt.github.io/about">About</a></li>
+        <li><a href="https://tuyen-nnt.github.io/authors">Contributors <span class="badge badge-primary">new</span></a></li>
+        <li><a target="_blank" href="https://bootstrapstarter.com/jekyll-theme-memoirs/">Get Memoirs</a></li>      
+        <li><a href="https://tuyen-nnt.github.io/contact">Contact</a></li>       
+    </ul>   
+</nav>
+
+<script src="https://tuyen-nnt.github.io/assets/js/lunr.js"></script>
+
+<style>
+    
+</style>
+
+<div class="wrap-search">
+    <div class="d-flex align-items-center ml-auto">
+        <i class="fas fa-search show-search"></i>
+        <form class="bd-search ml-3" onSubmit="return lunr_search(document.getElementById('lunrsearch').value);">
+            <input type="text" class="form-control bigradius text-small launch-modal-search" id="lunrsearch" name="q" maxlength="255" value="" placeholder="Type and enter..."/>
+        </form>
+    </div>
+</div>
+
+<div id="lunrsearchresults">
+    <ul></ul>
+</div>
+
+<script src="https://tuyen-nnt.github.io/assets/js/lunrsearchengine.js"></script>
+
+
+<!-- End Sidebar Navigation
+================================================== -->
+
+<div class="site-content ">
+
+<div class="container">
+
+    <!-- Site Logo/Name
+    ================================================== -->
+   
+    <a class="navbar-brand" href="https://tuyen-nnt.github.io/">
+        <img src="https://tuyen-nnt.github.io/assets/images/ava.png" alt="Tuyen Nguyen">
+    </a>  
+   
+
+    <!-- Site Tag
+    ================================================== -->
+    
+
+    <!-- Content
+    ================================================== -->
+    <div class="main-content">
+        <div class="entry-header">
+    <!-- Post Title -->
+    <h1 class="posttitle">How to write effective git-commit?</h1>
+    <!-- Author & Date  Box -->
+    
+    
+    <div class="d-flex align-items-center mt-4">
+        <div>
+            
+            <img class="author-thumb" src="https://www.gravatar.com/avatar/?s=250&d=mm&r=x" alt="">
+            
+        </div>            
+        <div>
+        Written by  on 
+        <span class="post-date"><time class="post-date" datetime="2019-07-31">31 Jul 2019</time></span>           
+        
+        </div>            
+    </div>
+    
+</div>
+
+<!-- Adsense under title if enabled from _config.yml (change your pub id and slot) -->
+
+
+<!-- Featured Image -->
+
+<div class="entry-featured-image">
+    
+    <img class="featured-image " src="https://tuyen-nnt.github.io/img/git.png" alt="How to write effective git-commit?">
+    
+</div>
+
+
+<!-- Content -->
+<!-- Post, Page Content
+================================================== -->
+<div class="article-post">
+    <!-- Toc if any -->
+    
+    <!-- End Toc -->
+    <h1 id="mẹo-viết-commit-message-hữu-ích-khi-dùng-git">Mẹo viết commit message hữu ích khi dùng git</h1>
+
+<p>Git là một hệ thống quản lý phiên bản phân tán phổ biến với mục đích theo dõi sự thay đổi của các tập tin trên máy tính và phối hợp công việc nhóm trên những tập tin này. Là một lập trình viên thì một trong những công cụ cơ bản mà chúng tôi không thể bỏ qua chính là việc sử dụng git trong quy trình làm việc. Sau đây là một trong những sai lầm mà dân lập trình hay mắc phải, về mặt kỹ thuật thì không hẳn nhưng chúng ta hãy tự hỏi rằng “Nếu bạn có thể làm tốt hơn thì tại sao không làm?”</p>
+
+<p>Một số quy tắc nên ghi nhớ khi viết commit message :</p>
+
+<ol>
+  <li>
+    <p>Tách dòng chủ đề ra khỏi phần thân bằng một dòng trống</p>
+  </li>
+  <li>
+    <p>Giới hạn dòng chủ đề tối đa 50 kí tự</p>
+  </li>
+  <li>
+    <p>Viết hoa dòng chủ đề</p>
+  </li>
+  <li>
+    <p>Sử dụng câu mệnh lệnh ở dòng chủ đề</p>
+  </li>
+  <li>
+    <p>Không kết thúc dòng chủ đề bằng dấu chấm</p>
+  </li>
+  <li>
+    <p>Gói gọn phần thân tối đa 72 kí tự</p>
+  </li>
+  <li>
+    <p>Sử dụng phần thân để giải thích “Cái gì”,  “Tại sao” với “Như thế nào”</p>
+  </li>
+</ol>
+
+<h2 id="sai-lầm-1">Sai lầm #1:</h2>
+<p>Chúng ta có khuynh hướng trộn lẫn chủ đề với phần thân của một commit message : Cách viết phần chủ đề chung với phần thân của thông điệp là một cách làm sai. Khi bạn nhận thấy commit message quá dài để giải thích thì có nghĩa là commit đang thực hiện quá nhiều thứ sẽ phá vỡ nó đi.</p>
+
+<p>Bạn viết:</p>
+
+<blockquote>
+  <p>git commit –m “added new css styling for danger button in order to differentiate between the primary button and other button styles.”</p>
+</blockquote>
+
+<p>Thay vì nên viết:</p>
+
+<blockquote>
+  <p>git commit –m “Add new feature”</p>
+</blockquote>
+
+<h2 id="sai-lầm-2">Sai lầm #2:</h2>
+<p>Không giới hạn chủ đề tối đa 50 kí tự, phần thân của commit message tối đa 72 kí tự: Luôn đảm bảo chủ đề của commit không bao giờ vượt quá 50 kí tự và đây là qui tắc ngón tay cái. Thêm nhiều hơn số kí tự nên có sẽ có khuynh hướng sẽ bị Github cắt bớt đi, và vì những gì chúng ta đang cố gắng truyền tải là để một user nào đó trong nháy mắt biết được một commit đang làm gì.</p>
+
+<p>Một vài commit message yêu cầu giải thích nhiều hơn đặc biệt là khi dòng chủ đề có nội dung mơ hồ, do đó thêm nội dung phần thân sẽ hữu ích trong những trường hợp này. Luôn cố gắng giới hạn số lượng kí tự phần thân tối đa 72 kí tự, và hãy để phần thân giải thích những gì commit đang thực hiện và tại sao lại làm như vậy.</p>
+
+<h2 id="sai-lầm-3">Sai lầm #3:</h2>
+
+<p>Không viết hoa cho chủ đề của commit</p>
+
+<p>Bạn viết:</p>
+
+<blockquote>
+  <p>git commit –m “added new feature”</p>
+</blockquote>
+
+<p>Thay vì nên viết:</p>
+<blockquote>
+  <p>git commit –m “Add new feature”</p>
+</blockquote>
+
+<p><img src="img/sailam-3.png" alt="" /></p>
+
+<h2 id="sai-lầm-4">Sai lầm #4:</h2>
+<p>Kết thúc dòng chủ đề bằng dấu chấm</p>
+
+<p>Bạn viết:</p>
+
+<blockquote>
+  <p>git commit –m “Modified codebase.”
+Thay vì nên viết: 
+git commit –m “Modify codebase”</p>
+</blockquote>
+
+<h2 id="sai-lầm-5">Sai lầm #5:</h2>
+<p>Không sử dụng câu mệnh lệnh ở dòng chủ đề:</p>
+
+<p>Mọi git commit đúng chuẩn nên đặt ở dạng mệnh lệnh. “Đơn giản điều này có nghĩa là câu được viết theo dạng một hành động”. Một dòng chủ đề git commit thích hợp nên hoàn thành đúng cấu trúc cho câu sau đây:</p>
+
+<blockquote>
+  <p>If applied, this commit will “your subject line here”</p>
+</blockquote>
+
+<p>Ví dụ:</p>
+
+<blockquote>
+  <p>If applied, this commit will “Add auth to X”</p>
+</blockquote>
+
+<p>Từ đó, ta nhận thấy sẽ không đúng với những dạng không mệnh lệnh:</p>
+
+<blockquote>
+  <p>If applied, this commit will “added auth to Y”</p>
+</blockquote>
+
+<h2 id="sai-lầm-6">Sai lầm #6:</h2>
+<p>Phần thân giải thích Cái gì, Tại sao với Như thế nào: Như đã giải thích ở số <strong>#2</strong> trên, luôn đảm bảo phần thân của commit giải thích chính xác cái gì và tại sao commit đó đang thực hiện. Giải thích tại sao sự thay đổi đó là cần thiết, và khía cạnh khác mà nó mang lại. Thay vì miêu tả cách mà bạn giải quyết vấn đề trên.</p>
+
+<p><em>Một số câu nói vui về git:</em></p>
+
+<ul>
+  <li>Why did the commit cross the rebase? To git to the other repo</li>
+</ul>
+
+<p>Tạm dịch là:  Sao commit qua được rebase? Vì ta git đến repo khác :v</p>
+
+<ul>
+  <li>In case of fire: git commit, git push, leave the building</li>
+</ul>
+
+<p>Tạm dịch là:  Khi gặp cháy thì phải git commit, git push, rồi mới rời khỏi tòa nhà :v</p>
+
+<p><strong>Cre:</strong> https://code.likeagirl.io/useful-tips-for-writing-better-git-commit-messages-808770609503?fbclid=IwAR16siuZjdzxxQ4z9gz89BST5DPxINisBxzxVB-emDa-tuLl26KdkV15vsI</p>
+
+<p>Bài viết về git commit đến đây là hết rồi, mời các bạn xem thêm các bài viết khác nhé !</p>
+
+<p><strong><em>Tuyen Nguyen</em></strong></p>
+
+</div>
+
+<!-- Rating -->
+
+
+<!-- Author Box if enabled from _config.yml -->
+<!-- Author Box -->
+
+
+<div class="authorbox mb-5 mt-5 pt-4 pb-4">   
+    <div class="row">
+        <div class="wrapavname col-md-3 text-center">
+            
+            <img  class="author-thumb" src="https://tuyen-nnt.github.io/" alt="">
+            
+            <p class="mt-4 mb-0 small text-center">
+                <a target="_blank" class="d-inline-block mx-1 text-dark" href=""><i class="fa fa-link"></i></a> 
+                <a target="_blank" class="d-inline-block mx-1 text-dark" href=""><i class="fab fa-twitter"></i></a>
+                <a class="d-inline-block mx-1 text-dark" href="mailto:"><i class="fa fa-envelope"></i></a>
+            </p>
+        </div>
+        <div class="col-md-9">
+            <h4></h4>
+            <p class="mt-3 mb-0"></p>
+        </div>
+    </div> 
+</div> 
+
+
+
+<!-- Comments if not disabled with comments: false -->
+<!-- Comments
+================================================== -->
+ 
+<div class="comments mt-5">
+    <button class="btn btn-outline-dark py-2 px-5 d-block w-100 show-comments"><i class="fa fa-comments text-muted"></i> &nbsp; Load Comments</button>         
+    <div id="comments">  
+        <h4 class="mb-4">Comments</h4>                 
+            <section class="disqus">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'demowebsite'; 
+        var disqus_developer = 0;
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+     
+    <div class="clearfix"></div>              
+    </div>    
+</div>       
+
+
+<!-- Share -->
+<div class="share">
+    <p>
+        Share
+    </p>
+    <ul>
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://twitter.com/intent/tweet?text=How to write effective git-commit?&url=/https://tuyen-nnt.github.io/git-commit/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                <i class="fab fa-twitter"></i>
+            </a>
+        </li>
+
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://facebook.com/sharer.php?u=/https://tuyen-nnt.github.io/git-commit/" onclick="window.open(this.href, 'facebook-share', 'width=550,height=435');return false;">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+        </li>
+
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=/https://tuyen-nnt.github.io/git-commit/" onclick="window.open(this.href, 'width=550,height=435');return false;">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+        </li>
+
+    </ul>
+</div>
+
+
+<!-- Related Post -->
+<!-- Related Posts
+================================================== -->
+<div class=" related-posts ">  
+
+    
+    <h2 class="text-center mb-4">Explore more like this</h2>
+    
+    
+    <div class="d-flex justify-content-center align-items-center">
+    
+    <!-- Categories -->
+    
+    
+    <a class="smoothscroll badge badge-primary text-capitalize" href="https://tuyen-nnt.github.io/categories#Git">Git</a>                
+    
+
+    <!-- Tags -->  
+    
+    
+
+    </div>
+
+    
+    
+    
+    <div class="blog-grid-container">
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+            <!-- begin post -->
+
+
+<div class="blog-grid-item">
+    <div class="card h-100">
+        <div class="maxthumb">
+            <a href="https://tuyen-nnt.github.io/Jekyll-install/">
+                
+
+                    
+                        <img class="img-thumb" src="https://tuyen-nnt.github.io/img/jekyll.png" alt="Setup Jekyll themes"> 
+                    
+
+                
+            </a>
+        </div>
+        <div class="card-body">
+            <h2 class="card-title">
+                <a class="text-dark" href="https://tuyen-nnt.github.io/Jekyll-install/">Setup Jekyll themes</a>
+                
+            </h2>
+            <h4 class="card-text">Fork Jekyll theme &amp; Play
+
+</h4>
+        </div>
+        <div class="card-footer bg-white">
+            <div class="wrapfooter">
+                
+                <span class="meta-footer-thumb">
+                
+                <img class="author-thumb" src="https://tuyen-nnt.github.io/assets/images/ava.png" alt="Tuyen">
+                
+                </span>
+                <span class="author-meta">
+                <span class="post-name font-weight-bold">Tuyen</span> 
+                
+                <span class="post-date">10 Aug 2021</span>
+                </span>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end post -->
+            
+            
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        </div>        
+</div>
+
+<!-- Review with LD-JSON, adapt it for your needs if you like, but make sure you test the generated HTML source code first: 
+https://search.google.com/structured-data/testing-tool/u/0/
+================================================== -->
+
+    </div>
+
+    
+    <!-- Newsletter
+    ================================================== -->
+    <div class="newsletter text-center">
+        <span class="h4"><img src="https://tuyen-nnt.github.io/assets/images/ava.png" class="newsletter-logo" alt="My Blog"> &nbsp; Never miss a <b>story</b> from us, subscribe to our newsletter</span>
+        <form action="https://wowthemes.us11.list-manage.com/subscribe/post?u=8aeb20a530e124561927d3bd8&amp;id=8c3d2d214b" method="post" name="mc-embedded-subscribe-form" class="wj-contact-form validate" target="_blank" novalidate>
+            <div class="mc-field-group d-inline-flex">
+            <input type="email" placeholder="Your e-mail" name="EMAIL" class="required email" id="mce-EMAIL" autocomplete="on" required>
+            <input type="submit" value="Subscribe" name="subscribe" class="heart">
+            </div>
+        </form>
+    </div>
+    
+    
+</div>
+
+<!-- Begin Footer
+================================================== -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-12 text-center text-lg-left">
+                Copyright © 2021 Tuyen Nguyen 
+            </div>
+            <div class="col-md-6 col-sm-12 text-center text-lg-right">    
+                <a target="_blank" href="https://www.wowthemes.net/memoirs-free-jekyll-theme/">Memoirs Jekyll Theme</a> by WowThemes.net
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- End Footer
+================================================== -->
+
+</div> <!-- /.site-content -->
+
+<!-- Scripts (if you need bootstrap.js, please add it yourself. I didn't use it for performance reasons, it was not needed in this theme)
+================================================== -->
+
+<script src="https://tuyen-nnt.github.io/assets/js/prism.js"></script>
+
+<script src="https://tuyen-nnt.github.io/assets/js/theme.js"></script>
+
+
+
+
+<script id="dsq-count-scr" src="//demowebsite.disqus.com/count.js"></script>
+
+
+</body>
+</html>
