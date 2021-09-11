@@ -19,14 +19,14 @@
 <link rel="canonical" href="https://tuyen-nnt.github.io/data-analysis/" />
 <meta property="og:url" content="https://tuyen-nnt.github.io/data-analysis/" />
 <meta property="og:site_name" content="My Blog" />
-<meta property="og:image" content="https://tuyen-nnt.github.io/img/DA-step.png" />
+<meta property="og:image" content="https://tuyen-nnt.github.io/assets/images/DA-step.png" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2021-09-03T00:00:00+07:00" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta property="twitter:image" content="https://tuyen-nnt.github.io/img/DA-step.png" />
+<meta property="twitter:image" content="https://tuyen-nnt.github.io/assets/images/DA-step.png" />
 <meta property="twitter:title" content="Tìm hiểu về Data Analysis" />
 <script type="application/ld+json">
-{"@type":"BlogPosting","author":{"@type":"Person","name":"tuyennnt"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://tuyen-nnt.github.io/data-analysis/"},"image":"https://tuyen-nnt.github.io/img/DA-step.png","headline":"Tìm hiểu về Data Analysis","dateModified":"2021-09-03T00:00:00+07:00","datePublished":"2021-09-03T00:00:00+07:00","url":"https://tuyen-nnt.github.io/data-analysis/","description":"Bài viết này sẽ hướng dẫn các bước cơ bản: Tìm data phù hợp rồi collect chúng Đọc data trong môi trường dev Chuẩn bị phân tích bằng cách cleaning và validation.","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://tuyen-nnt.github.io/assets/images/ava.png"},"name":"tuyennnt"},"@context":"https://schema.org"}</script>
+{"@type":"BlogPosting","author":{"@type":"Person","name":"tuyennnt"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://tuyen-nnt.github.io/data-analysis/"},"image":"https://tuyen-nnt.github.io/assets/images/DA-step.png","headline":"Tìm hiểu về Data Analysis","dateModified":"2021-09-03T00:00:00+07:00","datePublished":"2021-09-03T00:00:00+07:00","url":"https://tuyen-nnt.github.io/data-analysis/","description":"Bài viết này sẽ hướng dẫn các bước cơ bản: Tìm data phù hợp rồi collect chúng Đọc data trong môi trường dev Chuẩn bị phân tích bằng cách cleaning và validation.","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://tuyen-nnt.github.io/assets/images/ava.png"},"name":"tuyennnt"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     
@@ -140,7 +140,7 @@
 
 <div class="entry-featured-image">
     
-    <img class="featured-image " src="/img/DA-step.png" alt="Tìm hiểu về Data Analysis">
+    <img class="featured-image " src="/assets/images/DA-step.png" alt="Tìm hiểu về Data Analysis">
     
 </div>
 
@@ -181,7 +181,7 @@
 <h2 id="3-clean-và-validate">3. Clean và Validate</h2>
 
 <p>Đây là bảng data chứa cân nặng của baby ta dùng trong các ví dụ sắp tới:
-<img src="img/example-data.png" alt="" /></p>
+<img src="/assets/images/example-data.png" alt="" /></p>
 
 <ul>
   <li>Đầu tiên ta rút trích mỗi cột mà ta muốn phân tích lưu vào 1 biến:</li>
@@ -197,7 +197,7 @@
 
 <p><code>pounds.value_counts().sort_index()</code></p>
 
-<p><img src="img/value-count.png" alt="" /></p>
+<p><img src="/assets/images/value-count.png" alt="" /></p>
 
 <p>Mặc định kết quả sort theo giá trị nào gặp nhiều nhất. Nên ta thêm <code>sort_index()</code> để nó sort theo giá trị.</p>
 
@@ -208,7 +208,7 @@
 
 <p><code>pounds.describe()</code></p>
 
-<p><img src="img/describe.png" alt="" /></p>
+<p><img src="/assets/images/describe.png" alt="" /></p>
 
 <p>Giải thích bảng trên:</p>
 
@@ -226,7 +226,7 @@ Do vậy, trước khi đưa vào tính toán mean thực sự, ta phải thay t
 
 <p>Tham số thứ 3 tùy chọn là <code>inplace=True</code>, mặc định không đề cập thì là False. True nghĩa là thay thế series cũ, false là tạo mới series sau khi thay thế.</p>
 
-<p><img src="img/replace-data.png" alt="" /></p>
+<p><img src="/assets/images/replace-data.png" alt="" /></p>
 
 <blockquote>
   <p>Trả về kiểu dữ liệu series. Nếu inplace=True thì không cần gán vào biến mới.
@@ -242,14 +242,14 @@ Ta nhận thấy sau khi thay thế dữ liệu, mean() của series sẽ thay �
 
 <p>Đến đây ta có thể đưa kết luận giá trị trung bình của 1 đặc tính như cân nặng trong dataset bằng <code>series.describe()</code>.</p>
 
-<p><img src="img/arithmetic-data.png" alt="" /></p>
+<p><img src="/assets/images/arithmetic-data.png" alt="" /></p>
 
 <h2 id="4-filter-và-visualize-data">4. Filter và Visualize data</h2>
 
 <h4 id="histogram">Histogram</h4>
 <p>Dùng để biểu thị tần suất xuất hiện của giá trị trong dataset. Để dùng biểu đồ này trong python, ta dùng thư viện <code>matplotlib</code>.</p>
 
-<p><img src="img/hist-analysis.png" alt="" /></p>
+<p><img src="/assets/images/hist-analysis.png" alt="" /></p>
 
 <ul>
   <li>
@@ -278,7 +278,7 @@ Ta nhận thấy sau khi thay thế dữ liệu, mean() của series sẽ thay �
 
 <p><code>preterm = df["tên cột tuần sinh"] &lt;37</code></p>
 
-<p><img src="img/boolean-series.png" alt="" /></p>
+<p><img src="/assets/images/boolean-series.png" alt="" /></p>
 
 <p><strong>Nếu ta tính tổng hay trung bình cho Boolean Series, python sẽ treat True=1 và False=0.</strong></p>
 
@@ -299,7 +299,7 @@ Ta nhận thấy sau khi thay thế dữ liệu, mean() của series sẽ thay �
 
 <p>Kết quả:</p>
 
-<p><img src="img/boolean-filter.png" alt="" /></p>
+<p><img src="/assets/images/boolean-filter.png" alt="" /></p>
 
 <blockquote>
   <p>Nhận xét: Trung bình cân nặng của em bé thường sẽ &gt; hơn em bé sinh non, và điều này hiển nhiên hợp lý.</p>
@@ -349,7 +349,7 @@ birth_weight[A | B]	# either or both true
 
 <p>*educ ở đây là Series object</p>
 
-<p><img src="img/pmf1.png" alt="" /></p>
+<p><img src="/assets/images/pmf1.png" alt="" /></p>
 
 <blockquote>
   <p>Kết quả trả về 1 PMF object với giá trị ở bên trái và count số lần xuất hiện trong tập dataset ở bên phải.</p>
@@ -362,16 +362,16 @@ birth_weight[A | B]	# either or both true
 
 <p>Lúc này ta chỉ cần set tham số thứ 2 là <code>normalize</code> = True. Khi đó cột giá trị bên phải trả về tỉ lệ và tổng cột sẽ =1. Nếu muốn biết % ta chỉ cần *100 là được. Cách lookup cho 1 giá trị bất kỳ cũng tương tự trên.</p>
 
-<p><img src="img/pmf2.png" alt="" /></p>
+<p><img src="/assets/images/pmf2.png" alt="" /></p>
 
 <h3 id="pmf-bar-chart">PMF Bar chart</h3>
 
 <p>PMF có method riêng để hiển thị biểu đồ tần suất. Tùy ta muốn hiển thị tần suất theo tỉ lệ hay count thì ta dùng method lên biến lưu series ở bước trên.</p>
 
-<p><img src="img/pmf-bar.png" alt="" /></p>
+<p><img src="/assets/images/pmf-bar.png" alt="" /></p>
 
 <h4 id="so-sánh-histogram-và-pmf">So sánh Histogram và PMF</h4>
-<p><img src="img/hist-pmf.png" alt="" /></p>
+<p><img src="/assets/images/hist-pmf.png" alt="" /></p>
 
 <p>Tùy trường hợp nhưng trong ví dụ hình trên ta nhận xét:</p>
 <ul>
@@ -398,13 +398,13 @@ birth_weight[A | B]	# either or both true
 </code></pre>
 
 <p>Xem ví dụ sau:
-<img src="img/cdf.png" alt="" /></p>
+<img src="/assets/images/cdf.png" alt="" /></p>
 
 <h3 id="vẽ-biểu-đồ-plot-dùng-cdf">Vẽ biểu đồ plot dùng CDF</h3>
 
 <p>Ta chỉ cần dùng class <code>Cdf()</code> và input tham số là sequence của data mà ta muốn biểu thị tần suất. Ở hình dưới là “tuổi”:</p>
 
-<p><img src="img/cdf-plot.png" alt="" /></p>
+<p><img src="/assets/images/cdf-plot.png" alt="" /></p>
 
 <p>Đặc biệt, cdf có thể được sử dụng như 1 function với input là 1 giá trị cụ thể (biến số nguyên).</p>
 
@@ -419,7 +419,7 @@ print(p)
 <h3 id="inverse-cdf">Inverse CDF</h3>
 <p>CDF là 1 function đảo ngược. Nghĩa là bạn có thể từ giá trị probability (tỉ lệ) mà tra ngược lại giá trị tuổi bằng cách dùng <code>cdf.inverse(giá trị tỉ lệ)</code></p>
 
-<p><img src="img/cdf-inverse.png" alt="" /></p>
+<p><img src="/assets/images/cdf-inverse.png" alt="" /></p>
 
 <p>Từ hình trên có thể nói rằng, tuổi 30 là percentile thứ 25 của distribution này. (do p=0,25)</p>
 
@@ -435,16 +435,16 @@ print(p)
 
 <h5 id="nếu-dùng-pmf-">Nếu dùng PMF :</h5>
 
-<p><img src="img/pmf-compare.png" alt="" /></p>
+<p><img src="/assets/images/pmf-compare.png" alt="" /></p>
 
 <p>Kết quả chart:
-<img src="img/pmf-compare-chart.png" alt="" /></p>
+<img src="/assets/images/pmf-compare-chart.png" alt="" /></p>
 
 <h5 id="nếu-dùng-cdf-khuyến-khích">Nếu dùng CDF (khuyến khích)</h5>
-<p><img src="img/cdf-compare.png" alt="" /></p>
+<p><img src="/assets/images/cdf-compare.png" alt="" /></p>
 
 <p>Kết quả chart:
-<img src="img/pmf-compare-chart.png" alt="" /></p>
+<img src="/assets/images/pmf-compare-chart.png" alt="" /></p>
 
 <p>Nhận xét data:</p>
 <blockquote>
@@ -610,7 +610,7 @@ print(p)
                 
 
                     
-                        <img class="img-thumb" src="/img/python1.png" alt="Python - Part 2"> 
+                        <img class="img-thumb" src="/assets/images/python1.png" alt="Python - Part 2"> 
                     
 
                 
@@ -664,7 +664,7 @@ print(p)
                 
 
                     
-                        <img class="img-thumb" src="/img/import1.png" alt="Import Data - Part 2"> 
+                        <img class="img-thumb" src="/assets/images/import1.png" alt="Import Data - Part 2"> 
                     
 
                 
@@ -724,7 +724,7 @@ urlretrieve(url, 'filename.csv')
                 
 
                     
-                        <img class="img-thumb" src="/img/python1.png" alt="Python - Part 1"> 
+                        <img class="img-thumb" src="/assets/images/python1.png" alt="Python - Part 1"> 
                     
 
                 

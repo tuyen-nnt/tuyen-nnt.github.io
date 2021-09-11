@@ -19,14 +19,14 @@
 <link rel="canonical" href="https://tuyen-nnt.github.io/data-etl/" />
 <meta property="og:url" content="https://tuyen-nnt.github.io/data-etl/" />
 <meta property="og:site_name" content="My Blog" />
-<meta property="og:image" content="https://tuyen-nnt.github.io/img/etl.png" />
+<meta property="og:image" content="https://tuyen-nnt.github.io/assets/images/etl.png" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2021-05-29T00:00:00+07:00" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta property="twitter:image" content="https://tuyen-nnt.github.io/img/etl.png" />
+<meta property="twitter:image" content="https://tuyen-nnt.github.io/assets/images/etl.png" />
 <meta property="twitter:title" content="Extract - Transform - Load (ETL process)" />
 <script type="application/ld+json">
-{"@type":"BlogPosting","author":{"@type":"Person","name":"tuyennnt"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://tuyen-nnt.github.io/data-etl/"},"image":"https://tuyen-nnt.github.io/img/etl.png","headline":"Extract - Transform - Load (ETL process)","dateModified":"2021-05-29T00:00:00+07:00","datePublished":"2021-05-29T00:00:00+07:00","url":"https://tuyen-nnt.github.io/data-etl/","description":"Tìm hiểu về ETL","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://tuyen-nnt.github.io/assets/images/ava.png"},"name":"tuyennnt"},"@context":"https://schema.org"}</script>
+{"@type":"BlogPosting","author":{"@type":"Person","name":"tuyennnt"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://tuyen-nnt.github.io/data-etl/"},"image":"https://tuyen-nnt.github.io/assets/images/etl.png","headline":"Extract - Transform - Load (ETL process)","dateModified":"2021-05-29T00:00:00+07:00","datePublished":"2021-05-29T00:00:00+07:00","url":"https://tuyen-nnt.github.io/data-etl/","description":"Tìm hiểu về ETL","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://tuyen-nnt.github.io/assets/images/ava.png"},"name":"tuyennnt"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     
@@ -140,7 +140,7 @@
 
 <div class="entry-featured-image">
     
-    <img class="featured-image " src="/img/etl.png" alt="Extract - Transform - Load (ETL process)">
+    <img class="featured-image " src="/assets/images/etl.png" alt="Extract - Transform - Load (ETL process)">
     
 </div>
 
@@ -159,7 +159,7 @@
 <h3 id="1-các-cách-để-trích-xuất-dữ-liệu">1. Các cách để trích xuất dữ liệu</h3>
 <p>Có 3 cách:</p>
 
-<p><img src="img/extract.png" alt="" /></p>
+<p><img src="/assets/images/extract.png" alt="" /></p>
 
 <ul>
   <li>
@@ -169,16 +169,16 @@ Text file có 3 loại là :
 	* Flat file (là file có .tsv hoặc .csv cách nhau bởi dấu “,” hoặc “tab” giữa các giá trị). Những file này có dòng thể hiện các record và cột thể hiện attribute của record.
 	*File JSON: bán cấu trúc, có 4 kiểu dữ liệu atomic là number, string, boolean và null và 2 kiểu dữ liệu dạng composite là array và object.
 	JSON có package hỗ trợ là “json” để import data
-	<img src="img/load-json.png" alt="" /></p>
+	<img src="/assets/images/load-json.png" alt="" /></p>
   </li>
   <li>
     <p>Trích xuất từ web hoặc APIs của web services, như là Hacker News API
-<img src="img/web-extract.png" alt="" /></p>
+<img src="/assets/images/web-extract.png" alt="" /></p>
     <ul>
       <li>Thông qua web:</li>
     </ul>
 
-    <p><img src="img/data-web.png" alt="" /></p>
+    <p><img src="/assets/images/data-web.png" alt="" /></p>
   </li>
 </ul>
 
@@ -190,7 +190,7 @@ Text file có 3 loại là :
 <p>Không phải lúc nào các trang web cũng trả về kết quả mà người thường có thể đọc ngay, mà các trang web đó sẽ trả về định dạng JSON thông qua API mà chúng ta request.</p>
 
 <p>Ta xem ví dụ request API từ trang Hackernews:
-<img src="img/api-request.png" alt="" />
+<img src="/assets/images/api-request.png" alt="" />
 Ta import package “request” rồi dùng method .get() để chèn vào link web cần lấy file JSON. 
 Sau đó ta dùng method .json() để phân tích file JSON từ kết quả đã lấy được và chuyển hóa nó thành Python object.</p>
 
@@ -214,7 +214,7 @@ Hầu hết các ứng dụng web đều có database để backup và để kh�
   <li>Trong Python, ta dùng connection URI thông qua package <code>sqlalchemy</code> để tạo <em>database engine</em> :</li>
 </ul>
 
-<p><img src="img/create-engine.png" alt="" /></p>
+<p><img src="/assets/images/create-engine.png" alt="" /></p>
 
 <p>Từ engine đã được tạo ra, ta có thể dùng nó để đặt vào 1 số package hỗ trợ nó tương tác với database, đặc biệt là package <code>pandas</code>.</p>
 
@@ -270,22 +270,22 @@ db_engine = sqlalchemy.create_engine(connection_uri)</p>
 <h3 id="2-một-số-ví-dụ">2. Một số ví dụ</h3>
 
 <p>Bạn có thể dùng package <code>pandas</code> để chuyển đổi dữ liệu nếu lượng dữ liệu nhỏ. Ta có ví dụ tách dữ liệu từ 1 cột thành 2 cột sử dụng pandas:
-<img src="img/split-pandas.png" alt="" /></p>
+<img src="/assets/images/split-pandas.png" alt="" /></p>
 
 <p>Nếu dữ liệu lớn, thông thường người ta sẽ dùng <strong>PySpark</strong>. Ta có ví dụ chuyển đổi dữ liệu bằng cách join các bảng với nhau. 
 Nhưng trước hết chúng ta cần đẩy dữ liệu lên Spark:</p>
 
-<p><img src="img/extract-pyspark.png" alt="" /></p>
+<p><img src="/assets/images/extract-pyspark.png" alt="" /></p>
 
 <p><code>jbdc:</code>để nhắn nhủ với Spark là phải dùng JBDC để kết nối, sau đó, ta input vào tên của bảng và cuối cùng trong <code>properties</code> chúng ta đặt thông tin kết nối vào.</p>
 
 <p>Dưới đây là 2 bảng cần join với nhau thông qua <code>customer_id</code> để tính rating trung bình của mỗi customer dành cho các phim:</p>
 
-<p><img src="img/rating-join.png" alt="" /></p>
+<p><img src="/assets/images/rating-join.png" alt="" /></p>
 
 <p>Và làm sao để dùng PySpark join và tính toán dữ liệu? Xem ảnh dưới nhé:</p>
 
-<p><img src="img/join-pyspark.png" alt="" /></p>
+<p><img src="/assets/images/join-pyspark.png" alt="" /></p>
 
 <p>Mình sẽ cho ra thêm các bài viết tìm hiểu sâu hơn về PySpark trong thời gian tới, các bạn hãy cùng chờ đợi nhé!</p>
 
@@ -423,7 +423,7 @@ Nhưng trước hết chúng ta cần đẩy dữ liệu lên Spark:</p>
                 
 
                     
-                        <img class="img-thumb" src="/img/DA-step.png" alt="Tìm hiểu về Data Analysis"> 
+                        <img class="img-thumb" src="/assets/images/DA-step.png" alt="Tìm hiểu về Data Analysis"> 
                     
 
                 
@@ -495,7 +495,7 @@ Nhưng trước hết chúng ta cần đẩy dữ liệu lên Spark:</p>
                 
 
                     
-                        <img class="img-thumb" src="/img/python1.png" alt="Python - Part 2"> 
+                        <img class="img-thumb" src="/assets/images/python1.png" alt="Python - Part 2"> 
                     
 
                 
@@ -549,7 +549,7 @@ Nhưng trước hết chúng ta cần đẩy dữ liệu lên Spark:</p>
                 
 
                     
-                        <img class="img-thumb" src="/img/import1.png" alt="Import Data - Part 2"> 
+                        <img class="img-thumb" src="/assets/images/import1.png" alt="Import Data - Part 2"> 
                     
 
                 

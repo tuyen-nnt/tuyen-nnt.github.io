@@ -19,14 +19,14 @@
 <link rel="canonical" href="https://tuyen-nnt.github.io/python-intermediate/" />
 <meta property="og:url" content="https://tuyen-nnt.github.io/python-intermediate/" />
 <meta property="og:site_name" content="My Blog" />
-<meta property="og:image" content="https://tuyen-nnt.github.io/img/python1.png" />
+<meta property="og:image" content="https://tuyen-nnt.github.io/assets/images/python1.png" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2021-08-02T00:00:00+07:00" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta property="twitter:image" content="https://tuyen-nnt.github.io/img/python1.png" />
+<meta property="twitter:image" content="https://tuyen-nnt.github.io/assets/images/python1.png" />
 <meta property="twitter:title" content="Python - Part 2" />
 <script type="application/ld+json">
-{"@type":"BlogPosting","author":{"@type":"Person","name":"tuyennnt"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://tuyen-nnt.github.io/python-intermediate/"},"image":"https://tuyen-nnt.github.io/img/python1.png","headline":"Python - Part 2","dateModified":"2021-08-02T00:00:00+07:00","datePublished":"2021-08-02T00:00:00+07:00","url":"https://tuyen-nnt.github.io/python-intermediate/","description":"1. Dictionaries Là tập hợp các cặp key:value khi cần kết nối dữ liệu với nhau như 1 table để tra cứu nhanh và có thể chỉ ra unique keys khi tra cứu, thay vì nối 2 list lại để lấy index rồi tra cứu value.","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://tuyen-nnt.github.io/assets/images/ava.png"},"name":"tuyennnt"},"@context":"https://schema.org"}</script>
+{"@type":"BlogPosting","author":{"@type":"Person","name":"tuyennnt"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://tuyen-nnt.github.io/python-intermediate/"},"image":"https://tuyen-nnt.github.io/assets/images/python1.png","headline":"Python - Part 2","dateModified":"2021-08-02T00:00:00+07:00","datePublished":"2021-08-02T00:00:00+07:00","url":"https://tuyen-nnt.github.io/python-intermediate/","description":"1. Dictionaries Là tập hợp các cặp key:value khi cần kết nối dữ liệu với nhau như 1 table để tra cứu nhanh và có thể chỉ ra unique keys khi tra cứu, thay vì nối 2 list lại để lấy index rồi tra cứu value.","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://tuyen-nnt.github.io/assets/images/ava.png"},"name":"tuyennnt"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     
@@ -140,7 +140,7 @@
 
 <div class="entry-featured-image">
     
-    <img class="featured-image " src="/img/python1.png" alt="Python - Part 2">
+    <img class="featured-image " src="/assets/images/python1.png" alt="Python - Part 2">
     
 </div>
 
@@ -256,12 +256,12 @@ europe['italy'] = data
 <pre><code>import pandas as pd
 brics = pd.DataFrame(dict)
 </code></pre>
-<p><img src="img/create-df.png" alt="" /></p>
+<p><img src="/assets/images/create-df.png" alt="" /></p>
 
 <p>Để tạo index cho observations trong df, ta dùng attribute <code>index</code> và gán 1 list với thứ tự chính xác các index mong muốn:</p>
 <pre><code>brics.index = [...,...]
 </code></pre>
-<p><img src="img/index-df.png" alt="" /></p>
+<p><img src="/assets/images/index-df.png" alt="" /></p>
 
 <h5 id="csv-file">CSV file</h5>
 <p>Nhưng thực tế trong Data science, ta phải đối mặt với lượng data khổng lồ tùy trường hợp cụ thể, nên thông thường ta không tự tạo dataframe. Giả sử các data đến từ file có <code>.csv</code> viết tắt của comma separated values.</p>
@@ -276,7 +276,7 @@ brics = pd.DataFrame(dict)
   <li>Tuy nhiên đối với file có index, khi import vào thì cột index đầu tiên sẽ bị ngầm hiểu là cột đầu của dữ liệu chính. Để tránh điều này, ta phải thêm argument <code>index_col=0</code>, kết quả:</li>
 </ul>
 
-<p><img src="img/csv-import.png" alt="" /></p>
+<p><img src="/assets/images/csv-import.png" alt="" /></p>
 
 <ul>
   <li>Để thay đổi index tự động từ 0-n bằng label được định nghĩa trong 1 list tạo riêng tự chọn, ta dùng cú pháp:
@@ -316,7 +316,7 @@ Ta input vào label hoặc index của column hoặc row. Ví dụ cụ thể ta
 
 Xem	 hình ví dụ:
 	
-![](img/loc-iloc.png)
+![](/assets/images/loc-iloc.png)
 
 	
 &gt; Nhận xét: 
@@ -324,7 +324,7 @@ Xem	 hình ví dụ:
 - Dấu ngoặc vuông``[]`` có giới hạn chức năng và lý tưởng nhất là sử dụng trong 2D Numpy array để access value dễ dàng nhất.	
 - Nếu muốn dấu``[]``có thể mở rộng khả năng access value trong pandas như  dấu``[]``trong 2D Numpy array, thì ta cần sử dụng ``loc`` và ``iloc``.
 
-![](img/iloc-loc.png)
+![](/assets/images/iloc-loc.png)
 	
 	
 ##### Filter dataframe
@@ -353,11 +353,11 @@ Trong đó ``var`` là biến bất kỳ có thể đặt tên sao cũng đượ
 
 
 FOR còn dùng để lặp từng char trong string.
-![](img/string-loop.png)
+![](/assets/images/string-loop.png)
 
 * enumerate() : cung cấp 2 giá trị cho mỗi lần lặp gồm ``index`` và ``value (giá trị)``.
 
-![](img/enumerate-for.png)
+![](/assets/images/enumerate-for.png)
 
 
 
@@ -408,7 +408,7 @@ Mỗi data structure sẽ có cách loop các nhau và cách định nghĩa sequ
   <li>Data của row (là Pandas Series có index/label là tên cột - còn gọi là fieldname)</li>
 </ul>
 
-<p><img src="img/iterrows.png" alt="" /></p>
+<p><img src="/assets/images/iterrows.png" alt="" /></p>
 
 <p>Để loop in ra giá trị của cột mong muốn cho mỗi lần lặp, ta chỉ cần:</p>
 
@@ -421,7 +421,7 @@ Mỗi data structure sẽ có cách loop các nhau và cách định nghĩa sequ
 <p>Ví dụ ta muốn thêm cột tính độ dài của cột “country”:
 <code>brics.loc[lab, "tên cột mới"] = len(row["country"])</code></p>
 
-<p><img src="img/new-col.png" alt="" /></p>
+<p><img src="/assets/images/new-col.png" alt="" /></p>
 
 <blockquote>
   <p>Nhận xét: Cách này tốt trong trường hợp ít record. Vì ta đang tạo ra Series object cho mỗi vòng lặp và nó sẽ không hiệu quả với các dataset khổng lồ, thậm chí gây ra vấn đề khi xử lý dữ liệu.</p>
@@ -570,7 +570,7 @@ Mỗi data structure sẽ có cách loop các nhau và cách định nghĩa sequ
                 
 
                     
-                        <img class="img-thumb" src="/img/DA-step.png" alt="Tìm hiểu về Data Analysis"> 
+                        <img class="img-thumb" src="/assets/images/DA-step.png" alt="Tìm hiểu về Data Analysis"> 
                     
 
                 
@@ -651,7 +651,7 @@ Mỗi data structure sẽ có cách loop các nhau và cách định nghĩa sequ
                 
 
                     
-                        <img class="img-thumb" src="/img/import1.png" alt="Import Data - Part 2"> 
+                        <img class="img-thumb" src="/assets/images/import1.png" alt="Import Data - Part 2"> 
                     
 
                 
@@ -711,7 +711,7 @@ urlretrieve(url, 'filename.csv')
                 
 
                     
-                        <img class="img-thumb" src="/img/python1.png" alt="Python - Part 1"> 
+                        <img class="img-thumb" src="/assets/images/python1.png" alt="Python - Part 1"> 
                     
 
                 

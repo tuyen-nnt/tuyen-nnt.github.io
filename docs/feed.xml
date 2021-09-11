@@ -5,8 +5,8 @@
     <description>Grow yourself and develop with me!</description>
     <link>https://tuyen-nnt.github.io/</link>
     <atom:link href="https://tuyen-nnt.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 11 Sep 2021 22:00:59 +0700</pubDate>
-    <lastBuildDate>Sat, 11 Sep 2021 22:00:59 +0700</lastBuildDate>
+    <pubDate>Sat, 11 Sep 2021 22:57:55 +0700</pubDate>
+    <lastBuildDate>Sat, 11 Sep 2021 22:57:55 +0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -40,7 +40,7 @@
 &lt;h2 id=&quot;3-clean-và-validate&quot;&gt;3. Clean và Validate&lt;/h2&gt;
 
 &lt;p&gt;Đây là bảng data chứa cân nặng của baby ta dùng trong các ví dụ sắp tới:
-&lt;img src=&quot;img/example-data.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/assets/images/example-data.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;Đầu tiên ta rút trích mỗi cột mà ta muốn phân tích lưu vào 1 biến:&lt;/li&gt;
@@ -56,7 +56,7 @@
 
 &lt;p&gt;&lt;code&gt;pounds.value_counts().sort_index()&lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/value-count.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/value-count.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Mặc định kết quả sort theo giá trị nào gặp nhiều nhất. Nên ta thêm &lt;code&gt;sort_index()&lt;/code&gt; để nó sort theo giá trị.&lt;/p&gt;
 
@@ -67,7 +67,7 @@
 
 &lt;p&gt;&lt;code&gt;pounds.describe()&lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/describe.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/describe.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Giải thích bảng trên:&lt;/p&gt;
 
@@ -85,7 +85,7 @@ Do vậy, trước khi đưa vào tính toán mean thực sự, ta phải thay t
 
 &lt;p&gt;Tham số thứ 3 tùy chọn là &lt;code&gt;inplace=True&lt;/code&gt;, mặc định không đề cập thì là False. True nghĩa là thay thế series cũ, false là tạo mới series sau khi thay thế.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/replace-data.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/replace-data.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;Trả về kiểu dữ liệu series. Nếu inplace=True thì không cần gán vào biến mới.
@@ -101,14 +101,14 @@ Ta nhận thấy sau khi thay thế dữ liệu, mean() của series sẽ thay �
 
 &lt;p&gt;Đến đây ta có thể đưa kết luận giá trị trung bình của 1 đặc tính như cân nặng trong dataset bằng &lt;code&gt;series.describe()&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/arithmetic-data.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/arithmetic-data.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;4-filter-và-visualize-data&quot;&gt;4. Filter và Visualize data&lt;/h2&gt;
 
 &lt;h4 id=&quot;histogram&quot;&gt;Histogram&lt;/h4&gt;
 &lt;p&gt;Dùng để biểu thị tần suất xuất hiện của giá trị trong dataset. Để dùng biểu đồ này trong python, ta dùng thư viện &lt;code&gt;matplotlib&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/hist-analysis.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/hist-analysis.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
@@ -137,7 +137,7 @@ Ta nhận thấy sau khi thay thế dữ liệu, mean() của series sẽ thay �
 
 &lt;p&gt;&lt;code&gt;preterm = df[&quot;tên cột tuần sinh&quot;] &amp;lt;37&lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/boolean-series.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/boolean-series.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Nếu ta tính tổng hay trung bình cho Boolean Series, python sẽ treat True=1 và False=0.&lt;/strong&gt;&lt;/p&gt;
 
@@ -158,7 +158,7 @@ Ta nhận thấy sau khi thay thế dữ liệu, mean() của series sẽ thay �
 
 &lt;p&gt;Kết quả:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/boolean-filter.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/boolean-filter.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;Nhận xét: Trung bình cân nặng của em bé thường sẽ &amp;gt; hơn em bé sinh non, và điều này hiển nhiên hợp lý.&lt;/p&gt;
@@ -208,7 +208,7 @@ birth_weight[A | B]	# either or both true
 
 &lt;p&gt;*educ ở đây là Series object&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/pmf1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/pmf1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;Kết quả trả về 1 PMF object với giá trị ở bên trái và count số lần xuất hiện trong tập dataset ở bên phải.&lt;/p&gt;
@@ -221,16 +221,16 @@ birth_weight[A | B]	# either or both true
 
 &lt;p&gt;Lúc này ta chỉ cần set tham số thứ 2 là &lt;code&gt;normalize&lt;/code&gt; = True. Khi đó cột giá trị bên phải trả về tỉ lệ và tổng cột sẽ =1. Nếu muốn biết % ta chỉ cần *100 là được. Cách lookup cho 1 giá trị bất kỳ cũng tương tự trên.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/pmf2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/pmf2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;pmf-bar-chart&quot;&gt;PMF Bar chart&lt;/h3&gt;
 
 &lt;p&gt;PMF có method riêng để hiển thị biểu đồ tần suất. Tùy ta muốn hiển thị tần suất theo tỉ lệ hay count thì ta dùng method lên biến lưu series ở bước trên.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/pmf-bar.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/pmf-bar.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;h4 id=&quot;so-sánh-histogram-và-pmf&quot;&gt;So sánh Histogram và PMF&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;img/hist-pmf.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/hist-pmf.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Tùy trường hợp nhưng trong ví dụ hình trên ta nhận xét:&lt;/p&gt;
 &lt;ul&gt;
@@ -257,13 +257,13 @@ birth_weight[A | B]	# either or both true
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Xem ví dụ sau:
-&lt;img src=&quot;img/cdf.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/assets/images/cdf.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;vẽ-biểu-đồ-plot-dùng-cdf&quot;&gt;Vẽ biểu đồ plot dùng CDF&lt;/h3&gt;
 
 &lt;p&gt;Ta chỉ cần dùng class &lt;code&gt;Cdf()&lt;/code&gt; và input tham số là sequence của data mà ta muốn biểu thị tần suất. Ở hình dưới là “tuổi”:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/cdf-plot.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/cdf-plot.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Đặc biệt, cdf có thể được sử dụng như 1 function với input là 1 giá trị cụ thể (biến số nguyên).&lt;/p&gt;
 
@@ -278,7 +278,7 @@ print(p)
 &lt;h3 id=&quot;inverse-cdf&quot;&gt;Inverse CDF&lt;/h3&gt;
 &lt;p&gt;CDF là 1 function đảo ngược. Nghĩa là bạn có thể từ giá trị probability (tỉ lệ) mà tra ngược lại giá trị tuổi bằng cách dùng &lt;code&gt;cdf.inverse(giá trị tỉ lệ)&lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/cdf-inverse.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/cdf-inverse.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Từ hình trên có thể nói rằng, tuổi 30 là percentile thứ 25 của distribution này. (do p=0,25)&lt;/p&gt;
 
@@ -294,16 +294,16 @@ print(p)
 
 &lt;h5 id=&quot;nếu-dùng-pmf-&quot;&gt;Nếu dùng PMF :&lt;/h5&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/pmf-compare.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/pmf-compare.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Kết quả chart:
-&lt;img src=&quot;img/pmf-compare-chart.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/assets/images/pmf-compare-chart.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;h5 id=&quot;nếu-dùng-cdf-khuyến-khích&quot;&gt;Nếu dùng CDF (khuyến khích)&lt;/h5&gt;
-&lt;p&gt;&lt;img src=&quot;img/cdf-compare.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/cdf-compare.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Kết quả chart:
-&lt;img src=&quot;img/pmf-compare-chart.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/assets/images/pmf-compare-chart.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Nhận xét data:&lt;/p&gt;
 &lt;blockquote&gt;
@@ -364,7 +364,7 @@ print(p)
 
 &lt;h4 id=&quot;header-chứa-các-thông-tin-của-request-và-hầu-hết-ở-dưới-dạng-keyvalue&quot;&gt;Header chứa các thông tin của request và hầu hết ở dưới dạng key:value.&lt;/h4&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/HTTP-header.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/HTTP-header.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Header của request được chia thành vài group chính:&lt;/p&gt;
 
@@ -484,7 +484,7 @@ Content-Disposition: form-data; name=&quot;myField&quot;
   &lt;li&gt;Representation headers: như Content-Type để mô tả format của data trong response message và cho biết nếu data có apply encoding nào không (chỉ có phần này khi request có Body).&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/HTTP-response.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/HTTP-response.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;h4 id=&quot;body-1&quot;&gt;Body&lt;/h4&gt;
 &lt;p&gt;Không phải response nào cũng có body khi mà response đã đáp ứng đủ request mà không cần payload gì thêm. VÍ dụ như các status code như 201 Created hoặc 204 No Content.&lt;/p&gt;
@@ -528,7 +528,7 @@ https://developer.ibm.com/articles/what-is-curl-command/&lt;/p&gt;
 
 &lt;p&gt;Kết quả build thành công:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/bundle-install.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/bundle-install.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;B5: Sửa lại &lt;code&gt;_config.yml&lt;/code&gt; theo blog của mình&lt;/li&gt;
@@ -661,12 +661,12 @@ europe['italy'] = data
 &lt;pre&gt;&lt;code&gt;import pandas as pd
 brics = pd.DataFrame(dict)
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&quot;img/create-df.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/create-df.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Để tạo index cho observations trong df, ta dùng attribute &lt;code&gt;index&lt;/code&gt; và gán 1 list với thứ tự chính xác các index mong muốn:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;brics.index = [...,...]
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&quot;img/index-df.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/index-df.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;h5 id=&quot;csv-file&quot;&gt;CSV file&lt;/h5&gt;
 &lt;p&gt;Nhưng thực tế trong Data science, ta phải đối mặt với lượng data khổng lồ tùy trường hợp cụ thể, nên thông thường ta không tự tạo dataframe. Giả sử các data đến từ file có &lt;code&gt;.csv&lt;/code&gt; viết tắt của comma separated values.&lt;/p&gt;
@@ -681,7 +681,7 @@ brics = pd.DataFrame(dict)
   &lt;li&gt;Tuy nhiên đối với file có index, khi import vào thì cột index đầu tiên sẽ bị ngầm hiểu là cột đầu của dữ liệu chính. Để tránh điều này, ta phải thêm argument &lt;code&gt;index_col=0&lt;/code&gt;, kết quả:&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/csv-import.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/csv-import.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;Để thay đổi index tự động từ 0-n bằng label được định nghĩa trong 1 list tạo riêng tự chọn, ta dùng cú pháp:
@@ -721,7 +721,7 @@ Ta input vào label hoặc index của column hoặc row. Ví dụ cụ thể ta
 
 Xem	 hình ví dụ:
 	
-![](img/loc-iloc.png)
+![](/assets/images/loc-iloc.png)
 
 	
 &amp;gt; Nhận xét: 
@@ -729,7 +729,7 @@ Xem	 hình ví dụ:
 - Dấu ngoặc vuông``[]`` có giới hạn chức năng và lý tưởng nhất là sử dụng trong 2D Numpy array để access value dễ dàng nhất.	
 - Nếu muốn dấu``[]``có thể mở rộng khả năng access value trong pandas như  dấu``[]``trong 2D Numpy array, thì ta cần sử dụng ``loc`` và ``iloc``.
 
-![](img/iloc-loc.png)
+![](/assets/images/iloc-loc.png)
 	
 	
 ##### Filter dataframe
@@ -758,11 +758,11 @@ Trong đó ``var`` là biến bất kỳ có thể đặt tên sao cũng đượ
 
 
 FOR còn dùng để lặp từng char trong string.
-![](img/string-loop.png)
+![](/assets/images/string-loop.png)
 
 * enumerate() : cung cấp 2 giá trị cho mỗi lần lặp gồm ``index`` và ``value (giá trị)``.
 
-![](img/enumerate-for.png)
+![](/assets/images/enumerate-for.png)
 
 
 
@@ -813,7 +813,7 @@ Mỗi data structure sẽ có cách loop các nhau và cách định nghĩa sequ
   &lt;li&gt;Data của row (là Pandas Series có index/label là tên cột - còn gọi là fieldname)&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/iterrows.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/iterrows.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Để loop in ra giá trị của cột mong muốn cho mỗi lần lặp, ta chỉ cần:&lt;/p&gt;
 
@@ -826,7 +826,7 @@ Mỗi data structure sẽ có cách loop các nhau và cách định nghĩa sequ
 &lt;p&gt;Ví dụ ta muốn thêm cột tính độ dài của cột “country”:
 &lt;code&gt;brics.loc[lab, &quot;tên cột mới&quot;] = len(row[&quot;country&quot;])&lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/new-col.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/new-col.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;Nhận xét: Cách này tốt trong trường hợp ít record. Vì ta đang tạo ra Series object cho mỗi vòng lặp và nó sẽ không hiệu quả với các dataset khổng lồ, thậm chí gây ra vấn đề khi xử lý dữ liệu.&lt;/p&gt;
@@ -1319,18 +1319,18 @@ Cách tạo 2D array bằng 2 array:
 Có thể xem 2D numpy array như phiên bản nâng cấp của &quot;list của list&quot; vì ta có thể thực hiện các phép toán với nó.
 
 Để tạo array 2D, ta chỉ cần input các giá trị vào như dưới đây, input 1 list có 2 sub-list vào argument của method ``np.array`` theo cấu trúc hình chữ nhật:
-![](img/2d-array.png)
+![](/assets/images/2d-array.png)
 
 Mỗi sub-list là một row của array.  
 Nếu ta thay đổi kiểu dữ liệu của bất kỳ giá trị nào trong array sang kiểu khác như từ float sang string, thì mặc nhiên numpy sẽ chuyển tất cả các giá trị còn lại sang string (in ra sẽ thấy).
 &amp;gt; Vì mỗi numpy array chỉ chứa 1 kiểu dữ liệu.
 
 Để biết cấu trúc data của array như thế nào, ta dùng attribute ``shape`` của array:
-![](img/array-shape.png)
+![](/assets/images/array-shape.png)
  *Vì là attribute nên nó không có ``()`` như method~*
 
 Có 2 cú pháp để truy cập giá trị:
-![](img/2d-subset.png)
+![](/assets/images/2d-subset.png)
 
 * Cách 1: np_2d[row][column]
 * Cách 2: np_2d[row,column]
@@ -1517,7 +1517,7 @@ print(spark.catalog.listTables())
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Xem cách các Spark data structure tương tác với nhau bằng nhiều cách trong biểu đồ dưới đây:
-&lt;img src=&quot;img/spark-structure.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/assets/images/spark-structure.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;h5 id=&quot;convert-thành-spark-df-trực-tiếp-từ-file-csv-mà-không-cần-thông-qua-pandas-df&quot;&gt;Convert thành Spark DF trực tiếp từ file .csv mà không cần thông qua pandas DF:&lt;/h5&gt;
 &lt;p&gt;Now you know how to put data into Spark via pandas, but you’re probably wondering why deal with pandas at all? Wouldn’t it be easier to just read a text file straight into Spark? Of course it would!&lt;/p&gt;
@@ -1892,13 +1892,13 @@ Linear (Tuyến tính) hoặc hồi quy logistic&lt;/p&gt;
     &lt;p&gt;Cách 3: Vẽ plot
 scatter, bar, histogram (biểu đồ tần suất),…
 Scatter plot:
-&lt;img src=&quot;img/plot.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/assets/images/plot.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h5 id=&quot;the-datasaurus-dozen&quot;&gt;The Datasaurus Dozen&lt;/h5&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/datasaurus-dozen.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/datasaurus-dozen.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;Có 13 datasets, mỗi Dataset có 2 trục x và y được gọi là variable&lt;/li&gt;
@@ -1943,27 +1943,27 @@ Thời gian thì continuous còn tháng thì categorical.&lt;/p&gt;
 Như hình, bin 10-15 tuổi có giá trị trục y là 4, nghĩa là có 4 người từ 10-15 tuổi.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/histogram.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/histogram.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Sự lựa chọn binwidth sẽ ảnh hưởng lớn đến hình ảnh biểu đồ. Dưới đây cho thấy nếu thu nhỏ bin lại còn 1 năm tuổi thì nhìn rất lộn xộn.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/binwidth1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/binwidth1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Các tiêu chí trải nghiệm qua để chọn binwidth phù hợp:&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;
     &lt;p&gt;Modality : có bao nhiêu đỉnh trong biểu đồ?
 Unimodal, bimodal hay trimodal?
-&lt;img src=&quot;img/modality.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/assets/images/modality.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Skewness: lệch lạc hay cân xứng?
 lệch trái, phải hay cân đối ở giữa?
-&lt;img src=&quot;img/skewness.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/assets/images/skewness.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Kurtosis: có bao nhiêu điểm có giá trị = 0? (extreme value) 
-&lt;img src=&quot;img/kurtosis.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/assets/images/kurtosis.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
 
@@ -1973,7 +1973,7 @@ lệch trái, phải hay cân đối ở giữa?
   &lt;li&gt;Khi chúng ta muốn so sánh sự phân tán dữ liệu của variable continuous cho mỗi category (phân loại).&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/box-plot.png&quot; alt=&quot;&quot; /&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/box-plot.png&quot; alt=&quot;&quot; /&gt;
 Các chỉ số trên box plots:&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;lower quartile: 1/4 có giá trị dưới số này&lt;/li&gt;
@@ -1983,7 +1983,7 @@ Các chỉ số trên box plots:&lt;/p&gt;
   &lt;li&gt;whiskers: đường thẳng ngang hai bên, đường kẻ ra gấp 1-1,5 lần inter-quarter, dài đến mức độ đủ để biết rằng ngoài đường kẻ thì không có giá trị nào cả (extreme value).&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/box-plot-2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/box-plot-2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;Phân loại nào chỉ có đường thẳng nghĩa là chỉ có 1 giá trị.&lt;/li&gt;
@@ -2116,7 +2116,7 @@ EXPOSE 9090
 &lt;h3 id=&quot;1-các-cách-để-trích-xuất-dữ-liệu&quot;&gt;1. Các cách để trích xuất dữ liệu&lt;/h3&gt;
 &lt;p&gt;Có 3 cách:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/extract.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/extract.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
@@ -2126,16 +2126,16 @@ Text file có 3 loại là :
 	* Flat file (là file có .tsv hoặc .csv cách nhau bởi dấu “,” hoặc “tab” giữa các giá trị). Những file này có dòng thể hiện các record và cột thể hiện attribute của record.
 	*File JSON: bán cấu trúc, có 4 kiểu dữ liệu atomic là number, string, boolean và null và 2 kiểu dữ liệu dạng composite là array và object.
 	JSON có package hỗ trợ là “json” để import data
-	&lt;img src=&quot;img/load-json.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+	&lt;img src=&quot;/assets/images/load-json.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Trích xuất từ web hoặc APIs của web services, như là Hacker News API
-&lt;img src=&quot;img/web-extract.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/assets/images/web-extract.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
     &lt;ul&gt;
       &lt;li&gt;Thông qua web:&lt;/li&gt;
     &lt;/ul&gt;
 
-    &lt;p&gt;&lt;img src=&quot;img/data-web.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;img src=&quot;/assets/images/data-web.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
 
@@ -2147,7 +2147,7 @@ Text file có 3 loại là :
 &lt;p&gt;Không phải lúc nào các trang web cũng trả về kết quả mà người thường có thể đọc ngay, mà các trang web đó sẽ trả về định dạng JSON thông qua API mà chúng ta request.&lt;/p&gt;
 
 &lt;p&gt;Ta xem ví dụ request API từ trang Hackernews:
-&lt;img src=&quot;img/api-request.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;/assets/images/api-request.png&quot; alt=&quot;&quot; /&gt;
 Ta import package “request” rồi dùng method .get() để chèn vào link web cần lấy file JSON. 
 Sau đó ta dùng method .json() để phân tích file JSON từ kết quả đã lấy được và chuyển hóa nó thành Python object.&lt;/p&gt;
 
@@ -2171,7 +2171,7 @@ Hầu hết các ứng dụng web đều có database để backup và để kh�
   &lt;li&gt;Trong Python, ta dùng connection URI thông qua package &lt;code&gt;sqlalchemy&lt;/code&gt; để tạo &lt;em&gt;database engine&lt;/em&gt; :&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/create-engine.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/create-engine.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Từ engine đã được tạo ra, ta có thể dùng nó để đặt vào 1 số package hỗ trợ nó tương tác với database, đặc biệt là package &lt;code&gt;pandas&lt;/code&gt;.&lt;/p&gt;
 
@@ -2227,22 +2227,22 @@ db_engine = sqlalchemy.create_engine(connection_uri)&lt;/p&gt;
 &lt;h3 id=&quot;2-một-số-ví-dụ&quot;&gt;2. Một số ví dụ&lt;/h3&gt;
 
 &lt;p&gt;Bạn có thể dùng package &lt;code&gt;pandas&lt;/code&gt; để chuyển đổi dữ liệu nếu lượng dữ liệu nhỏ. Ta có ví dụ tách dữ liệu từ 1 cột thành 2 cột sử dụng pandas:
-&lt;img src=&quot;img/split-pandas.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/assets/images/split-pandas.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Nếu dữ liệu lớn, thông thường người ta sẽ dùng &lt;strong&gt;PySpark&lt;/strong&gt;. Ta có ví dụ chuyển đổi dữ liệu bằng cách join các bảng với nhau. 
 Nhưng trước hết chúng ta cần đẩy dữ liệu lên Spark:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/extract-pyspark.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/extract-pyspark.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;code&gt;jbdc:&lt;/code&gt;để nhắn nhủ với Spark là phải dùng JBDC để kết nối, sau đó, ta input vào tên của bảng và cuối cùng trong &lt;code&gt;properties&lt;/code&gt; chúng ta đặt thông tin kết nối vào.&lt;/p&gt;
 
 &lt;p&gt;Dưới đây là 2 bảng cần join với nhau thông qua &lt;code&gt;customer_id&lt;/code&gt; để tính rating trung bình của mỗi customer dành cho các phim:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/rating-join.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/rating-join.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Và làm sao để dùng PySpark join và tính toán dữ liệu? Xem ảnh dưới nhé:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;img/join-pyspark.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/join-pyspark.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Mình sẽ cho ra thêm các bài viết tìm hiểu sâu hơn về PySpark trong thời gian tới, các bạn hãy cùng chờ đợi nhé!&lt;/p&gt;
 
