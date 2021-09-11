@@ -1,5 +1,14 @@
+---
+layout: post
+title:  "Tìm hiểu về Data Analysis"
+author: tuyennnt
+categories: [ Data ]
+image: img/DA-step.png
+---
 
-* Tìm data phù hợp rồi collect nó
+
+Bài viết này sẽ hướng dẫn các bước cơ bản: 
+* Tìm data phù hợp rồi collect chúng
 * Đọc data trong môi trường dev
 * Chuẩn bị phân tích bằng cách cleaning và validation. 
 
