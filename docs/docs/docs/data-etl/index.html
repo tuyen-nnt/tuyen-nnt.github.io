@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<link rel="icon" href="https://tuyen-nnt.github.io/assets/images/logo.png">
+<link rel="icon" href="/assets/images/logo.png">
 
 <title>Extract - Transform - Load (ETL process) | Tuyen Nguyen</title>
 
@@ -16,23 +16,25 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="Tìm hiểu về ETL" />
 <meta property="og:description" content="Tìm hiểu về ETL" />
+<link rel="canonical" href="https://tuyen-nnt.github.io/data-etl/" />
+<meta property="og:url" content="https://tuyen-nnt.github.io/data-etl/" />
 <meta property="og:site_name" content="My Blog" />
-<meta property="og:image" content="/https://tuyen-nnt.github.io/img/etl.png" />
+<meta property="og:image" content="https://tuyen-nnt.github.io/img/etl.png" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2021-05-29T00:00:00+07:00" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta property="twitter:image" content="/https://tuyen-nnt.github.io/img/etl.png" />
+<meta property="twitter:image" content="https://tuyen-nnt.github.io/img/etl.png" />
 <meta property="twitter:title" content="Extract - Transform - Load (ETL process)" />
 <script type="application/ld+json">
-{"@type":"BlogPosting","author":{"@type":"Person","name":"tuyennnt"},"mainEntityOfPage":{"@type":"WebPage","@id":"/https://tuyen-nnt.github.io/data-etl/"},"image":"/https://tuyen-nnt.github.io/img/etl.png","headline":"Extract - Transform - Load (ETL process)","dateModified":"2021-05-29T00:00:00+07:00","datePublished":"2021-05-29T00:00:00+07:00","url":"/https://tuyen-nnt.github.io/data-etl/","description":"Tìm hiểu về ETL","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"/https://tuyen-nnt.github.io/assets/images/ava.png"},"name":"tuyennnt"},"@context":"https://schema.org"}</script>
+{"@type":"BlogPosting","author":{"@type":"Person","name":"tuyennnt"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://tuyen-nnt.github.io/data-etl/"},"image":"https://tuyen-nnt.github.io/img/etl.png","headline":"Extract - Transform - Load (ETL process)","dateModified":"2021-05-29T00:00:00+07:00","datePublished":"2021-05-29T00:00:00+07:00","url":"https://tuyen-nnt.github.io/data-etl/","description":"Tìm hiểu về ETL","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://tuyen-nnt.github.io/assets/images/ava.png"},"name":"tuyennnt"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     
-<link href="https://tuyen-nnt.github.io/assets/css/prism.css" rel="stylesheet">
+<link href="/assets/css/prism.css" rel="stylesheet">
 
-<link href="https://tuyen-nnt.github.io/assets/css/theme.css" rel="stylesheet">
+<link href="/assets/css/theme.css" rel="stylesheet">
 
-<script src="https://tuyen-nnt.github.io/assets/js/jquery.min.js"></script>
+<script src="/assets/js/jquery.min.js"></script>
 
 </head>
 
@@ -58,15 +60,15 @@
 <nav id="menu">
     <ul>
         <h3>Navigation</h3>
-        <li><a href="https://tuyen-nnt.github.io/">Home</a></li>
-        <li><a href="https://tuyen-nnt.github.io/about">About</a></li>
-        <li><a href="https://tuyen-nnt.github.io/authors">Contributors <span class="badge badge-primary">new</span></a></li>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/authors">Contributors <span class="badge badge-primary">new</span></a></li>
         <li><a target="_blank" href="https://bootstrapstarter.com/jekyll-theme-memoirs/">Get Memoirs</a></li>      
-        <li><a href="https://tuyen-nnt.github.io/contact">Contact</a></li>       
+        <li><a href="/contact">Contact</a></li>       
     </ul>   
 </nav>
 
-<script src="https://tuyen-nnt.github.io/assets/js/lunr.js"></script>
+<script src="/assets/js/lunr.js"></script>
 
 <style>
     
@@ -85,7 +87,7 @@
     <ul></ul>
 </div>
 
-<script src="https://tuyen-nnt.github.io/assets/js/lunrsearchengine.js"></script>
+<script src="/assets/js/lunrsearchengine.js"></script>
 
 
 <!-- End Sidebar Navigation
@@ -98,8 +100,8 @@
     <!-- Site Logo/Name
     ================================================== -->
    
-    <a class="navbar-brand" href="https://tuyen-nnt.github.io/">
-        <img src="https://tuyen-nnt.github.io/assets/images/ava.png" alt="Tuyen Nguyen">
+    <a class="navbar-brand" href="/">
+        <img src="/assets/images/ava.png" alt="Tuyen Nguyen">
     </a>  
    
 
@@ -119,7 +121,7 @@
     <div class="d-flex align-items-center mt-4">
         <div>
             
-            <img class="author-thumb" src="https://tuyen-nnt.github.io/assets/images/ava.png" alt="Tuyen">
+            <img class="author-thumb" src="/assets/images/ava.png" alt="Tuyen">
             
         </div>            
         <div>
@@ -138,7 +140,7 @@
 
 <div class="entry-featured-image">
     
-    <img class="featured-image " src="https://tuyen-nnt.github.io/img/etl.png" alt="Extract - Transform - Load (ETL process)">
+    <img class="featured-image " src="/img/etl.png" alt="Extract - Transform - Load (ETL process)">
     
 </div>
 
@@ -303,7 +305,7 @@ Nhưng trước hết chúng ta cần đẩy dữ liệu lên Spark:</p>
     <div class="row">
         <div class="wrapavname col-md-3 text-center">
             
-            <img  class="author-thumb" src="https://tuyen-nnt.github.io/assets/images/ava.png" alt="Tuyen">
+            <img  class="author-thumb" src="/assets/images/ava.png" alt="Tuyen">
             
             <p class="mt-4 mb-0 small text-center">
                 <a target="_blank" class="d-inline-block mx-1 text-dark" href="https://www.tuyen-nnt.github.io"><i class="fa fa-link"></i></a> 
@@ -355,19 +357,19 @@ Nhưng trước hết chúng ta cần đẩy dữ liệu lên Spark:</p>
     </p>
     <ul>
         <li class="ml-1 mr-1">
-            <a target="_blank" href="https://twitter.com/intent/tweet?text=Extract - Transform - Load (ETL process)&url=/https://tuyen-nnt.github.io/data-etl/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+            <a target="_blank" href="https://twitter.com/intent/tweet?text=Extract - Transform - Load (ETL process)&url=https://tuyen-nnt.github.io/data-etl/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
                 <i class="fab fa-twitter"></i>
             </a>
         </li>
 
         <li class="ml-1 mr-1">
-            <a target="_blank" href="https://facebook.com/sharer.php?u=/https://tuyen-nnt.github.io/data-etl/" onclick="window.open(this.href, 'facebook-share', 'width=550,height=435');return false;">
+            <a target="_blank" href="https://facebook.com/sharer.php?u=https://tuyen-nnt.github.io/data-etl/" onclick="window.open(this.href, 'facebook-share', 'width=550,height=435');return false;">
                 <i class="fab fa-facebook-f"></i>
             </a>
         </li>
 
         <li class="ml-1 mr-1">
-            <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=/https://tuyen-nnt.github.io/data-etl/" onclick="window.open(this.href, 'width=550,height=435');return false;">
+            <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://tuyen-nnt.github.io/data-etl/" onclick="window.open(this.href, 'width=550,height=435');return false;">
                 <i class="fab fa-linkedin-in"></i>
             </a>
         </li>
@@ -390,7 +392,7 @@ Nhưng trước hết chúng ta cần đẩy dữ liệu lên Spark:</p>
     <!-- Categories -->
     
     
-    <a class="smoothscroll badge badge-primary text-capitalize" href="https://tuyen-nnt.github.io/categories#Data">Data</a>                
+    <a class="smoothscroll badge badge-primary text-capitalize" href="/categories#Data">Data</a>                
     
 
     <!-- Tags -->  
@@ -444,11 +446,11 @@ Nhưng trước hết chúng ta cần đẩy dữ liệu lên Spark:</p>
 <div class="blog-grid-item">
     <div class="card h-100">
         <div class="maxthumb">
-            <a href="https://tuyen-nnt.github.io/python-intermediate/">
+            <a href="/python-intermediate/">
                 
 
                     
-                        <img class="img-thumb" src="https://tuyen-nnt.github.io/img/python1.png" alt="Python - Part 2"> 
+                        <img class="img-thumb" src="/img/python1.png" alt="Python - Part 2"> 
                     
 
                 
@@ -456,7 +458,7 @@ Nhưng trước hết chúng ta cần đẩy dữ liệu lên Spark:</p>
         </div>
         <div class="card-body">
             <h2 class="card-title">
-                <a class="text-dark" href="https://tuyen-nnt.github.io/python-intermediate/">Python - Part 2</a>
+                <a class="text-dark" href="/python-intermediate/">Python - Part 2</a>
                 
             </h2>
             <h4 class="card-text">1. Dictionaries Là tập hợp các cặp key:value khi cần kết nối dữ liệu với nhau như 1 table để tra cứu nhanh và có thể chỉ ra unique keys...</h4>
@@ -466,7 +468,7 @@ Nhưng trước hết chúng ta cần đẩy dữ liệu lên Spark:</p>
                 
                 <span class="meta-footer-thumb">
                 
-                <img class="author-thumb" src="https://tuyen-nnt.github.io/assets/images/ava.png" alt="Tuyen">
+                <img class="author-thumb" src="/assets/images/ava.png" alt="Tuyen">
                 
                 </span>
                 <span class="author-meta">
@@ -498,11 +500,11 @@ Nhưng trước hết chúng ta cần đẩy dữ liệu lên Spark:</p>
 <div class="blog-grid-item">
     <div class="card h-100">
         <div class="maxthumb">
-            <a href="https://tuyen-nnt.github.io/import-data-medium/">
+            <a href="/import-data-medium/">
                 
 
                     
-                        <img class="img-thumb" src="https://tuyen-nnt.github.io/img/import1.png" alt="Import Data - Part 2"> 
+                        <img class="img-thumb" src="/img/import1.png" alt="Import Data - Part 2"> 
                     
 
                 
@@ -510,7 +512,7 @@ Nhưng trước hết chúng ta cần đẩy dữ liệu lên Spark:</p>
         </div>
         <div class="card-body">
             <h2 class="card-title">
-                <a class="text-dark" href="https://tuyen-nnt.github.io/import-data-medium/">Import Data - Part 2</a>
+                <a class="text-dark" href="/import-data-medium/">Import Data - Part 2</a>
                 
             </h2>
             <h4 class="card-text">1. Import + Load + Tạo HTTP/GET REQUEST
@@ -526,7 +528,7 @@ urlretrieve(url, 'filename.csv')
                 
                 <span class="meta-footer-thumb">
                 
-                <img class="author-thumb" src="https://tuyen-nnt.github.io/assets/images/ava.png" alt="Tuyen">
+                <img class="author-thumb" src="/assets/images/ava.png" alt="Tuyen">
                 
                 </span>
                 <span class="author-meta">
@@ -558,11 +560,11 @@ urlretrieve(url, 'filename.csv')
 <div class="blog-grid-item">
     <div class="card h-100">
         <div class="maxthumb">
-            <a href="https://tuyen-nnt.github.io/python-basic/">
+            <a href="/python-basic/">
                 
 
                     
-                        <img class="img-thumb" src="https://tuyen-nnt.github.io/img/python1.png" alt="Python - Part 1"> 
+                        <img class="img-thumb" src="/img/python1.png" alt="Python - Part 1"> 
                     
 
                 
@@ -570,7 +572,7 @@ urlretrieve(url, 'filename.csv')
         </div>
         <div class="card-body">
             <h2 class="card-title">
-                <a class="text-dark" href="https://tuyen-nnt.github.io/python-basic/">Python - Part 1</a>
+                <a class="text-dark" href="/python-basic/">Python - Part 1</a>
                 
             </h2>
             <h4 class="card-text">I. LIST
@@ -582,7 +584,7 @@ urlretrieve(url, 'filename.csv')
                 
                 <span class="meta-footer-thumb">
                 
-                <img class="author-thumb" src="https://tuyen-nnt.github.io/assets/images/ava.png" alt="Tuyen">
+                <img class="author-thumb" src="/assets/images/ava.png" alt="Tuyen">
                 
                 </span>
                 <span class="author-meta">
@@ -612,7 +614,7 @@ https://search.google.com/structured-data/testing-tool/u/0/
     <!-- Newsletter
     ================================================== -->
     <div class="newsletter text-center">
-        <span class="h4"><img src="https://tuyen-nnt.github.io/assets/images/ava.png" class="newsletter-logo" alt="My Blog"> &nbsp; Never miss a <b>story</b> from us, subscribe to our newsletter</span>
+        <span class="h4"><img src="/assets/images/ava.png" class="newsletter-logo" alt="My Blog"> &nbsp; Never miss a <b>story</b> from us, subscribe to our newsletter</span>
         <form action="https://wowthemes.us11.list-manage.com/subscribe/post?u=8aeb20a530e124561927d3bd8&amp;id=8c3d2d214b" method="post" name="mc-embedded-subscribe-form" class="wj-contact-form validate" target="_blank" novalidate>
             <div class="mc-field-group d-inline-flex">
             <input type="email" placeholder="Your e-mail" name="EMAIL" class="required email" id="mce-EMAIL" autocomplete="on" required>
@@ -646,9 +648,9 @@ https://search.google.com/structured-data/testing-tool/u/0/
 <!-- Scripts (if you need bootstrap.js, please add it yourself. I didn't use it for performance reasons, it was not needed in this theme)
 ================================================== -->
 
-<script src="https://tuyen-nnt.github.io/assets/js/prism.js"></script>
+<script src="/assets/js/prism.js"></script>
 
-<script src="https://tuyen-nnt.github.io/assets/js/theme.js"></script>
+<script src="/assets/js/theme.js"></script>
 
 
 

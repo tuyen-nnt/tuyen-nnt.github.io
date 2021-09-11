@@ -5,8 +5,8 @@
     <description>Grow yourself and develop with me!</description>
     <link>https://tuyen-nnt.github.io/</link>
     <atom:link href="https://tuyen-nnt.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 11 Sep 2021 16:50:59 +0700</pubDate>
-    <lastBuildDate>Sat, 11 Sep 2021 16:50:59 +0700</lastBuildDate>
+    <pubDate>Sat, 11 Sep 2021 16:54:08 +0700</pubDate>
+    <lastBuildDate>Sat, 11 Sep 2021 16:54:08 +0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -321,17 +321,8 @@ print(p)
       </item>
     
       <item>
-        <title>Http</title>
-        <description>
-&lt;hr /&gt;
-&lt;p&gt;layout: post
-title:  “Tìm hiểu về giao thức HTTP”
-author: tuyennnt
-categories: [ Web ]
-image: img/http.jpg
-—&lt;/p&gt;
-
-&lt;h3 id=&quot;http-request&quot;&gt;HTTP request&lt;/h3&gt;
+        <title>Tìm hiểu về giao thức HTTP</title>
+        <description>&lt;h3 id=&quot;http-request&quot;&gt;HTTP request&lt;/h3&gt;
 
 &lt;p&gt;HTTP là giao thức (protocol) giúp browser (client) giao tiếp với web server (server).&lt;/p&gt;
 
@@ -514,6 +505,8 @@ https://developer.ibm.com/articles/what-is-curl-command/&lt;/p&gt;
         <link>https://tuyen-nnt.github.io/http/</link>
         <guid isPermaLink="true">https://tuyen-nnt.github.io/http/</guid>
         
+        
+        <category>Web</category>
         
       </item>
     
