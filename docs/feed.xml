@@ -5,8 +5,8 @@
     <description>Grow yourself and develop with me!</description>
     <link>https://tuyen-nnt.github.io/</link>
     <atom:link href="https://tuyen-nnt.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 11 Sep 2021 16:54:08 +0700</pubDate>
-    <lastBuildDate>Sat, 11 Sep 2021 16:54:08 +0700</lastBuildDate>
+    <pubDate>Sat, 11 Sep 2021 22:00:59 +0700</pubDate>
+    <lastBuildDate>Sat, 11 Sep 2021 22:00:59 +0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -563,7 +563,7 @@ https://developer.ibm.com/articles/what-is-curl-command/&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;
     &lt;p&gt;So sánh giữa list và dict:
-&lt;img src=&quot;img/list-vs-dict.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/assets/images/list-vs-dict.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;Cú pháp tạo dict như sau:&lt;/p&gt;
