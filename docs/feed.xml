@@ -5,15 +5,15 @@
     <description>Grow yourself and develop with me!</description>
     <link>https://tuyen-nnt.github.io/</link>
     <atom:link href="https://tuyen-nnt.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 11 Sep 2021 16:36:05 +0700</pubDate>
-    <lastBuildDate>Sat, 11 Sep 2021 16:36:05 +0700</lastBuildDate>
+    <pubDate>Sat, 11 Sep 2021 16:50:59 +0700</pubDate>
+    <lastBuildDate>Sat, 11 Sep 2021 16:50:59 +0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
-        <title>Data Analysis</title>
-        <description>
+        <title>Tìm hiểu về Data Analysis</title>
+        <description>&lt;p&gt;Bài viết này sẽ hướng dẫn các bước cơ bản:&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;Tìm data phù hợp rồi collect nó&lt;/li&gt;
+  &lt;li&gt;Tìm data phù hợp rồi collect chúng&lt;/li&gt;
   &lt;li&gt;Đọc data trong môi trường dev&lt;/li&gt;
   &lt;li&gt;Chuẩn bị phân tích bằng cách cleaning và validation.&lt;/li&gt;
 &lt;/ul&gt;
@@ -316,11 +316,22 @@ print(p)
         <guid isPermaLink="true">https://tuyen-nnt.github.io/data-analysis/</guid>
         
         
+        <category>Data</category>
+        
       </item>
     
       <item>
         <title>Http</title>
-        <description>&lt;h3 id=&quot;http-request&quot;&gt;HTTP request&lt;/h3&gt;
+        <description>
+&lt;hr /&gt;
+&lt;p&gt;layout: post
+title:  “Tìm hiểu về giao thức HTTP”
+author: tuyennnt
+categories: [ Web ]
+image: img/http.jpg
+—&lt;/p&gt;
+
+&lt;h3 id=&quot;http-request&quot;&gt;HTTP request&lt;/h3&gt;
 
 &lt;p&gt;HTTP là giao thức (protocol) giúp browser (client) giao tiếp với web server (server).&lt;/p&gt;
 
