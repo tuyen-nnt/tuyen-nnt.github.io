@@ -10,7 +10,7 @@ image: img/python1.png
 Là tập hợp các cặp ``key:value`` khi cần kết nối dữ liệu với nhau như 1 table để tra cứu nhanh và có thể chỉ ra unique keys khi tra cứu, thay vì nối 2 list lại để lấy index rồi tra cứu value.
 
 * So sánh giữa list và dict:
-![](img/list-vs-dict.png)
+![](/assets/images/list-vs-dict.png)
 
 * Cú pháp tạo dict như sau:
 
