@@ -3,7 +3,7 @@ layout: post
 title:  "Basics of Docker"
 author: tuyennnt
 categories: [ Docker ]
-image: img/docker.png
+image: assets/images/docker.png
 ---
 
 

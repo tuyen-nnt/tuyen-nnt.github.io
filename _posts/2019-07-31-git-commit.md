@@ -3,7 +3,7 @@ layout: post
 title:  "How to write effective git-commit?"
 author: Tuyen
 categories: [ Git ]
-image: img/git.png
+image: assets/images/git.png
 ---
 
 
@@ -66,7 +66,7 @@ Bạn viết:
 Thay vì nên viết: 
 > git commit –m “Add new feature”
 
-![](img/sailam-3.png)
+![](/assets/images/sailam-3.png)
  
 
 

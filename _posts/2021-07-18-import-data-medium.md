@@ -3,7 +3,7 @@ layout: post
 title:  "Import Data - Part 2"
 author: tuyennnt
 categories: [ Data ]
-image: img/import1.png
+image: assets/images/import1.png
 ---
 
 #### 1. Import + Load + Tạo HTTP/GET REQUEST

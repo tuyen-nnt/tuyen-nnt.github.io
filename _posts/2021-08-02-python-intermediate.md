@@ -3,7 +3,7 @@ layout: post
 title:  "Python - Part 2"
 author: tuyennnt
 categories: [ Data, Programing, Python ]
-image: img/python1.png
+image: assets/images/python1.png
 ---
 
 #### 1. Dictionaries
@@ -97,13 +97,13 @@ Cách tạo dataframe từ dictionary:
 import pandas as pd
 brics = pd.DataFrame(dict)
 ```
-![](img/create-df.png)
+![](/assets/images/create-df.png)
 
 Để tạo index cho observations trong df, ta dùng attribute ``index`` và gán 1 list với thứ tự chính xác các index mong muốn:
 ```
 brics.index = [...,...]
 ```
-![](img/index-df.png)
+![](/assets/images/index-df.png)
 
 
 ##### CSV file 
@@ -116,7 +116,7 @@ brics = pd.read_csv("path/to/brics.csv")
 ```
 * Tuy nhiên đối với file có index, khi import vào thì cột index đầu tiên sẽ bị ngầm hiểu là cột đầu của dữ liệu chính. Để tránh điều này, ta phải thêm argument ``index_col=0``, kết quả:
 
-![](img/csv-import.png)
+![](/assets/images/csv-import.png)
 
 
 * Để thay đổi index tự động từ 0-n bằng label được định nghĩa trong 1 list tạo riêng tự chọn, ta dùng cú pháp:
@@ -155,7 +155,7 @@ Ta input vào label hoặc index của column hoặc row. Ví dụ cụ thể ta
 
 Xem	 hình ví dụ:
 	
-![](img/loc-iloc.png)
+![](/assets/images/loc-iloc.png)
 
 	
 > Nhận xét: 
@@ -163,7 +163,7 @@ Xem	 hình ví dụ:
 - Dấu ngoặc vuông``[]`` có giới hạn chức năng và lý tưởng nhất là sử dụng trong 2D Numpy array để access value dễ dàng nhất.	
 - Nếu muốn dấu``[]``có thể mở rộng khả năng access value trong pandas như  dấu``[]``trong 2D Numpy array, thì ta cần sử dụng ``loc`` và ``iloc``.
 
-![](img/iloc-loc.png)
+![](/assets/images/iloc-loc.png)
 	
 	
 ##### Filter dataframe
@@ -193,11 +193,11 @@ Trong đó ``var`` là biến bất kỳ có thể đặt tên sao cũng đượ
 
 
 FOR còn dùng để lặp từng char trong string.
-![](img/string-loop.png)
+![](/assets/images/string-loop.png)
 
 * enumerate() : cung cấp 2 giá trị cho mỗi lần lặp gồm ``index`` và ``value (giá trị)``.
 
-![](img/enumerate-for.png)
+![](/assets/images/enumerate-for.png)
 
 
 
@@ -243,7 +243,7 @@ Sử dụng function ``np.nditer(my_array)`` đặc biệt là với 2D array.
 * Label của row (nếu ko có thì là index tự động) 
 * Data của row (là Pandas Series có index/label là tên cột - còn gọi là fieldname)
 
-![](img/iterrows.png)
+![](/assets/images/iterrows.png)
 
 
 Để loop in ra giá trị của cột mong muốn cho mỗi lần lặp, ta chỉ cần:
@@ -256,7 +256,7 @@ print(row["tên cột"])
 Ví dụ ta muốn thêm cột tính độ dài của cột "country":
 ``brics.loc[lab, "tên cột mới"] = len(row["country"])``
 
-![](img/new-col.png)
+![](/assets/images/new-col.png)
 
 > Nhận xét: Cách này tốt trong trường hợp ít record. Vì ta đang tạo ra Series object cho mỗi vòng lặp và nó sẽ không hiệu quả với các dataset khổng lồ, thậm chí gây ra vấn đề khi xử lý dữ liệu.
 

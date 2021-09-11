@@ -3,7 +3,7 @@ layout: post
 title:  "Setup Jekyll themes"
 author: tuyennnt
 categories: [ Git, Blog, Web ]
-image: img/jekyll.png
+image: assets/images/jekyll.png
 ---
 
 ## Fork Jekyll theme & Play
@@ -21,7 +21,7 @@ Các bước build Jekyll cho blog này: https://bootstrapstarter.com/jekyll-the
 
 Kết quả build thành công:
 
-![](img/bundle-install.png)
+![](/assets/images/bundle-install.png)
 
 * B5: Sửa lại ``_config.yml`` theo blog của mình
 * B6: ``bundle exec jekyll serve --watch``

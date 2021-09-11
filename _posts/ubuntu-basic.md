@@ -3,7 +3,7 @@ layout: post
 title:  "Learn Linux commands on Ubuntu"
 author: tuyennnt
 categories: [ Linux, Ubuntu ]
-image: img/import1.png
+image: assets/images/import1.png
 ---
 
 

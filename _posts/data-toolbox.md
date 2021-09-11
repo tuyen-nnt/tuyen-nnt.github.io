@@ -3,7 +3,7 @@ layout: post
 title:  "Data Toolbox"
 author: tuyennnt
 categories: [ Data ]
-image: img/toolbox.png
+image: assets/images/toolbox.png
 ---
 
 # Chapter 1 : Các công cụ làm việc trong mảng Data Engineering
@@ -14,7 +14,7 @@ image: img/toolbox.png
 
 Database là tập hợp dữ liệu lớn được tổ chức đặc biệt để tìm kiếm và rút trích dữ liệu nhanh.
 
-![](img/database.png)
+![](/assets/images/database.png)
 
 Các đặc điểm của nó:
 * Lưu trữ dữ liệu
@@ -71,7 +71,7 @@ Tìm hiểu thêm về Star chema [tại đây](https://en.wikipedia.org/wiki/St
 
 *Ví dụ thực tế:*
 Giả sử ta có database mô tả cấu trúc dữ liệu cho hệ thống bán hàng ở 1 cửa hàng quần áo:
-![](img/star-chema.png)
+![](/assets/images/star-chema.png)
 
 Giả sử ta có bảng invoice lưu dữ liệu bán hàng (fact table) có các cột sau:
 
@@ -120,7 +120,7 @@ Trước tiên ta đi từ ý tưởng của việc tạo ra parallel computing.
 
 Chúng ta hãy cùng xem ví dụ vận hành shop may đồ:
 
-![](img/tailorshop.png)
+![](/assets/images/tailorshop.png)
 
 Đặt mục tiêu may 100 cái áo, thì shop nhận thấy:
 * Nhân viên may giỏi nhất nhóm may 1 cái áo trong 20 phút => 12 cái áo trong 4 tiếng
@@ -148,11 +148,11 @@ Tóm lại, lợi ích của parallel computing:
 #### Code Python để chia thành nhiều task phụ
 ##### Sử dụng API **multiprocessing.Pool**
 
-![](img/pool.png)
+![](/assets/images/pool.png)
 
 ##### Sử dụng DASK framework để tránh viết API dưới hệ thống 
 
-![](img/dask.png)
+![](/assets/images/dask.png)
 
 
 
@@ -178,7 +178,7 @@ Hadoop là tập hợp các dự án open-source được maintain bởi Apache 
 
 HDFS là một phần thiết yếu trong Big data để lưu trữ dữ liệu lớn.
 
-![](img/hdfs.png)
+![](/assets/images/hdfs.png)
 
 #### b. Nói về MapReduce 
 Đây là một trong các mô hình đầu tiên phổ biến trong việc xử lý Big data.
@@ -189,7 +189,7 @@ Tuy nhiên, MapReduce có một số khuyết điểm có thể kể đến như
 Hive như là lớp vỏ trên cùng trong hệ sinh thái của Hadoop giúp các dữ liệu đến từ những nguồn khác nhau có thể truy vấn bằng cách sử dụng ngôn ngữ truy vấn có cấu trúc Hive SQL (HQL).
 
 Ví dụ đoạn truy vấn Hive SQL:
-![](img/hive-sql.png)
+![](/assets/images/hive-sql.png)
 
 > **Nhận xét:** trông chả khác câu lệnh SQL thông thường phải không ? ^^ Tuy nhiên sau tấm màn đó thì mọi thứ sẽ khác. Câu truy vấn trên sẽ chuyển đổi thành job có nhiệm vụ phân tán đến tập hợp các máy tính đấy (cluster). 
 
@@ -224,4 +224,4 @@ Spark framework có nhiều interface ứng với các ngôn ngữ lập trình,
 
 Xem ví dụ về PySpark khi tính trung bình các vận động viên theo nhóm tuổi nhé:
 
-![](img/pyspark-eg.png)
+![](/assets/images/pyspark-eg.png)

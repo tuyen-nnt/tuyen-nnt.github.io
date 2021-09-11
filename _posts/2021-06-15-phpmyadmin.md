@@ -3,7 +3,7 @@ layout: post
 title:  "Set-up phpMyAdmin"
 author: tuyennnt
 categories: [ Data, Docker ]
-image: img/phpmyadmin.png
+image: assets/images/phpmyadmin.png
 ---
 
 

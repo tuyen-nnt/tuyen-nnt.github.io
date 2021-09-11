@@ -3,7 +3,7 @@ layout: post
 title:  "Python - Part 1"
 author: tuyennnt
 categories: [ Data, Programing, Python ]
-image: img/python1.png
+image: assets/images/python1.png
 ---
 
 #### I. LIST
@@ -122,18 +122,18 @@ Cách tạo 2D array bằng 2 array:
 Có thể xem 2D numpy array như phiên bản nâng cấp của "list của list" vì ta có thể thực hiện các phép toán với nó.
 
 Để tạo array 2D, ta chỉ cần input các giá trị vào như dưới đây, input 1 list có 2 sub-list vào argument của method ``np.array`` theo cấu trúc hình chữ nhật:
-![](img/2d-array.png)
+![](/assets/images/2d-array.png)
 
 Mỗi sub-list là một row của array.  
 Nếu ta thay đổi kiểu dữ liệu của bất kỳ giá trị nào trong array sang kiểu khác như từ float sang string, thì mặc nhiên numpy sẽ chuyển tất cả các giá trị còn lại sang string (in ra sẽ thấy).
 > Vì mỗi numpy array chỉ chứa 1 kiểu dữ liệu.
 
 Để biết cấu trúc data của array như thế nào, ta dùng attribute ``shape`` của array:
-![](img/array-shape.png)
+![](/assets/images/array-shape.png)
  *Vì là attribute nên nó không có ``()`` như method~*
 
 Có 2 cú pháp để truy cập giá trị:
-![](img/2d-subset.png)
+![](/assets/images/2d-subset.png)
 
 * Cách 1: np_2d[row][column]
 * Cách 2: np_2d[row,column]

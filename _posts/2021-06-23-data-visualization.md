@@ -3,7 +3,7 @@ layout: post
 title:  "Data Visualization"
 author: tuyennnt
 categories: [ Data ]
-image: img/visualization.png
+image: assets/images/visualization.png
 ---
 
 #### 1. Các loại chart cơ bản 
@@ -85,11 +85,11 @@ Linear (Tuyến tính) hoặc hồi quy logistic
 * Cách 3: Vẽ plot
 scatter, bar, histogram (biểu đồ tần suất),...
 Scatter plot:
-![](img/plot.png)
+![](/assets/images/plot.png)
 
 ##### The Datasaurus Dozen 
 
-![](img/datasaurus-dozen.png)
+![](/assets/images/datasaurus-dozen.png)
 
 * Có 13 datasets, mỗi Dataset có 2 trục x và y được gọi là variable 
 * Variable đơn giản chỉ là biệt ngữ thống kê để chỉ cột dữ liệu 
@@ -123,29 +123,29 @@ Một số thuật ngữ:
 * Bin (interval) : khoảng cách các ô trục trên biểu đồ, ví dụ 0-5, 5-10,... Nếu muốn rõ data hơn thì ta co bin lại 0-1, 1-2,...
 Như hình, bin 10-15 tuổi có giá trị trục y là 4, nghĩa là có 4 người từ 10-15 tuổi.
 
-![](img/histogram.png)
+![](/assets/images/histogram.png)
 
 Sự lựa chọn binwidth sẽ ảnh hưởng lớn đến hình ảnh biểu đồ. Dưới đây cho thấy nếu thu nhỏ bin lại còn 1 năm tuổi thì nhìn rất lộn xộn.
 
-![](img/binwidth1.png)
+![](/assets/images/binwidth1.png)
 
 Các tiêu chí trải nghiệm qua để chọn binwidth phù hợp:
 * Modality : có bao nhiêu đỉnh trong biểu đồ?
 Unimodal, bimodal hay trimodal?
-![](img/modality.png)
+![](/assets/images/modality.png)
 
 * Skewness: lệch lạc hay cân xứng?
 lệch trái, phải hay cân đối ở giữa?
-![](img/skewness.png)
+![](/assets/images/skewness.png)
 
 * Kurtosis: có bao nhiêu điểm có giá trị = 0? (extreme value) 
-![](img/kurtosis.png)
+![](/assets/images/kurtosis.png)
 
 ##### Khi nào nên vẽ Box Plots?
 * Khi chúng ta có 1 variable là continuous, được tách ra phân loại bởi 1 variable categorical.
 * Khi chúng ta muốn so sánh sự phân tán dữ liệu của variable continuous cho mỗi category (phân loại).
 
-![](img/box-plot.png)
+![](/assets/images/box-plot.png)
 Các chỉ số trên box plots:
 * lower quartile: 1/4 có giá trị dưới số này
 * median : trung vị
@@ -153,7 +153,7 @@ Các chỉ số trên box plots:
 * inter-quartile range: khoảng cách từ lower đến upper
  * whiskers: đường thẳng ngang hai bên, đường kẻ ra gấp 1-1,5 lần inter-quarter, dài đến mức độ đủ để biết rằng ngoài đường kẻ thì không có giá trị nào cả (extreme value).
  
- ![](img/box-plot-2.png)
+ ![](/assets/images/box-plot-2.png)
 
 * Phân loại nào chỉ có đường thẳng nghĩa là chỉ có 1 giá trị.
 

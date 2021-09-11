@@ -3,7 +3,7 @@ layout: post
 title:  "React Native - CSS rules"
 author: tuyennnt
 categories: [ React, App ]
-image: img/react-css.png
+image: assets/images/react-css.png
 ---
 
 Phân biệt các attribute quan trọng sau để build giao diện trong react native:
@@ -38,7 +38,7 @@ căn chỉnh secondary axis cho mỗi line, có các loại như center, baselin
  Physical Pixels = DIPs x Scale Factor
  vd điện thoại có scale là 2 và point điểm ảnh là 320x480 thì View đối với Width có giá trị 150 là 150x2=300
  => nghĩa là bề ngang là 1/2 màn hình
- ![](img/dip-react.png)
+ ![](/assets/images/dip-react.png)
  
 
 

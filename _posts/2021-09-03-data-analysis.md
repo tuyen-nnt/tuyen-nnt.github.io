@@ -3,7 +3,7 @@ layout: post
 title:  "Tìm hiểu về Data Analysis"
 author: tuyennnt
 categories: [ Data ]
-image: img/DA-step.png
+image: assets/images/DA-step.png
 ---
 
 
@@ -30,7 +30,7 @@ Dataframe giống như Dictionary khi variable name là key (tên cột) còn c�
 ## 3. Clean và Validate
 
 Đây là bảng data chứa cân nặng của baby ta dùng trong các ví dụ sắp tới:
-![](img/example-data.png)
+![](/assets/images/example-data.png)
 
 * Đầu tiên ta rút trích mỗi cột mà ta muốn phân tích lưu vào 1 biến:
 
@@ -42,7 +42,7 @@ Dataframe giống như Dictionary khi variable name là key (tên cột) còn c�
 
 ``pounds.value_counts().sort_index()``
 
-![](img/value-count.png)
+![](/assets/images/value-count.png)
 
 Mặc định kết quả sort theo giá trị nào gặp nhiều nhất. Nên ta thêm ``sort_index()`` để nó sort theo giá trị. 
 
@@ -54,7 +54,7 @@ Ta cũng có thể dùng attribute describe để có bảng thống kê mean, p
 
 ``pounds.describe()``
 
-![](img/describe.png)
+![](/assets/images/describe.png)
 
 Giải thích bảng trên: 
 
@@ -70,7 +70,7 @@ Tham số thứ 2 là giá trị mà ta muốn được replace thành.
 
 Tham số thứ 3 tùy chọn là ``inplace=True``, mặc định không đề cập thì là False. True nghĩa là thay thế series cũ, false là tạo mới series sau khi thay thế.
 
-![](img/replace-data.png)
+![](/assets/images/replace-data.png)
 
 > Trả về kiểu dữ liệu series. Nếu inplace=True thì không cần gán vào biến mới.
 Ta nhận thấy sau khi thay thế dữ liệu, mean() của series sẽ thay đổi.
@@ -85,7 +85,7 @@ Sau đó ta cộng lại. Kết quả trả về là 1 series là tổng giá tr
  
 Đến đây ta có thể đưa kết luận giá trị trung bình của 1 đặc tính như cân nặng trong dataset bằng ``series.describe()``.
 
-![](img/arithmetic-data.png)
+![](/assets/images/arithmetic-data.png)
 
 
 
@@ -94,7 +94,7 @@ Sau đó ta cộng lại. Kết quả trả về là 1 series là tổng giá tr
 #### Histogram
 Dùng để biểu thị tần suất xuất hiện của giá trị trong dataset. Để dùng biểu đồ này trong python, ta dùng thư viện ``matplotlib``.
 
-![](img/hist-analysis.png) 
+![](/assets/images/hist-analysis.png) 
 
 * Tham số thứ 1 là series. Do histogram không nhận giá trị NaN nên chúng ta phải dùng hàm ``dropna()`` để loại bỏ nó trong series.
 
@@ -118,7 +118,7 @@ Ta gán biểu thức gồm series của cột và điều kiện để trả v�
 ``preterm = df["tên cột tuần sinh"] <37`` 
 
 
-![](img/boolean-series.png)
+![](/assets/images/boolean-series.png)
 
 **Nếu ta tính tổng hay trung bình cho Boolean Series, python sẽ treat True=1 và False=0.**
 
@@ -140,7 +140,7 @@ Ngược lại, để tính toán trung bình cân nặng ta dùng dấu ``~`` t
 
 Kết quả:
 
-![](img/boolean-filter.png)
+![](/assets/images/boolean-filter.png)
 
 
 > Nhận xét: Trung bình cân nặng của em bé thường sẽ > hơn em bé sinh non, và điều này hiển nhiên hợp lý.
@@ -189,7 +189,7 @@ pmf_educ = Pmf(educ, normalize=False)
 
 *educ ở đây là Series object 
 
-![](img/pmf1.png)
+![](/assets/images/pmf1.png)
 
 > Kết quả trả về 1 PMF object với giá trị ở bên trái và count số lần xuất hiện trong tập dataset ở bên phải.
 
@@ -200,16 +200,16 @@ pmf_educ = Pmf(educ, normalize=False)
 
 Lúc này ta chỉ cần set tham số thứ 2 là ``normalize`` = True. Khi đó cột giá trị bên phải trả về tỉ lệ và tổng cột sẽ =1. Nếu muốn biết % ta chỉ cần *100 là được. Cách lookup cho 1 giá trị bất kỳ cũng tương tự trên.
 
-![](img/pmf2.png)
+![](/assets/images/pmf2.png)
 
 ### PMF Bar chart
 
 PMF có method riêng để hiển thị biểu đồ tần suất. Tùy ta muốn hiển thị tần suất theo tỉ lệ hay count thì ta dùng method lên biến lưu series ở bước trên.
 
-![](img/pmf-bar.png)
+![](/assets/images/pmf-bar.png)
 
 #### So sánh Histogram và PMF
-![](img/hist-pmf.png)
+![](/assets/images/hist-pmf.png)
 
 Tùy trường hợp nhưng trong ví dụ hình trên ta nhận xét: 
 * PMF show tất cả unique value giúp ta thấy rõ chính xác peak của data ở đâu.
@@ -234,13 +234,13 @@ cdf_educ = Cdf(educ, normalize=False)
 ```
 
 Xem ví dụ sau:
-![](img/cdf.png)
+![](/assets/images/cdf.png)
 
 ### Vẽ biểu đồ plot dùng CDF
 
 Ta chỉ cần dùng class ``Cdf()`` và input tham số là sequence của data mà ta muốn biểu thị tần suất. Ở hình dưới là "tuổi":
 
-![](img/cdf-plot.png)
+![](/assets/images/cdf-plot.png)
 
 
 Đặc biệt, cdf có thể được sử dụng như 1 function với input là 1 giá trị cụ thể (biến số nguyên).
@@ -255,7 +255,7 @@ print(p)
 ### Inverse CDF
 CDF là 1 function đảo ngược. Nghĩa là bạn có thể từ giá trị probability (tỉ lệ) mà tra ngược lại giá trị tuổi bằng cách dùng ``cdf.inverse(giá trị tỉ lệ)``
 
-![](img/cdf-inverse.png)
+![](/assets/images/cdf-inverse.png)
 
 Từ hình trên có thể nói rằng, tuổi 30 là percentile thứ 25 của distribution này. (do p=0,25)
 
@@ -272,17 +272,17 @@ Ta ví dụ tập dataset là income của cư dân trước và sau 1995:
 
 ##### Nếu dùng PMF :
 
-![](img/pmf-compare.png)
+![](/assets/images/pmf-compare.png)
 
 Kết quả chart:
-![](img/pmf-compare-chart.png)
+![](/assets/images/pmf-compare-chart.png)
 
 
 ##### Nếu dùng CDF (khuyến khích)
-![](img/cdf-compare.png)
+![](/assets/images/cdf-compare.png)
 
 Kết quả chart:
-![](img/pmf-compare-chart.png)
+![](/assets/images/pmf-compare-chart.png)
 
 Nhận xét data:
 > Dưới 300000$ thì income hầu như không thay đổi trước và sau 1995. Đường màu cam lệch sang phải ở mốc income 100000-150000$ nghĩa là income sau 1995 của những người có thu nhập cao có xu hướng tăng lên. 

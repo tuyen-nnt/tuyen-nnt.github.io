@@ -50,7 +50,7 @@ spark.read.txt("...")
 Đầu tiên phải tạo RDD từ list. Optional là tạo thêm list của columns tên là ``names``
 df = spark.createDataFrame(RDD, schema=names)
 
-![](img/rdd-df.png)
+![](/assets/images/rdd-df.png)
 
 
 #### Read & Write file từ HDFS:
