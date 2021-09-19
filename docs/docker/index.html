@@ -14,8 +14,8 @@
 <meta property="og:title" content="Basics of Docker" />
 <meta name="author" content="tuyennnt" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Cách RUN UBUNTU docker run ubuntu //nếu chưa pull ubuntu image về thì sẽ pull rồi start, còn nếu pull rồi thì nó sẽ start container này luôn =&gt; nếu khi start mà thấy chưa có interact gì thì nó sẽ stop container lại luôn docker ps //xem list các tiến trình đang chạy của container hoặc các container đang chạy docker ps -a //xem các container đã dừng lại docker run -it ubuntu // start container với interaction mode và load ubuntu image lên trong cái container này Các câu lệnh: history !2 //để output cmd thứ 2 trong list history ls -1 //líst ds theo dạng dọc ls -l //list ds chi tiet touch &lt;tên file&gt; //lệnh tạo file mkdir &lt;tên thư mục&gt; //lệnh tạo thư mục mv &lt;tên file hoặc địa chỉ&gt; &lt;tên file hoặc địa chỉ&gt; //đổi tên hoặc di chuyển cat &lt;tên file&gt; more &lt;tên file hoặc địa chỉ&gt; //xem nội dung theo từng page, bấm phím space để qua trang tiếp theo nhưng ko scroll up lên được, nhấn enter để chạy từng line để xem less &lt;tên file hoặc địa chỉ&gt; //" />
-<meta property="og:description" content="Cách RUN UBUNTU docker run ubuntu //nếu chưa pull ubuntu image về thì sẽ pull rồi start, còn nếu pull rồi thì nó sẽ start container này luôn =&gt; nếu khi start mà thấy chưa có interact gì thì nó sẽ stop container lại luôn docker ps //xem list các tiến trình đang chạy của container hoặc các container đang chạy docker ps -a //xem các container đã dừng lại docker run -it ubuntu // start container với interaction mode và load ubuntu image lên trong cái container này Các câu lệnh: history !2 //để output cmd thứ 2 trong list history ls -1 //líst ds theo dạng dọc ls -l //list ds chi tiet touch &lt;tên file&gt; //lệnh tạo file mkdir &lt;tên thư mục&gt; //lệnh tạo thư mục mv &lt;tên file hoặc địa chỉ&gt; &lt;tên file hoặc địa chỉ&gt; //đổi tên hoặc di chuyển cat &lt;tên file&gt; more &lt;tên file hoặc địa chỉ&gt; //xem nội dung theo từng page, bấm phím space để qua trang tiếp theo nhưng ko scroll up lên được, nhấn enter để chạy từng line để xem less &lt;tên file hoặc địa chỉ&gt; //" />
+<meta name="description" content="Một số định nghĩa cơ bản:" />
+<meta property="og:description" content="Một số định nghĩa cơ bản:" />
 <link rel="canonical" href="https://tuyen-nnt.github.io/docker/" />
 <meta property="og:url" content="https://tuyen-nnt.github.io/docker/" />
 <meta property="og:site_name" content="My Blog" />
@@ -26,7 +26,7 @@
 <meta property="twitter:image" content="https://tuyen-nnt.github.io/assets/images/docker.png" />
 <meta property="twitter:title" content="Basics of Docker" />
 <script type="application/ld+json">
-{"@type":"BlogPosting","author":{"@type":"Person","name":"tuyennnt"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://tuyen-nnt.github.io/docker/"},"image":"https://tuyen-nnt.github.io/assets/images/docker.png","headline":"Basics of Docker","dateModified":"2021-05-02T00:00:00+07:00","datePublished":"2021-05-02T00:00:00+07:00","url":"https://tuyen-nnt.github.io/docker/","description":"Cách RUN UBUNTU docker run ubuntu //nếu chưa pull ubuntu image về thì sẽ pull rồi start, còn nếu pull rồi thì nó sẽ start container này luôn =&gt; nếu khi start mà thấy chưa có interact gì thì nó sẽ stop container lại luôn docker ps //xem list các tiến trình đang chạy của container hoặc các container đang chạy docker ps -a //xem các container đã dừng lại docker run -it ubuntu // start container với interaction mode và load ubuntu image lên trong cái container này Các câu lệnh: history !2 //để output cmd thứ 2 trong list history ls -1 //líst ds theo dạng dọc ls -l //list ds chi tiet touch &lt;tên file&gt; //lệnh tạo file mkdir &lt;tên thư mục&gt; //lệnh tạo thư mục mv &lt;tên file hoặc địa chỉ&gt; &lt;tên file hoặc địa chỉ&gt; //đổi tên hoặc di chuyển cat &lt;tên file&gt; more &lt;tên file hoặc địa chỉ&gt; //xem nội dung theo từng page, bấm phím space để qua trang tiếp theo nhưng ko scroll up lên được, nhấn enter để chạy từng line để xem less &lt;tên file hoặc địa chỉ&gt; //","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://tuyen-nnt.github.io/assets/images/ava.png"},"name":"tuyennnt"},"@context":"https://schema.org"}</script>
+{"@type":"BlogPosting","author":{"@type":"Person","name":"tuyennnt"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://tuyen-nnt.github.io/docker/"},"image":"https://tuyen-nnt.github.io/assets/images/docker.png","headline":"Basics of Docker","dateModified":"2021-05-02T00:00:00+07:00","datePublished":"2021-05-02T00:00:00+07:00","url":"https://tuyen-nnt.github.io/docker/","description":"Một số định nghĩa cơ bản:","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://tuyen-nnt.github.io/assets/images/ava.png"},"name":"tuyennnt"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     
@@ -152,7 +152,32 @@
     <!-- Toc if any -->
     
     <!-- End Toc -->
-    <h4 id="cách-run-ubuntu">Cách RUN UBUNTU</h4>
+    <h4 id="một-số-định-nghĩa-cơ-bản">Một số định nghĩa cơ bản:</h4>
+
+<h5 id="docker-image">Docker image</h5>
+<p>Là file chứa tất cả các thông tin của chương trình, kể cả system, dependency,… được đóng gói vào.</p>
+
+<p>Bạn có thể xem các image đã tạo trong folder <code>/var/lib/docker/images</code> kết hợp <code>sudo tree &lt;path trên&gt;</code></p>
+
+<p>Cách diễn giải khác thì đây là một file bất biến - không thay đổi, chứa các source code, libraries, dependencies, tools và các files khác cần thiết cho một ứng dụng để chạy.</p>
+
+<h5 id="docker-container">Docker container:</h5>
+<p>Là 1 môi trường tách biệt (như 1 container) được đặt trên máy ở 1 không gian riêng và không liên quan đến các chương trình khác.</p>
+
+<p>Cách diễn giải khác là một run-time environment mà ở đó người dùng có thể chạy một ứng dụng độc lập. Những container này rất gọn nhẹ và cho phép bạn chạy ứng dụng trong đó rất nhanh chóng và dễ dàng.</p>
+
+<h5 id="sự-liên-quan">Sự liên quan:</h5>
+
+<ul>
+  <li>
+    <p>Image có thể tồn tại mà không cần container, trong khi container chạy thì cần có image đã tồn tại. Vì vậy, container phụ thuộc vào image và sử dụng nó để tạo ra run-time environment và chạy ứng dụng trên đó.</p>
+  </li>
+  <li>
+    <p>Cả image và container đều là thành phần quan trọng để tạo ra 1 running container. Docker image là cực kì quan trọng để chi phối và định hình 1 Docker container.</p>
+  </li>
+</ul>
+
+<h4 id="cách-run-image-trên-ubuntu">Cách RUN image trên UBUNTU</h4>
 <p><code>docker  run ubuntu</code>
  //nếu chưa pull ubuntu image về thì sẽ pull rồi start, còn nếu pull rồi thì nó sẽ start container này luôn 
  =&gt; nếu khi start mà thấy chưa có interact gì thì nó sẽ stop container lại luôn</p>
@@ -257,24 +282,49 @@ sẽ cho kết quả ra file hello.txt trên.</p>
 <ul>
   <li>
     <p>Bước 1:</p>
+
+    <ul>
+      <li>Vào thư mục project trên vscode <code>code .</code>
+ Tạo file <code>Dockerfile</code> không ext, và input các thông tin sau:</li>
+    </ul>
   </li>
-  <li>Vào thư mục project trên vscode <code>code .</code></li>
-  <li>Tạo file <code>Dockerfile</code> không ext, và input các thông tin sau:
- ```
- FROM node:alpine
-    <blockquote>
-      <p>chọn image node trên trang docker hub và : distribution của linux, ở đây chọn alpine vì nó nhẹ nhất 
- COPY . /app 
-copy tất cả file execute vào thư mục app tạo mới, vào rồi copy vào trong image
-hoặc có thể hiểu là trong cái image có file system, và chúng ta tạo thư mục app bên trong file system đó, trong thư mục app chứa tất cả các file của program
- WORKDIR /app
-tạo đường dẫn rút gọn
- CMD node /app.js
-câu lệnh chạy ứng dụng, để docker biết mà chạy câu nào khi run</p>
-    </blockquote>
-  </li>
-  <li>Bước 2:</li>
-  <li>TA nói docker đóng gói úng dụng thành image
+</ul>
+
+<p>FROM node:alpine</p>
+<blockquote>
+  <p>Chọn image node trên trang docker hub và : distribution của linux, ở đây chọn alpine vì nó nhẹ nhất .</p>
+</blockquote>
+
+<p>COPY . /app</p>
+<blockquote>
+  <p>copy tất cả file execute vào thư mục app tạo mới, vào rồi copy vào trong image</p>
+</blockquote>
+
+<blockquote>
+  <p>hoặc có thể hiểu là trong cái image có file system, và chúng ta tạo thư mục app bên trong file system đó, trong thư mục app chứa tất cả các file của program.</p>
+</blockquote>
+
+<blockquote>
+  <p>File requirements.txt chứa các thư viện mà chương trình cần. Cần COPY trước khi RUN các cài đặt trong Dockerfile.
+VD của file:
+<code>
+tornado==6.1
+</code>. Với Pycharm thì ta có thể dùng Tools=&gt;Sync Python Requirement để tự động generate.</p>
+</blockquote>
+
+<p>WORKDIR /app</p>
+<blockquote>
+  <p>tạo đường dẫn rút gọn</p>
+</blockquote>
+
+<p>CMD node /app.js</p>
+<blockquote>
+  <p>câu lệnh chạy ứng dụng, để docker biết mà chạy câu nào khi run</p>
+</blockquote>
+
+<ul>
+  <li>Bước 2:
+ Ta nói docker đóng gói úng dụng thành image
  <code>docker build -t hello-docker .</code>
  trong đó, dấu . chỉ cho docker biết chỗ nào chứa Dockerfile
  hello-docker là tên repos docker mình tự tạo để quản lý</li>
@@ -285,35 +335,141 @@ câu lệnh chạy ứng dụng, để docker biết mà chạy câu nào khi ru
  kết quả câu lệnh có cột SIZE chỉ size của OS (alpine) + ứng dụng + node</p>
 
 <ul>
-  <li>BƯớc 3:
+  <li>Bước 3:
  Chạy thử docker image
  <code>docker run hello-docker</code>
- ta có thể chạy ở thư mục nào cũng được, vì image đã chứa mọi thứ cần</li>
+Đây là câu run cơ bản, ta có thể chạy ở thư mục nào cũng được, vì image đã chứa mọi thứ cần.</li>
 </ul>
 
-<p>*BƯớc 4
- Publish lên docker hub hub.docker.com</p>
+<p>Hầu hết các docker run dùng cú pháp chuẩn này:</p>
 
-<hr />
-<p>KHi ở máy khác, ta muốn pull image về chạy:</p>
+<h4 id="cách-1">Cách 1:</h4>
+
+<pre><code>docker  run -d -p 80:8888 shorten-link
+</code></pre>
+
+<blockquote>
+  <p>Với 8888 ở đây là listen port của program trên container tại đây https://github.com/tuyen-nnt/shortenLink/</p>
+</blockquote>
+
+<blockquote>
+  <p>Với 80 là port trên máy host của mình, <code>-d</code> là chạy ngầm.</p>
+</blockquote>
+
+<p>Sau khi docker run thì ta test container bằng cách chạy câu lệnh:</p>
+<pre><code>docker exec -it &lt;CONTAINER ID&gt; bash 
+</code></pre>
+
+<p>Trả về:</p>
+<pre><code>root@05b418a61ca3:/app# ls 
+</code></pre>
+<blockquote>
+  <p><code>ls</code> để list ra các file trong docker image, có thể check xem bước COPY đã đúng những file mình cần để chạy chương trình chưa?</p>
+</blockquote>
+
+<p>Để test wep app trên browser, ta dùng địa chỉ ip của máy:port máy host (expose) và thêm /đường dẫn như cài đặt.</p>
+
+<h4 id="cách-2">Cách 2:</h4>
+
+<p>Không cần port mà dùng luôn localhost, nghĩa là user bên ngoài chỉ cần dùng IP gateway:port của chương trình là được:</p>
+
+<pre><code>docker run -d --net=host shorten-link
+</code></pre>
+
+<p>Tuy nhiên nên hạn chế cách này, vì sẽ khiến conflict với các chương trình khác nếu chẳng may host mình cũng dùng port 8888 này ở chương trình đâu đó, vì mình không quyết định và control được port map (interface) như cách 1 để tùy chỉnh. Còn để host kiểu này khó biết được.</p>
 
 <ul>
-  <li>BƯớc 1:</li>
-  <li>Kiểm tra version docker, nếu chưa download thì chạy lệnh install
- <code>docker vesion</code></li>
+  <li>Bước 4
+ Publish lên docker hub: hub.docker.com</li>
 </ul>
 
-<p>*Bước 2:
+<hr />
+<p>Khi ở máy khác, ta muốn pull image về chạy:</p>
+
+<ul>
+  <li>
+    <p>Bước 1:
+ Kiểm tra version docker, nếu chưa download thì chạy lệnh install
+ <code>docker vesion</code></p>
+  </li>
+  <li>
+    <p>Bước 2:
  Kéo image về
  <code>docker pull senrie/hello-docker</code></p>
+  </li>
+</ul>
 
 <p>Kiểm tra lại = cách:
  <code>docker image ls</code></p>
 
-<p>*Bước 3:
+<ul>
+  <li>Bước 3:
  Chạy chương trình trên machine 
- <code>docker run senrie/hello-docker</code></p>
+ <code>docker run senrie/hello-docker</code></li>
+</ul>
 
+<hr />
+
+<h4 id="về-ports-trong-docker">Về PORTS trong Docker</h4>
+
+<p>Ta có thể xem các container đã build bằng lệnh <code>docker ps</code> : danh sách container đang chạy, và lệnh <code>docker ps -a</code>: tất cả container đã build.</p>
+
+<p>Ta thấy có cột PORTS, ví dụ:</p>
+<pre><code>0.0.0.0:80-&gt;8888/tcp, :::8888-&gt;8888/tcp
+</code></pre>
+<p>Mình sẽ giải thích từng chỉ số:</p>
+
+<ul>
+  <li>0.0.0.0: nghĩa là có thể dùng tất cả các IP  của máy (IP card mạng LAN, IP wifi,.. có thể check bằng <code>ifconfig</code>) để làm gateway cho bên ngoài truy cập vào thông qua port cụ thể bên dưới.</li>
+  <li>80 (layer ngoài): là port của máy host expose cho bên ngoài dùng để truy cập vào, như cánh cổng mở ra</li>
+  <li>8888 (layer trong): là listen port của chương trình trên container trong máy host của chúng ta.
+    <blockquote>
+      <p>Port 80 sẽ được setup trên tất cả các gateway và centralize lại để link với container có port 8888. Nghĩa là ta dùng IP gateway:80 thì sẽ tiếp cận được đến chương trình container.</p>
+    </blockquote>
+  </li>
+</ul>
+
+<p>Để check xem máy chúng ta đang chạy các port nào tránh conflict, ta dùng lệnh:
+<code>sudo netstat -plunt</code></p>
+
+<p>Xem qua về Docker run để hiểu hơn:
+https://docs.docker.com/engine/reference/commandline/run/</p>
+
+<hr />
+
+<h3 id="xem-cấu-hình">Xem cấu hình</h3>
+
+<p>Các cmd thường dùng:</p>
+
+<ul>
+  <li><code>docker inspect &lt;containerID&gt;</code> : xem các gateway, ip, network,… của container để biết nó đang xài network nào
+    <ul>
+      <li>Nếu cài port khi run thì network là “bridge” (khi netstat sẽ ra <code>docker-proxy</code>)</li>
+      <li>Nếu dùng –net=host thì network là “host”</li>
+      <li>…</li>
+    </ul>
+  </li>
+  <li>
+    <h2 id="wrk--t4--c400--d30s-url--xem-perform-mance-của-web-tham-khảo-thêm-tại-httpsgithubcomwgwrk"><code>wrk -t4 -c400 -d30s &lt;url&gt;</code> : xem perform mance của web (tham khảo thêm tại https://github.com/wg/wrk)</h2>
+    <h3 id="các-bước-fix-bugs">Các bước fix bugs</h3>
+  </li>
+  <li>Bước 1: Xác định xem lỗi gì (dùng curl, Postman hoặc F12)</li>
+  <li>Bước 2: Coi log. Ví dụ:
+    <pre><code>docker logs -f $(docker ps | grep "83-&gt;" | awk '{print $1}')
+</code></pre>
+    <p>Thêm tag <code>-f</code> để xem log real time không cần in hết log.</p>
+  </li>
+  <li>Bước 3: Debug
+    <ul>
+      <li>Dynamic Analysis: dùng break point hoặc print ra console,…
+=&gt; Cách này áp dụng tốt cho các trường hợp phức tạp và đơn giản cũng ok nếu đoán được code chỗ nào lỗi.</li>
+      <li>Static Analysis: đọc code chay (khi không biết chỗ nào run function đó, thường thì trong hướng đối tượng hay gặp phải)</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+<h3 id="tìm-hiểu-về-volumn-trong-docker">Tìm hiểu về Volumn trong Docker</h3>
 
 </div>
 

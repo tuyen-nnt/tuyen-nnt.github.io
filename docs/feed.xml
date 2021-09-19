@@ -5,8 +5,8 @@
     <description>Grow yourself and develop with me!</description>
     <link>https://tuyen-nnt.github.io/</link>
     <atom:link href="https://tuyen-nnt.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 11 Sep 2021 22:57:55 +0700</pubDate>
-    <lastBuildDate>Sat, 11 Sep 2021 22:57:55 +0700</lastBuildDate>
+    <pubDate>Sun, 19 Sep 2021 19:58:37 +0700</pubDate>
+    <lastBuildDate>Sun, 19 Sep 2021 19:58:37 +0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -328,6 +328,13 @@ print(p)
 
 &lt;p&gt;Khi bạn truy cập 1 trang web nghĩa là bạn đang gửi 1 HTTP request đến web server. Trong HTTP request sẽ chứa Header và Body.&lt;/p&gt;
 
+&lt;p&gt;Port mặc định của các giao thức HTTP hiện nay trên các trang web:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;HTTP: 80&lt;/li&gt;
+  &lt;li&gt;HTTPS: 443&lt;/li&gt;
+&lt;/ul&gt;
+
 &lt;h4 id=&quot;dòng-bắt-đầu-của-http-request-như-1-message-chứa-3-phần-sau&quot;&gt;Dòng bắt đầu của HTTP request (như 1 message) chứa 3 phần sau:&lt;/h4&gt;
 
 &lt;ul&gt;
@@ -496,6 +503,10 @@ Content-Disposition: form-data; name=&quot;myField&quot;
   &lt;li&gt;Single-resource body: chứa 1 loại file duy nhất, không biết độ dài, được mã hóa bằng các khối với key Transfer-Encoding : chunked.&lt;/li&gt;
   &lt;li&gt;Multiple-resource body : chứa multipart section, mỗi section chứa một số thông tin khác nhau. Loại này ít gặp.&lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;http-location&quot;&gt;HTTP Location&lt;/h3&gt;
+&lt;p&gt;Trong phần này có liên quan đến Redirection&lt;/p&gt;
 
 &lt;hr /&gt;
 &lt;p&gt;Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages

@@ -158,6 +158,13 @@
 
 <p>Khi bạn truy cập 1 trang web nghĩa là bạn đang gửi 1 HTTP request đến web server. Trong HTTP request sẽ chứa Header và Body.</p>
 
+<p>Port mặc định của các giao thức HTTP hiện nay trên các trang web:</p>
+
+<ul>
+  <li>HTTP: 80</li>
+  <li>HTTPS: 443</li>
+</ul>
+
 <h4 id="dòng-bắt-đầu-của-http-request-như-1-message-chứa-3-phần-sau">Dòng bắt đầu của HTTP request (như 1 message) chứa 3 phần sau:</h4>
 
 <ul>
@@ -326,6 +333,10 @@ Content-Disposition: form-data; name="myField"
   <li>Single-resource body: chứa 1 loại file duy nhất, không biết độ dài, được mã hóa bằng các khối với key Transfer-Encoding : chunked.</li>
   <li>Multiple-resource body : chứa multipart section, mỗi section chứa một số thông tin khác nhau. Loại này ít gặp.</li>
 </ul>
+
+<hr />
+<h3 id="http-location">HTTP Location</h3>
+<p>Trong phần này có liên quan đến Redirection</p>
 
 <hr />
 <p>Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages
