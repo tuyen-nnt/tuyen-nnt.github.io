@@ -21,8 +21,17 @@ git stash
 #### Khi push bị conflict, cách giải quyết như sau:
 
 * git status
-* Show conflict: bằng cách mở file conflict ra và chỉnh sửa về version mong muốn
+* Show conflict: bằng cách mở file bị conflict ra và chỉnh sửa về version mong muốn
 * git add
 * git commit
 * git push
 => Nên git pull về trước khi merge
+
+
+#### Port
+
+Xem IP: ``ifconfig``
+
+Để check xem máy chúng ta đang chạy các port nào tránh conflict, ta dùng lệnh:
+``sudo netstat -plunt``
+
