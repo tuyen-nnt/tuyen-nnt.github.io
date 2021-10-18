@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<link rel="icon" href="/assets/images/logo.png">
+
+<title>Tìm hiểu Network | Tuyen Nguyen</title>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Tìm hiểu Network | My Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Tìm hiểu Network" />
+<meta name="author" content="tuyennnt" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="1. Mô hình mạng 5 tầng Tầng 1: Physical" />
+<meta property="og:description" content="1. Mô hình mạng 5 tầng Tầng 1: Physical" />
+<link rel="canonical" href="https://tuyen-nnt.github.io/network/" />
+<meta property="og:url" content="https://tuyen-nnt.github.io/network/" />
+<meta property="og:site_name" content="My Blog" />
+<meta property="og:image" content="https://tuyen-nnt.github.io/assets/images/network-layer.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-10-18T00:00:00+07:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="https://tuyen-nnt.github.io/assets/images/network-layer.png" />
+<meta property="twitter:title" content="Tìm hiểu Network" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","author":{"@type":"Person","name":"tuyennnt"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://tuyen-nnt.github.io/network/"},"image":"https://tuyen-nnt.github.io/assets/images/network-layer.png","headline":"Tìm hiểu Network","dateModified":"2021-10-18T00:00:00+07:00","datePublished":"2021-10-18T00:00:00+07:00","url":"https://tuyen-nnt.github.io/network/","description":"1. Mô hình mạng 5 tầng Tầng 1: Physical","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://tuyen-nnt.github.io/assets/images/ava.png"},"name":"tuyennnt"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    
+<link href="/assets/css/prism.css" rel="stylesheet">
+
+<link href="/assets/css/theme.css" rel="stylesheet">
+
+<script src="/assets/js/jquery.min.js"></script>
+
+</head>
+
+
+
+
+<body>
+	<!-- defer loading of font and font awesome -->
+	<noscript id="deferred-styles">
+		<link href="https://fonts.googleapis.com/css?family=Sen:400,700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+	</noscript>
+
+<!-- Begin Sidebar Navigation
+================================================== -->
+
+<div class="sidebar">    
+</div>   
+<div class="nav-icon">
+    <div class="hamburger-bar"></div>
+</div>
+<div id="blackover-nav" class="blackover"></div>
+<nav id="menu">
+    <ul>
+        <h3>Navigation</h3>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/authors">Contributors <span class="badge badge-primary">new</span></a></li>
+        <li><a target="_blank" href="https://bootstrapstarter.com/jekyll-theme-memoirs/">Get Memoirs</a></li>      
+        <li><a href="/contact">Contact</a></li>       
+    </ul>   
+</nav>
+
+<script src="/assets/js/lunr.js"></script>
+
+<style>
+    
+</style>
+
+<div class="wrap-search">
+    <div class="d-flex align-items-center ml-auto">
+        <i class="fas fa-search show-search"></i>
+        <form class="bd-search ml-3" onSubmit="return lunr_search(document.getElementById('lunrsearch').value);">
+            <input type="text" class="form-control bigradius text-small launch-modal-search" id="lunrsearch" name="q" maxlength="255" value="" placeholder="Type and enter..."/>
+        </form>
+    </div>
+</div>
+
+<div id="lunrsearchresults">
+    <ul></ul>
+</div>
+
+<script src="/assets/js/lunrsearchengine.js"></script>
+
+
+<!-- End Sidebar Navigation
+================================================== -->
+
+<div class="site-content ">
+
+<div class="container">
+
+    <!-- Site Logo/Name
+    ================================================== -->
+   
+    <a class="navbar-brand" href="/">
+        <img src="/assets/images/ava.png" alt="Tuyen Nguyen">
+    </a>  
+   
+
+    <!-- Site Tag
+    ================================================== -->
+    
+
+    <!-- Content
+    ================================================== -->
+    <div class="main-content">
+        <div class="entry-header">
+    <!-- Post Title -->
+    <h1 class="posttitle">Tìm hiểu Network</h1>
+    <!-- Author & Date  Box -->
+    
+    
+    <div class="d-flex align-items-center mt-4">
+        <div>
+            
+            <img class="author-thumb" src="/assets/images/ava.png" alt="Tuyen">
+            
+        </div>            
+        <div>
+        Written by Tuyen on 
+        <span class="post-date"><time class="post-date" datetime="2021-10-18">18 Oct 2021</time></span>           
+        
+        </div>            
+    </div>
+    
+</div>
+
+<!-- Adsense under title if enabled from _config.yml (change your pub id and slot) -->
+
+
+<!-- Featured Image -->
+
+<div class="entry-featured-image">
+    
+    <img class="featured-image " src="/assets/images/network-layer.png" alt="Tìm hiểu Network">
+    
+</div>
+
+
+<!-- Content -->
+<!-- Post, Page Content
+================================================== -->
+<div class="article-post">
+    <!-- Toc if any -->
+    
+    <!-- End Toc -->
+    <h2 id="1-mô-hình-mạng-5-tầng">1. Mô hình mạng 5 tầng</h2>
+<p><img src="/assets/images/five-layer-network.png" alt="" /></p>
+
+<ul>
+  <li>Tầng 1: Physical</li>
+</ul>
+
+<p>Ví dụ như dây cáp mạng, hay các đầu nối, tín hiệu gửi để kết nối các máy tính với nhau. Ngoài ra tầng này còn mô tả cách tín hiệu được gửi qua các kết nối vật lý này.</p>
+
+<ul>
+  <li>Tầng 2: Data Link</li>
+</ul>
+
+<p>Dùng để diễn giải các tín hiệu của tầng 1 một cách chung chung để các thiết bị mạng có thể giao tiếp.
+Có nhiều giao thức ở tầng này nhưng phổ biến nhất là Ethernet, có nhiệm vụ nhận dữ liệu và truyền đến các nodes trên cùng 1 mạng hoặc link. 
+Tầng này nhận dữ liệu trên 1 đường liên kết đơn.</p>
+
+<ul>
+  <li>Tầng 3: Network (or Internet)
+ <img src="/assets/images/network-layer.png" alt="" />
+ Là tầng cho phép các mạng khác nhau liên kết với nhau thông qua các thiết bị router (bộ định tuyến). 
+ Tập hợp các mạng kết nối với nhau thông qua router gọi là Internetwork (mạng liên kết). Mạng liên kết phổ biến nhất là <code>Internet</code> :D.
+ Tầng này chịu trách nhiệm nhận dữ liệu được phân phối từ 1 tập hợp các mạng.
+Giao thức phổ biến nhất ở tầng này là giao thức IP (Internet protocol).</li>
+</ul>
+
+<p>Một phần mềm mạng gồm <code>Client</code> và <code>Server</code>:</p>
+
+<ul>
+  <li>Client gửi request</li>
+  <li>Server thì gửi về response</li>
+</ul>
+
+<p>Một node có thể chạy nhiều chương trình client hoặc server cùng lúc.
+Kiểu như ở client (server host) của bạn cùng thao tác nhiều chương trình cùng lúc để request (như mail, trình duyệt web), thì server ngoài cũng có thể chạy nhiều chương trình để trả về response cho bạn.</p>
+
+<ul>
+  <li>Tầng 4: Transport</li>
+</ul>
+
+<p>Trong khi tầng Network cung cấp dữ liệu giữa 2 node riêng lẻ thì tầng Transport có nhiệm vụ phân loại ra chương trình client hay server nào có nhiệm vụ nhận dữ liệu đó.</p>
+
+<p>Giao thức phổ biến nhất ở tầng này chính là TCP (Transmission Control Protocol). Người ta hay gọi theo cụm là TCP IP.</p>
+<blockquote>
+  <p>Nhưng TCP IP ko phải là tên gọi của 1 giao thức, nó chỉ là tên gọi chung kết hợp của giao thức ở tầng 3 và tầng 4. Mỗi giao thức đều có công dụng khác nhau.</p>
+</blockquote>
+
+<p>Ngoài ra có 1 giao thức thuộc tầng 4 transport cũng sử dụng giao thức IP tầng 3 để truyền tải dữ liệu. Đó là giao thức UDP (User Datagram Protocol). Nhưng giao thức này không đảm bảo độ tin cậy bằng TCP, mình sẽ nói thêm ở mục sau.</p>
+
+<p>Tóm lại, các giao thức ở tầng này hầu hết có nhiệm vụ đảm bảo dữ liệu được truyền tải đến “đúng” các ứng dụng đang chạy trên các nút đó.</p>
+
+<ul>
+  <li>Tầng 5: Application</li>
+</ul>
+
+<p>Giao thức phổ biến ở tầng này là HTTP (cho phép chúng ta duyệt web), SMTP (gửi/nhận email), etc..</p>
+
+<h4 id="tóm-tắt-giải-thích-1-cách-dễ-hiểu-hơn">Tóm tắt: Giải thích 1 cách dễ hiểu hơn:</h4>
+<p><img src="/assets/images/layer-actual.png" alt="" /></p>
+
+<ul>
+  <li>Tầng 1: Chiếc xe tải</li>
+  <li>Tầng 2: Mô tả cách xe tải đi từ giao lộ này đến giao lộ kia.</li>
+  <li>Tầng 3: Xác định đường để đi từ địa chỉ A đến địa chỉ B để giao hàng.</li>
+  <li>Tầng 4: Đảm bảo là tài xế biết cách gõ cửa nhà để biết đến đúng địa chỉ nhà rồi và thông báo ra nhận gói tin.</li>
+  <li>Tầng 5: Chính là nội dung của gói hàng (dữ liệu) !</li>
+</ul>
+
+<h4 id="có-thể-bạn-chưa-biết">Có thể bạn chưa biết?</h4>
+
+<ul>
+  <li>Ngoài model 5 tầng còn nhiều model khác. Nổi tiếng nhất là OSI model (7 tầng), khác với loại 5 tầng mà chúng ta học ở chỗ tầng 5 được tách ra 3 tầng.</li>
+  <li>TCP/IP truyền thống chỉ có 4 tầng vì Tầng 1 và tầng 2 được gộp làm 1. Về cơ bản cái truyền thống 4 tầng và 5 tầng hiện nay không khác nhau là mấy.</li>
+  <li>Chúng ta có thể tìm hiểu thêm về OSI Model tại đây:
+```
+https://www.sans.org/reading-room/whitepapers/standards/osi-model-overview-543</li>
+</ul>
+
+<p>https://en.wikipedia.org/wiki/OSI_model
+```</p>
+
+<h2 id="2-các-thiết-bị-mạng-cơ-bản">2. Các thiết bị mạng cơ bản</h2>
+
+<h3 id="cable">Cable</h3>
+<p>Dùng để kết nối các thiết bị với nhau và cho phép truyền dữ liệu thông qua nó.</p>
+
+<p>Giúp tạo kết nối mạng đơn giữa 1 điểm với 1 điểm.</p>
+
+<p>Có 2 loại:</p>
+
+<ul>
+  <li>Copper cable: Cat3, Cat5, Cat5e, Cat6,…
+<img src="cooper-cable.png" alt="" />
+    <ul>
+      <li>Các cable đời mới hơn như Cat5e, Cat6 tốt hơn trong việc truyền dữ liệu nhiều hơn và chính xác hơn do chúng có thông số kỹ thuật nâng cao và lõi xoắn của chúng được cấu tạo khác đi để giảm sự xuyên âm (crosstalk- khi mà xung điện trên 1 dây được phát hiện trên 1 dây khác) giúp giảm tình trạng đầu nhận dữ liệu không hiểu được dữ liệu gây ra lỗi mạng.</li>
+      <li>Gửi giao tiếp dữ liệu nhị phân qua dây đồng bằng cách thay đổi điện áp giữa 2 phạm vi. Hệ thống ở đầu nhận dữ liệu sẽ dịch sự thay đổi điện áp này thành dữ liệu nhị phân 0-1. Sau đó từ dữ liệu 0-1 này sẽ được dịch sang các loại dữ liệu khác nhau.</li>
+      <li>Sử dụng áp điện để biểu diễn dữ liệu dưới dạng 0-1</li>
+    </ul>
+  </li>
+  <li>Fiber optic
+    <ul>
+      <li>Sử dụng xung ánh sáng để biểu diễn dữ liệu dưới dạng 0-1.</li>
+      <li>Được dùng ưu tiên cho các môi trường có nhiều nhiễu điện từ.</li>
+      <li>Vận chuyển dữ liệu nhanh hơn, khoảng cách xa hơn mà khó làm mất dữ liệu tiềm ẩn hơn.</li>
+      <li>Đắt và dễ vỡ hơn.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="hub--switch">Hub &amp; Switch</h3>
+<p>Là những thiết bị giúp kết nối các máy tính trong cùng 1 mạng, thường gọi là mạng LAN (mạng cục bộ)</p>
+
+<h4 id="hub">Hub</h4>
+<p>1 thiết bị bất kỳ trong mạng lưới của hub khi truyền dữ liệu tới hub sẽ kết nối đến tất cả các máy tính khác mà cùng được kết nối với hub.</p>
+
+<p><img src="/assets/images/hub.png" alt="" /></p>
+
+<p>Các máy tính nhận dữ liệu có hệ thống riêng để xác định xem dữ liệu đó có đúng là dữ liệu mà nó có nhiệm vụ nhận hay không. Nếu không thì trả về không, nếu có thì thông báo nhận thành công.</p>
+
+<p>Cơ chế này gây ra nhiều tiếng ồn (noise) tạo ra cái gọi là collision domain.</p>
+
+<p>Collision domain:</p>
+
+<ul>
+  <li>
+    <p>Một phân đoạn mạng mà chỉ có 1 thiết bị có thể giao tiếp tại 1 thời điểm.
+<img src="/assets/images/collision.png" alt="" /></p>
+  </li>
+  <li>
+    <p>Nếu nhiều hệ thống (máy tính) cố gắng gởi dữ liệu cùng 1 lúc, các xung điện được gởi qua cáp (cable) có thể gây nhiễu lẫn nhau.
+Khiến cho các hệ thống phải chờ đợi một khoảng thời gian yên tĩnh trước khi cố gắng gửi dữ liệu lần nữa.</p>
+  </li>
+</ul>
+
+<blockquote>
+  <p>Điều này làm chậm truyền thông mạng nên hiện nay Hub không còn được dùng phổ biến.</p>
+</blockquote>
+
+<h3 id="switch">Switch</h3>
+<p>Mô hình hoạt động tương đối giống Hub, khác biệt ở chỗ:</p>
+
+<ul>
+  <li>Hub ở layer 1, Switch ở layer 2 (Data Link device)</li>
+  <li>Do đó Switch có thể kiểm tra dữ liệu của giao thức Ethernet được gửi đi xung quanh network. 
+=&gt; Switch có thể xác định hệ thống (máy tính) nào thuộc về dữ liệu đó mà chỉ gửi thẳng đến hệ thống đó thôi.</li>
+</ul>
+
+<p><img src="/assets/images/switch.png" alt="" /></p>
+
+<blockquote>
+  <p>Điều này giúp loại bỏ hoàn toàn kích thước của collision domain trong network.
+Gíup giảm sự truyền tải lại và tăng thông lượng tổng thể.</p>
+</blockquote>
+
+<h3 id="router">Router</h3>
+<p>Là thiết bị biết các forward dữ liệu giữa các mạng độc lập với nhau.</p>
+
+<p><img src="/assets/images/router.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>Hoạt động ở lớp thứ 3 (Network)</p>
+  </li>
+  <li>
+    <p>Cũng giống như switch, router có thể kiểm tra dữ liệu IP để xác định địa chỉ cần gửi dữ liệu đến.</p>
+  </li>
+  <li>
+    <p>Router chứa 1 số bảng nội bộ chứa các thông tin về định tuyến traffic (lưu lượng truy cập) giữa nhiều mạng khác nhau trên thế giới. Phổ biến là các router gia đình hoặc văn phòng nhỏ. Mục đích của các bộ định tuyến nhỏ này chỉ để lấy lưu lượng truy cập có nguồn gốc từ trong nhà hoặc văn phòng nhỏ sử dụng LAN và chuyển tiếp nó đến ISP (nhà cung cấp dịch vụ Internet)</p>
+  </li>
+</ul>
+
+<p><img src="/assets/images/router-isp.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>ISP là một loại router phức tạp hơn nhiều, nó sẽ tiếp quản traffic từ router nhỏ. Router này gọi là router lõi, tạo thành xương sống của Internet, chịu trách nhiệm về cách gửi và nhận dữ liệu khắp thế giới mỗi ngày.</p>
+  </li>
+  <li>
+    <p>ISP tiếp nhận rất nhiều traffic và phải xử lý việc quyết định nơi nào là nơi gửi traffic này đến. Core router này thường có nhiều kết nối đến nhiều core router khác bằng giao thức BGP (Border Gateway Protocol) giúp chúng tìm hiểu xem đường nào là tối ưu nhất để chuyển lưu lượng truy cập đến.</p>
+  </li>
+</ul>
+
+<blockquote>
+  <p>Khi bạn mở trình duyệt truy cập đến 1 web server bất kỳ, traffic giữa máy tính và web server có thể đã đi qua hàng chục router khác nhau. 
+Các Router là những hướng dẫn viên toàn cầu giúp đưa traffic đến đúng nơi.</p>
+</blockquote>
+
+<h2 id="server-và-client">Server và Client</h2>
+
+<p>Nodes: là từ dùng để gọi chung cho các thiết bị trong network ở trên, có thể là máy tính, server, client hay router,…</p>
+
+<p>Server: là node có nhiệm vụ cung cấp data cho client, còn được dùng để chỉ mục đích chính của node trên mạng.</p>
+
+<p>Client: là node request data.</p>
+
+<p>Đôi khi 1 node vừa làm server vừa là client. Ví dụ như Email server, vừa cung cấp data về email cho client, mà vừa là 1 client gửi yêu cầu đến DNS server và được DNS trả data về.</p>
+
+<p>=&gt; Hầu hết các thiết bị không hoàn toàn là 1 server hay 1 client, mà đảm nhận 1 trong 2 vị trí trên ở 1 thời điểm.</p>
+
+<p><img src="/assets/images/server-client.png" alt="" /></p>
+
+<h2 id="3-tầng-2---data-link-layer">3. Tầng 2 - Data Link Layer</h2>
+
+<h3 id="ethernet">Ethernet</h3>
+<ul>
+  <li>Là protocol mạng phổ biến nhất ở tầng 2 để gửi dữ liệu qua các liên kết riêng lẻ. (còn Wi-Fi thì dạng khác)</li>
+  <li>Là phương tiện giúp trừu tượng hóa tầng 1 (vật lý hay phần cứng) để các tầng khác có thể dễ tiếp cận sử dụng.</li>
+  <li>Chịu trách nhiệm về các thông tin kết nối, liên kết thiết bị để các tầng trên dựa vào. Vì vậy, các tầng trên không cần quan tâm thiết bị được kết nối ra sau, mà chỉ quan tâm tầng dưới gửi dữ liệu gì để xử lý mà thôi.</li>
+  <li>Ethernet có 1 kỹ thuật là CSMA/CD (Carrier-sense multiple access with collision detection) giúp nhận biết “collision domain” sóng mang xung đột.</li>
+  <li>CSMA/CD được dùng để quyết định khi nào kênh giao tiếp đang rãnh rỗi trên phân đoạn mạng (network segment) và khi nào 1 thiết bị đang rãnh để truyền dữ liệu.
+    <blockquote>
+      <p>Cách hoạt động khá đơn giản, khi có xung đột thì lập tức dừng truyền dữ liệu của các thiết bị gặp xung đột và chờ 1 khoảng thời gian ngẫu nhiên giúp tránh vụ va chạm (random interval trước khi thử gửi lại, và không đồng thời).</p>
+    </blockquote>
+  </li>
+  <li>Phân đoạn mạng của tất cả các thiết bị được kết nối sẽ có tất cả thông tin, dữ liệu đang trao đổi. Do đó, ta cần xác định thiết bị nào là nơi dữ liệu cần đến bằng MAC Address.</li>
+</ul>
+
+<h3 id="mac-addresses-media-access-control-address">MAC Addresses (Media Access Control Address)</h3>
+
+<ul>
+  <li>Là địa chỉ để nhận diện toàn cầu được đính kèm với một network interface cá nhân.</li>
+  <li>Giúp nhận dạng các máy tính khác nhau.</li>
+  <li>Là một con số <strong>48-bit</strong> thường được biểu diễn bởi 6 nhóm với 2 con số hệ thập lục phân cho mỗi nhóm.</li>
+  <li>Nghĩa là sẽ có tối đa 2^48 MAC address.
+    <blockquote>
+      <p>Hệ thập lục phân là cách biểu diễn các số sử dụng 16 ký tự. 
+<img src="/assets/images/hexa.png" alt="" /></p>
+    </blockquote>
+  </li>
+  <li>
+    <p>Octet: là 1 cách để tham chiếu số MAC. Trong mạng máy tính, bất kỳ số nào có thể biểu diễn bằng 8 bits được gọi là Octet.
+=&gt; 2 chữ số thập lục phân có thể biểu diễn các số tương tự các số được biểu diễn bằng 8 bits.</p>
+  </li>
+  <li>03 Octets đầu tiên của địa chỉ MAC được gọi là OUI (Organizationally unique identifier), được gán cho nhà sản xuất phần cứng riêng lẻ.
+=&gt; Từ 3 octets đầu có thể giúp ta xác định được NSX.</li>
+  <li>
+    <p>03 Octets sau được chỉ định theo ý nhà sản xuất mong muốn với điều kiện để mỗi thiết bị sản xuất ra có 1 MAC address duy nhất.
+<img src="/assets/images/mac-1.png" alt="" /></p>
+  </li>
+  <li>Tóm lại, Ethernet dùng MAC address để đảm bảo dữ liệu mà nó gửi có thông tin thiết bị nguồn và thiết bị đích gửi đến. Bằng cách này, dù ở trong một phân đoạn mạng hoạt động như thể có collision domain đơn lẻ, thì các thiết bị luôn biết được khi nào dữ liệu thuộc về nó.</li>
+</ul>
+
+<h3 id="ethernet-frame">Ethernet Frame</h3>
+
+<ul>
+  <li>
+    <p>Là 1 tập hợp các thông tin mang tính tổ chức cao, biểu diễn theo 1 thứ tự cụ thể.</p>
+  </li>
+  <li>
+    <p>Bằng Ethernet frame, network interface có tại tầng 1 có thể chuyển đổi chuỗi bit qua một liên kết để đưa vào trong data có ý nghĩa (decode)</p>
+  </li>
+  <li>
+    <p>Các phần trong frame là bắt buộc và có độ dài cố định.</p>
+  </li>
+</ul>
+
+<p><img src="/assets/images/ethernet-frame.png" alt="" /></p>
+
+<ul>
+  <li>Preamble: phần mở đầu, chia làm 7 bytes đệm + 1 byte SDF (dùng để làm dấu giới hạn khung bắt đầu).
+Được các network interface dùng để đồng bộ hóa các đồng hồ nội bộ mà chúng sử dụng nhằm điều chỉnh speed tại nơi mà chúng gởi dữ liệu.</li>
+</ul>
+
+</div>
+
+<!-- Rating -->
+
+
+<!-- Author Box if enabled from _config.yml -->
+<!-- Author Box -->
+
+
+<div class="authorbox mb-5 mt-5 pt-4 pb-4">   
+    <div class="row">
+        <div class="wrapavname col-md-3 text-center">
+            
+            <img  class="author-thumb" src="/assets/images/ava.png" alt="Tuyen">
+            
+            <p class="mt-4 mb-0 small text-center">
+                <a target="_blank" class="d-inline-block mx-1 text-dark" href="https://www.tuyen-nnt.github.io"><i class="fa fa-link"></i></a> 
+                <a target="_blank" class="d-inline-block mx-1 text-dark" href=""><i class="fab fa-twitter"></i></a>
+                <a class="d-inline-block mx-1 text-dark" href="mailto:tuyendev96@gmail.com"><i class="fa fa-envelope"></i></a>
+            </p>
+        </div>
+        <div class="col-md-9">
+            <h4>Tuyen</h4>
+            <p class="mt-3 mb-0">Author of this blog, mostly about Technical which is the field I am interested in.</p>
+        </div>
+    </div> 
+</div> 
+
+
+
+<!-- Comments if not disabled with comments: false -->
+<!-- Comments
+================================================== -->
+ 
+<div class="comments mt-5">
+    <button class="btn btn-outline-dark py-2 px-5 d-block w-100 show-comments"><i class="fa fa-comments text-muted"></i> &nbsp; Load Comments</button>         
+    <div id="comments">  
+        <h4 class="mb-4">Comments</h4>                 
+            <section class="disqus">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'demowebsite'; 
+        var disqus_developer = 0;
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+     
+    <div class="clearfix"></div>              
+    </div>    
+</div>       
+
+
+<!-- Share -->
+<div class="share">
+    <p>
+        Share
+    </p>
+    <ul>
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://twitter.com/intent/tweet?text=Tìm hiểu Network&url=https://tuyen-nnt.github.io/network/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                <i class="fab fa-twitter"></i>
+            </a>
+        </li>
+
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://facebook.com/sharer.php?u=https://tuyen-nnt.github.io/network/" onclick="window.open(this.href, 'facebook-share', 'width=550,height=435');return false;">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+        </li>
+
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://tuyen-nnt.github.io/network/" onclick="window.open(this.href, 'width=550,height=435');return false;">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+        </li>
+
+    </ul>
+</div>
+
+
+<!-- Related Post -->
+<!-- Related Posts
+================================================== -->
+<div class=" related-posts ">  
+
+    
+    <h2 class="text-center mb-4">Explore more like this</h2>
+    
+    
+    <div class="d-flex justify-content-center align-items-center">
+    
+    <!-- Categories -->
+    
+    
+    <a class="smoothscroll badge badge-primary text-capitalize" href="/categories#Network">Network</a>                
+    
+
+    <!-- Tags -->  
+    
+    
+
+    </div>
+
+    
+    
+    
+    <div class="blog-grid-container">
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        </div>        
+</div>
+
+<!-- Review with LD-JSON, adapt it for your needs if you like, but make sure you test the generated HTML source code first: 
+https://search.google.com/structured-data/testing-tool/u/0/
+================================================== -->
+
+    </div>
+
+    
+    <!-- Newsletter
+    ================================================== -->
+    <div class="newsletter text-center">
+        <span class="h4"><img src="/assets/images/ava.png" class="newsletter-logo" alt="My Blog"> &nbsp; Never miss a <b>story</b> from us, subscribe to our newsletter</span>
+        <form action="https://wowthemes.us11.list-manage.com/subscribe/post?u=8aeb20a530e124561927d3bd8&amp;id=8c3d2d214b" method="post" name="mc-embedded-subscribe-form" class="wj-contact-form validate" target="_blank" novalidate>
+            <div class="mc-field-group d-inline-flex">
+            <input type="email" placeholder="Your e-mail" name="EMAIL" class="required email" id="mce-EMAIL" autocomplete="on" required>
+            <input type="submit" value="Subscribe" name="subscribe" class="heart">
+            </div>
+        </form>
+    </div>
+    
+    
+</div>
+
+<!-- Begin Footer
+================================================== -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-12 text-center text-lg-left">
+                Copyright © 2021 Tuyen Nguyen 
+            </div>
+            <div class="col-md-6 col-sm-12 text-center text-lg-right">    
+                <a target="_blank" href="https://www.wowthemes.net/memoirs-free-jekyll-theme/">Memoirs Jekyll Theme</a> by WowThemes.net
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- End Footer
+================================================== -->
+
+</div> <!-- /.site-content -->
+
+<!-- Scripts (if you need bootstrap.js, please add it yourself. I didn't use it for performance reasons, it was not needed in this theme)
+================================================== -->
+
+<script src="/assets/js/prism.js"></script>
+
+<script src="/assets/js/theme.js"></script>
+
+
+
+
+<script id="dsq-count-scr" src="//demowebsite.disqus.com/count.js"></script>
+
+
+</body>
+</html>

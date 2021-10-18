@@ -5,9 +5,283 @@
     <description>Grow yourself and develop with me!</description>
     <link>https://tuyen-nnt.github.io/</link>
     <atom:link href="https://tuyen-nnt.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 19 Sep 2021 19:58:37 +0700</pubDate>
-    <lastBuildDate>Sun, 19 Sep 2021 19:58:37 +0700</lastBuildDate>
+    <pubDate>Mon, 18 Oct 2021 23:39:55 +0700</pubDate>
+    <lastBuildDate>Mon, 18 Oct 2021 23:39:55 +0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>Tìm hiểu Network</title>
+        <description>&lt;h2 id=&quot;1-mô-hình-mạng-5-tầng&quot;&gt;1. Mô hình mạng 5 tầng&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/five-layer-network.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Tầng 1: Physical&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Ví dụ như dây cáp mạng, hay các đầu nối, tín hiệu gửi để kết nối các máy tính với nhau. Ngoài ra tầng này còn mô tả cách tín hiệu được gửi qua các kết nối vật lý này.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Tầng 2: Data Link&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Dùng để diễn giải các tín hiệu của tầng 1 một cách chung chung để các thiết bị mạng có thể giao tiếp.
+Có nhiều giao thức ở tầng này nhưng phổ biến nhất là Ethernet, có nhiệm vụ nhận dữ liệu và truyền đến các nodes trên cùng 1 mạng hoặc link. 
+Tầng này nhận dữ liệu trên 1 đường liên kết đơn.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Tầng 3: Network (or Internet)
+ &lt;img src=&quot;/assets/images/network-layer.png&quot; alt=&quot;&quot; /&gt;
+ Là tầng cho phép các mạng khác nhau liên kết với nhau thông qua các thiết bị router (bộ định tuyến). 
+ Tập hợp các mạng kết nối với nhau thông qua router gọi là Internetwork (mạng liên kết). Mạng liên kết phổ biến nhất là &lt;code&gt;Internet&lt;/code&gt; :D.
+ Tầng này chịu trách nhiệm nhận dữ liệu được phân phối từ 1 tập hợp các mạng.
+Giao thức phổ biến nhất ở tầng này là giao thức IP (Internet protocol).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Một phần mềm mạng gồm &lt;code&gt;Client&lt;/code&gt; và &lt;code&gt;Server&lt;/code&gt;:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Client gửi request&lt;/li&gt;
+  &lt;li&gt;Server thì gửi về response&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Một node có thể chạy nhiều chương trình client hoặc server cùng lúc.
+Kiểu như ở client (server host) của bạn cùng thao tác nhiều chương trình cùng lúc để request (như mail, trình duyệt web), thì server ngoài cũng có thể chạy nhiều chương trình để trả về response cho bạn.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Tầng 4: Transport&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Trong khi tầng Network cung cấp dữ liệu giữa 2 node riêng lẻ thì tầng Transport có nhiệm vụ phân loại ra chương trình client hay server nào có nhiệm vụ nhận dữ liệu đó.&lt;/p&gt;
+
+&lt;p&gt;Giao thức phổ biến nhất ở tầng này chính là TCP (Transmission Control Protocol). Người ta hay gọi theo cụm là TCP IP.&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Nhưng TCP IP ko phải là tên gọi của 1 giao thức, nó chỉ là tên gọi chung kết hợp của giao thức ở tầng 3 và tầng 4. Mỗi giao thức đều có công dụng khác nhau.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Ngoài ra có 1 giao thức thuộc tầng 4 transport cũng sử dụng giao thức IP tầng 3 để truyền tải dữ liệu. Đó là giao thức UDP (User Datagram Protocol). Nhưng giao thức này không đảm bảo độ tin cậy bằng TCP, mình sẽ nói thêm ở mục sau.&lt;/p&gt;
+
+&lt;p&gt;Tóm lại, các giao thức ở tầng này hầu hết có nhiệm vụ đảm bảo dữ liệu được truyền tải đến “đúng” các ứng dụng đang chạy trên các nút đó.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Tầng 5: Application&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Giao thức phổ biến ở tầng này là HTTP (cho phép chúng ta duyệt web), SMTP (gửi/nhận email), etc..&lt;/p&gt;
+
+&lt;h4 id=&quot;tóm-tắt-giải-thích-1-cách-dễ-hiểu-hơn&quot;&gt;Tóm tắt: Giải thích 1 cách dễ hiểu hơn:&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/layer-actual.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Tầng 1: Chiếc xe tải&lt;/li&gt;
+  &lt;li&gt;Tầng 2: Mô tả cách xe tải đi từ giao lộ này đến giao lộ kia.&lt;/li&gt;
+  &lt;li&gt;Tầng 3: Xác định đường để đi từ địa chỉ A đến địa chỉ B để giao hàng.&lt;/li&gt;
+  &lt;li&gt;Tầng 4: Đảm bảo là tài xế biết cách gõ cửa nhà để biết đến đúng địa chỉ nhà rồi và thông báo ra nhận gói tin.&lt;/li&gt;
+  &lt;li&gt;Tầng 5: Chính là nội dung của gói hàng (dữ liệu) !&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;có-thể-bạn-chưa-biết&quot;&gt;Có thể bạn chưa biết?&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Ngoài model 5 tầng còn nhiều model khác. Nổi tiếng nhất là OSI model (7 tầng), khác với loại 5 tầng mà chúng ta học ở chỗ tầng 5 được tách ra 3 tầng.&lt;/li&gt;
+  &lt;li&gt;TCP/IP truyền thống chỉ có 4 tầng vì Tầng 1 và tầng 2 được gộp làm 1. Về cơ bản cái truyền thống 4 tầng và 5 tầng hiện nay không khác nhau là mấy.&lt;/li&gt;
+  &lt;li&gt;Chúng ta có thể tìm hiểu thêm về OSI Model tại đây:
+```
+https://www.sans.org/reading-room/whitepapers/standards/osi-model-overview-543&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;https://en.wikipedia.org/wiki/OSI_model
+```&lt;/p&gt;
+
+&lt;h2 id=&quot;2-các-thiết-bị-mạng-cơ-bản&quot;&gt;2. Các thiết bị mạng cơ bản&lt;/h2&gt;
+
+&lt;h3 id=&quot;cable&quot;&gt;Cable&lt;/h3&gt;
+&lt;p&gt;Dùng để kết nối các thiết bị với nhau và cho phép truyền dữ liệu thông qua nó.&lt;/p&gt;
+
+&lt;p&gt;Giúp tạo kết nối mạng đơn giữa 1 điểm với 1 điểm.&lt;/p&gt;
+
+&lt;p&gt;Có 2 loại:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Copper cable: Cat3, Cat5, Cat5e, Cat6,…
+&lt;img src=&quot;cooper-cable.png&quot; alt=&quot;&quot; /&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Các cable đời mới hơn như Cat5e, Cat6 tốt hơn trong việc truyền dữ liệu nhiều hơn và chính xác hơn do chúng có thông số kỹ thuật nâng cao và lõi xoắn của chúng được cấu tạo khác đi để giảm sự xuyên âm (crosstalk- khi mà xung điện trên 1 dây được phát hiện trên 1 dây khác) giúp giảm tình trạng đầu nhận dữ liệu không hiểu được dữ liệu gây ra lỗi mạng.&lt;/li&gt;
+      &lt;li&gt;Gửi giao tiếp dữ liệu nhị phân qua dây đồng bằng cách thay đổi điện áp giữa 2 phạm vi. Hệ thống ở đầu nhận dữ liệu sẽ dịch sự thay đổi điện áp này thành dữ liệu nhị phân 0-1. Sau đó từ dữ liệu 0-1 này sẽ được dịch sang các loại dữ liệu khác nhau.&lt;/li&gt;
+      &lt;li&gt;Sử dụng áp điện để biểu diễn dữ liệu dưới dạng 0-1&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Fiber optic
+    &lt;ul&gt;
+      &lt;li&gt;Sử dụng xung ánh sáng để biểu diễn dữ liệu dưới dạng 0-1.&lt;/li&gt;
+      &lt;li&gt;Được dùng ưu tiên cho các môi trường có nhiều nhiễu điện từ.&lt;/li&gt;
+      &lt;li&gt;Vận chuyển dữ liệu nhanh hơn, khoảng cách xa hơn mà khó làm mất dữ liệu tiềm ẩn hơn.&lt;/li&gt;
+      &lt;li&gt;Đắt và dễ vỡ hơn.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;hub--switch&quot;&gt;Hub &amp;amp; Switch&lt;/h3&gt;
+&lt;p&gt;Là những thiết bị giúp kết nối các máy tính trong cùng 1 mạng, thường gọi là mạng LAN (mạng cục bộ)&lt;/p&gt;
+
+&lt;h4 id=&quot;hub&quot;&gt;Hub&lt;/h4&gt;
+&lt;p&gt;1 thiết bị bất kỳ trong mạng lưới của hub khi truyền dữ liệu tới hub sẽ kết nối đến tất cả các máy tính khác mà cùng được kết nối với hub.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/hub.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Các máy tính nhận dữ liệu có hệ thống riêng để xác định xem dữ liệu đó có đúng là dữ liệu mà nó có nhiệm vụ nhận hay không. Nếu không thì trả về không, nếu có thì thông báo nhận thành công.&lt;/p&gt;
+
+&lt;p&gt;Cơ chế này gây ra nhiều tiếng ồn (noise) tạo ra cái gọi là collision domain.&lt;/p&gt;
+
+&lt;p&gt;Collision domain:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Một phân đoạn mạng mà chỉ có 1 thiết bị có thể giao tiếp tại 1 thời điểm.
+&lt;img src=&quot;/assets/images/collision.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Nếu nhiều hệ thống (máy tính) cố gắng gởi dữ liệu cùng 1 lúc, các xung điện được gởi qua cáp (cable) có thể gây nhiễu lẫn nhau.
+Khiến cho các hệ thống phải chờ đợi một khoảng thời gian yên tĩnh trước khi cố gắng gửi dữ liệu lần nữa.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Điều này làm chậm truyền thông mạng nên hiện nay Hub không còn được dùng phổ biến.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;switch&quot;&gt;Switch&lt;/h3&gt;
+&lt;p&gt;Mô hình hoạt động tương đối giống Hub, khác biệt ở chỗ:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Hub ở layer 1, Switch ở layer 2 (Data Link device)&lt;/li&gt;
+  &lt;li&gt;Do đó Switch có thể kiểm tra dữ liệu của giao thức Ethernet được gửi đi xung quanh network. 
+=&amp;gt; Switch có thể xác định hệ thống (máy tính) nào thuộc về dữ liệu đó mà chỉ gửi thẳng đến hệ thống đó thôi.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/switch.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Điều này giúp loại bỏ hoàn toàn kích thước của collision domain trong network.
+Gíup giảm sự truyền tải lại và tăng thông lượng tổng thể.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;router&quot;&gt;Router&lt;/h3&gt;
+&lt;p&gt;Là thiết bị biết các forward dữ liệu giữa các mạng độc lập với nhau.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/router.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Hoạt động ở lớp thứ 3 (Network)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Cũng giống như switch, router có thể kiểm tra dữ liệu IP để xác định địa chỉ cần gửi dữ liệu đến.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Router chứa 1 số bảng nội bộ chứa các thông tin về định tuyến traffic (lưu lượng truy cập) giữa nhiều mạng khác nhau trên thế giới. Phổ biến là các router gia đình hoặc văn phòng nhỏ. Mục đích của các bộ định tuyến nhỏ này chỉ để lấy lưu lượng truy cập có nguồn gốc từ trong nhà hoặc văn phòng nhỏ sử dụng LAN và chuyển tiếp nó đến ISP (nhà cung cấp dịch vụ Internet)&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/router-isp.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;ISP là một loại router phức tạp hơn nhiều, nó sẽ tiếp quản traffic từ router nhỏ. Router này gọi là router lõi, tạo thành xương sống của Internet, chịu trách nhiệm về cách gửi và nhận dữ liệu khắp thế giới mỗi ngày.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;ISP tiếp nhận rất nhiều traffic và phải xử lý việc quyết định nơi nào là nơi gửi traffic này đến. Core router này thường có nhiều kết nối đến nhiều core router khác bằng giao thức BGP (Border Gateway Protocol) giúp chúng tìm hiểu xem đường nào là tối ưu nhất để chuyển lưu lượng truy cập đến.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Khi bạn mở trình duyệt truy cập đến 1 web server bất kỳ, traffic giữa máy tính và web server có thể đã đi qua hàng chục router khác nhau. 
+Các Router là những hướng dẫn viên toàn cầu giúp đưa traffic đến đúng nơi.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;server-và-client&quot;&gt;Server và Client&lt;/h2&gt;
+
+&lt;p&gt;Nodes: là từ dùng để gọi chung cho các thiết bị trong network ở trên, có thể là máy tính, server, client hay router,…&lt;/p&gt;
+
+&lt;p&gt;Server: là node có nhiệm vụ cung cấp data cho client, còn được dùng để chỉ mục đích chính của node trên mạng.&lt;/p&gt;
+
+&lt;p&gt;Client: là node request data.&lt;/p&gt;
+
+&lt;p&gt;Đôi khi 1 node vừa làm server vừa là client. Ví dụ như Email server, vừa cung cấp data về email cho client, mà vừa là 1 client gửi yêu cầu đến DNS server và được DNS trả data về.&lt;/p&gt;
+
+&lt;p&gt;=&amp;gt; Hầu hết các thiết bị không hoàn toàn là 1 server hay 1 client, mà đảm nhận 1 trong 2 vị trí trên ở 1 thời điểm.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/server-client.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;3-tầng-2---data-link-layer&quot;&gt;3. Tầng 2 - Data Link Layer&lt;/h2&gt;
+
+&lt;h3 id=&quot;ethernet&quot;&gt;Ethernet&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Là protocol mạng phổ biến nhất ở tầng 2 để gửi dữ liệu qua các liên kết riêng lẻ. (còn Wi-Fi thì dạng khác)&lt;/li&gt;
+  &lt;li&gt;Là phương tiện giúp trừu tượng hóa tầng 1 (vật lý hay phần cứng) để các tầng khác có thể dễ tiếp cận sử dụng.&lt;/li&gt;
+  &lt;li&gt;Chịu trách nhiệm về các thông tin kết nối, liên kết thiết bị để các tầng trên dựa vào. Vì vậy, các tầng trên không cần quan tâm thiết bị được kết nối ra sau, mà chỉ quan tâm tầng dưới gửi dữ liệu gì để xử lý mà thôi.&lt;/li&gt;
+  &lt;li&gt;Ethernet có 1 kỹ thuật là CSMA/CD (Carrier-sense multiple access with collision detection) giúp nhận biết “collision domain” sóng mang xung đột.&lt;/li&gt;
+  &lt;li&gt;CSMA/CD được dùng để quyết định khi nào kênh giao tiếp đang rãnh rỗi trên phân đoạn mạng (network segment) và khi nào 1 thiết bị đang rãnh để truyền dữ liệu.
+    &lt;blockquote&gt;
+      &lt;p&gt;Cách hoạt động khá đơn giản, khi có xung đột thì lập tức dừng truyền dữ liệu của các thiết bị gặp xung đột và chờ 1 khoảng thời gian ngẫu nhiên giúp tránh vụ va chạm (random interval trước khi thử gửi lại, và không đồng thời).&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Phân đoạn mạng của tất cả các thiết bị được kết nối sẽ có tất cả thông tin, dữ liệu đang trao đổi. Do đó, ta cần xác định thiết bị nào là nơi dữ liệu cần đến bằng MAC Address.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;mac-addresses-media-access-control-address&quot;&gt;MAC Addresses (Media Access Control Address)&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Là địa chỉ để nhận diện toàn cầu được đính kèm với một network interface cá nhân.&lt;/li&gt;
+  &lt;li&gt;Giúp nhận dạng các máy tính khác nhau.&lt;/li&gt;
+  &lt;li&gt;Là một con số &lt;strong&gt;48-bit&lt;/strong&gt; thường được biểu diễn bởi 6 nhóm với 2 con số hệ thập lục phân cho mỗi nhóm.&lt;/li&gt;
+  &lt;li&gt;Nghĩa là sẽ có tối đa 2^48 MAC address.
+    &lt;blockquote&gt;
+      &lt;p&gt;Hệ thập lục phân là cách biểu diễn các số sử dụng 16 ký tự. 
+&lt;img src=&quot;/assets/images/hexa.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Octet: là 1 cách để tham chiếu số MAC. Trong mạng máy tính, bất kỳ số nào có thể biểu diễn bằng 8 bits được gọi là Octet.
+=&amp;gt; 2 chữ số thập lục phân có thể biểu diễn các số tương tự các số được biểu diễn bằng 8 bits.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;03 Octets đầu tiên của địa chỉ MAC được gọi là OUI (Organizationally unique identifier), được gán cho nhà sản xuất phần cứng riêng lẻ.
+=&amp;gt; Từ 3 octets đầu có thể giúp ta xác định được NSX.&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;03 Octets sau được chỉ định theo ý nhà sản xuất mong muốn với điều kiện để mỗi thiết bị sản xuất ra có 1 MAC address duy nhất.
+&lt;img src=&quot;/assets/images/mac-1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Tóm lại, Ethernet dùng MAC address để đảm bảo dữ liệu mà nó gửi có thông tin thiết bị nguồn và thiết bị đích gửi đến. Bằng cách này, dù ở trong một phân đoạn mạng hoạt động như thể có collision domain đơn lẻ, thì các thiết bị luôn biết được khi nào dữ liệu thuộc về nó.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;ethernet-frame&quot;&gt;Ethernet Frame&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Là 1 tập hợp các thông tin mang tính tổ chức cao, biểu diễn theo 1 thứ tự cụ thể.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Bằng Ethernet frame, network interface có tại tầng 1 có thể chuyển đổi chuỗi bit qua một liên kết để đưa vào trong data có ý nghĩa (decode)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Các phần trong frame là bắt buộc và có độ dài cố định.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/ethernet-frame.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Preamble: phần mở đầu, chia làm 7 bytes đệm + 1 byte SDF (dùng để làm dấu giới hạn khung bắt đầu).
+Được các network interface dùng để đồng bộ hóa các đồng hồ nội bộ mà chúng sử dụng nhằm điều chỉnh speed tại nơi mà chúng gởi dữ liệu.&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Mon, 18 Oct 2021 00:00:00 +0700</pubDate>
+        <link>https://tuyen-nnt.github.io/network/</link>
+        <guid isPermaLink="true">https://tuyen-nnt.github.io/network/</guid>
+        
+        
+        <category>Network</category>
+        
+      </item>
     
       <item>
         <title>Tìm hiểu về Data Analysis</title>
@@ -2115,157 +2389,6 @@ EXPOSE 9090
         <category>Data</category>
         
         <category>Docker</category>
-        
-      </item>
-    
-      <item>
-        <title>Extract - Transform - Load (ETL process)</title>
-        <description>&lt;h1 id=&quot;tìm-hiểu-về-etl&quot;&gt;Tìm hiểu về ETL&lt;/h1&gt;
-
-&lt;h2 id=&quot;i-extract-data&quot;&gt;I. EXTRACT DATA&lt;/h2&gt;
-
-&lt;h3 id=&quot;1-các-cách-để-trích-xuất-dữ-liệu&quot;&gt;1. Các cách để trích xuất dữ liệu&lt;/h3&gt;
-&lt;p&gt;Có 3 cách:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/extract.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Trích xuất từ file text, như file .txt or .csv
-Text file có 3 loại là : 
-	* Text thuần
-	* Flat file (là file có .tsv hoặc .csv cách nhau bởi dấu “,” hoặc “tab” giữa các giá trị). Những file này có dòng thể hiện các record và cột thể hiện attribute của record.
-	*File JSON: bán cấu trúc, có 4 kiểu dữ liệu atomic là number, string, boolean và null và 2 kiểu dữ liệu dạng composite là array và object.
-	JSON có package hỗ trợ là “json” để import data
-	&lt;img src=&quot;/assets/images/load-json.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Trích xuất từ web hoặc APIs của web services, như là Hacker News API
-&lt;img src=&quot;/assets/images/web-extract.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-    &lt;ul&gt;
-      &lt;li&gt;Thông qua web:&lt;/li&gt;
-    &lt;/ul&gt;
-
-    &lt;p&gt;&lt;img src=&quot;/assets/images/data-web.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Ví dụ: bạn tìm kiếm thông tin trên google.com thì trình duyệt của bạn sẽ gửi request của bạn đến server của google và google sẽ trả về dữ liệu mà bạn đang tìm kiếm.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;* Thông qua API của web:
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Không phải lúc nào các trang web cũng trả về kết quả mà người thường có thể đọc ngay, mà các trang web đó sẽ trả về định dạng JSON thông qua API mà chúng ta request.&lt;/p&gt;
-
-&lt;p&gt;Ta xem ví dụ request API từ trang Hackernews:
-&lt;img src=&quot;/assets/images/api-request.png&quot; alt=&quot;&quot; /&gt;
-Ta import package “request” rồi dùng method .get() để chèn vào link web cần lấy file JSON. 
-Sau đó ta dùng method .json() để phân tích file JSON từ kết quả đã lấy được và chuyển hóa nó thành Python object.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Trích xuất từ một database trên web services 
-Hầu hết các ứng dụng web đều có database để backup và để không bị ảnh hưởng khi tắt server, v.v. Cần phân biệt 2 loại database chính trong trường hợp này:
-    &lt;ul&gt;
-      &lt;li&gt;&lt;em&gt;Application database&lt;/em&gt; : dùng cho trường hợp có nhiều giao dịch được cập nhật, loại này còn có tên gọi là &lt;em&gt;OLTP&lt;/em&gt; (online transaction processing)&lt;/li&gt;
-      &lt;li&gt;&lt;em&gt;Analytical database&lt;/em&gt;: được xây dựng cho việc phân tích dữ liệu còn gọi là &lt;em&gt;OLAP&lt;/em&gt; (online analytical processing)&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;2-trích-xuất-dữ-liệu-từ-database-như-thế-nào&quot;&gt;2. Trích xuất dữ liệu từ database như thế nào?&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Dùng URI/chuỗi connection, cú pháp như sau:
-    &lt;pre&gt;&lt;code&gt;[database_type]://[user[:password]@][host][:port]
-&lt;/code&gt;&lt;/pre&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Trong Python, ta dùng connection URI thông qua package &lt;code&gt;sqlalchemy&lt;/code&gt; để tạo &lt;em&gt;database engine&lt;/em&gt; :&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/create-engine.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Từ engine đã được tạo ra, ta có thể dùng nó để đặt vào 1 số package hỗ trợ nó tương tác với database, đặc biệt là package &lt;code&gt;pandas&lt;/code&gt;.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;import requests
-```&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;lấy-dữ-liệu-từ-bài-viết-của-hackernews-về-f12-inspect-để-lấy-url-của-nó&quot;&gt;Lấy dữ liệu từ bài viết của Hackernews về, F12 inspect để lấy URL của nó&lt;/h1&gt;
-&lt;p&gt;resp = requests.get(“https://hacker-news.firebaseio.com/v0/item/16222426.json”)&lt;/p&gt;
-
-&lt;h1 id=&quot;in-dữ-liệu-vừa-parse-thành-file-json-ra-màn-hình&quot;&gt;in dữ liệu vừa parse thành file json ra màn hình&lt;/h1&gt;
-&lt;p&gt;print(resp.json())&lt;/p&gt;
-
-&lt;h1 id=&quot;parse-dữ-liệu-ra-rồi-gán-value-của-key-score-vào-biến-post_score-sau-đó-in-cái-biến-ra&quot;&gt;parse dữ liệu ra rồi gán value của key “score” vào biến post_score, sau đó in cái biến ra&lt;/h1&gt;
-&lt;p&gt;post_score = resp.json()[“score”]
-print(post_score)&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-
-* Một số ví dụ mở rộng hơn (xem phần 3 để hiểu hơn):
-
-Đọc dữ liệu từ database của postgreSQL, hàm extract dùng SQL query có nhiệm vụ chuyển từ dữ liệu bảng thành kiểu object mà pandas dùng (là dataframe)
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h1 id=&quot;function-to-extract-table-to-a-pandas-dataframe&quot;&gt;Function to extract table to a pandas DataFrame&lt;/h1&gt;
-&lt;p&gt;def extract_table_to_pandas(tablename, db_engine):
-    query = “SELECT * FROM {}”.format(tablename)
-    return pd.read_sql(query, db_engine)&lt;/p&gt;
-
-&lt;h1 id=&quot;connect-to-the-database-using-the-connection-uri-sử-dụng-package-sqlalchemy&quot;&gt;Connect to the database using the connection URI, sử dụng package sqlalchemy&lt;/h1&gt;
-&lt;p&gt;connection_uri = “postgresql://repl:password@localhost:5432/pagila” 
-db_engine = sqlalchemy.create_engine(connection_uri)&lt;/p&gt;
-
-&lt;h1 id=&quot;extract-the-film-table-into-a-pandas-dataframe-lưu-ý-nhớ-để-tên-bảng-dạng-chuỗi&quot;&gt;Extract the film table into a pandas DataFrame, lưu ý nhớ để tên bảng dạng chuỗi&lt;/h1&gt;
-&lt;p&gt;extract_table_to_pandas(“film”, db_engine)&lt;/p&gt;
-
-&lt;h1 id=&quot;extract-the-customer-table-into-a-pandas-dataframe&quot;&gt;Extract the customer table into a pandas DataFrame&lt;/h1&gt;
-&lt;p&gt;extract_table_to_pandas(“customer”, db_engine)
-```&lt;/p&gt;
-
-&lt;h2 id=&quot;2-transform-data&quot;&gt;2. TRANSFORM DATA&lt;/h2&gt;
-&lt;h3 id=&quot;1-một-số-phương-thức-chuyển-đổi-dữ-liệu&quot;&gt;1. Một số phương thức chuyển đổi dữ liệu&lt;/h3&gt;
-&lt;p&gt;Có thể thực hiện 1 hoặc nhiều các hình thức trong giai đoạn chuyển đổi dữ liệu đã rút trích:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Select 1 hay nhiều cột&lt;/li&gt;
-  &lt;li&gt;Phiên dịch dữ liệu thành code. Ví dụ như New York sẽ biến thành NY&lt;/li&gt;
-  &lt;li&gt;Kiểm tra dữ liệu có đúng không, nếu dữ liệu không đúng với kiểu dữ liệu hoặc dữ liệu muốn nhận từ cột, ta có thể bỏ record đó đi. Ví dụ như cột ngày nhưng lại chứa giá trị khác ngày.&lt;/li&gt;
-  &lt;li&gt;Tách dữ liệu của 1 cột thành nhiều cột&lt;/li&gt;
-  &lt;li&gt;Join dữ liệu từ các nguồn, các bảng khác nhau.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;2-một-số-ví-dụ&quot;&gt;2. Một số ví dụ&lt;/h3&gt;
-
-&lt;p&gt;Bạn có thể dùng package &lt;code&gt;pandas&lt;/code&gt; để chuyển đổi dữ liệu nếu lượng dữ liệu nhỏ. Ta có ví dụ tách dữ liệu từ 1 cột thành 2 cột sử dụng pandas:
-&lt;img src=&quot;/assets/images/split-pandas.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Nếu dữ liệu lớn, thông thường người ta sẽ dùng &lt;strong&gt;PySpark&lt;/strong&gt;. Ta có ví dụ chuyển đổi dữ liệu bằng cách join các bảng với nhau. 
-Nhưng trước hết chúng ta cần đẩy dữ liệu lên Spark:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/extract-pyspark.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;jbdc:&lt;/code&gt;để nhắn nhủ với Spark là phải dùng JBDC để kết nối, sau đó, ta input vào tên của bảng và cuối cùng trong &lt;code&gt;properties&lt;/code&gt; chúng ta đặt thông tin kết nối vào.&lt;/p&gt;
-
-&lt;p&gt;Dưới đây là 2 bảng cần join với nhau thông qua &lt;code&gt;customer_id&lt;/code&gt; để tính rating trung bình của mỗi customer dành cho các phim:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/rating-join.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Và làm sao để dùng PySpark join và tính toán dữ liệu? Xem ảnh dưới nhé:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/join-pyspark.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Mình sẽ cho ra thêm các bài viết tìm hiểu sâu hơn về PySpark trong thời gian tới, các bạn hãy cùng chờ đợi nhé!&lt;/p&gt;
-
-&lt;h2 id=&quot;iii-load-data&quot;&gt;III. LOAD DATA&lt;/h2&gt;
-
-</description>
-        <pubDate>Sat, 29 May 2021 00:00:00 +0700</pubDate>
-        <link>https://tuyen-nnt.github.io/data-etl/</link>
-        <guid isPermaLink="true">https://tuyen-nnt.github.io/data-etl/</guid>
-        
-        
-        <category>Data</category>
         
       </item>
     
