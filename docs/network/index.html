@@ -233,7 +233,7 @@ https://www.sans.org/reading-room/whitepapers/standards/osi-model-overview-543</
 <p>https://en.wikipedia.org/wiki/OSI_model
 ```</p>
 
-<h2 id="2-các-thiết-bị-mạng-cơ-bản">2. Các thiết bị mạng cơ bản</h2>
+<h2 id="2-tầng-1---các-thiết-bị-mạng-cơ-bản">2. Tầng 1 - Các thiết bị mạng cơ bản</h2>
 
 <h3 id="cable">Cable</h3>
 <p>Dùng để kết nối các thiết bị với nhau và cho phép truyền dữ liệu thông qua nó.</p>
@@ -391,29 +391,220 @@ Các Router là những hướng dẫn viên toàn cầu giúp đưa traffic đ�
     <p>03 Octets sau được chỉ định theo ý nhà sản xuất mong muốn với điều kiện để mỗi thiết bị sản xuất ra có 1 MAC address duy nhất.
 <img src="/assets/images/mac-1.png" alt="" /></p>
   </li>
-  <li>Tóm lại, Ethernet dùng MAC address để đảm bảo dữ liệu mà nó gửi có thông tin thiết bị nguồn và thiết bị đích gửi đến. Bằng cách này, dù ở trong một phân đoạn mạng hoạt động như thể có collision domain đơn lẻ, thì các thiết bị luôn biết được khi nào dữ liệu thuộc về nó.</li>
+  <li>Tóm lại, Ethernet protocol dùng MAC address để đảm bảo dữ liệu mà nó gửi có thông tin thiết bị nguồn và thiết bị đích gửi đến. Bằng cách này, dù ở trong một phân đoạn mạng hoạt động như thể có collision domain đơn lẻ, thì các thiết bị luôn biết được khi nào dữ liệu thuộc về nó.</li>
 </ul>
+
+<h3 id="unicast-multicast--broadcast-frame">Unicast, Multicast &amp; Broadcast frame</h3>
+<h4 id="unicast">Unicast</h4>
+<p>Là sự truyền tải data đến 1 địa chỉ đích duy nhất.</p>
+
+<p>Được nhận diện bằng cách nhìn vào bit ít quan trọng nhất trong octet đầu tiên của địa chỉ MAC đích trong Ethernet frame.</p>
+
+<ul>
+  <li>Nếu là 0 : unicast</li>
+  <li>Nếu là 1 : multicast</li>
+</ul>
+
+<h4 id="multicast">Multicast</h4>
+<p>Là sự truyền tải data đến nhiều địa chỉ MAC đích.</p>
+
+<p>Các thiết bị mạng (network interface) có thể được cấu hình để chấp nhận 1 danh sách địa chỉ MAC được nhận data &amp; giao tiếp trong network cục bộ.</p>
+
+<h4 id="broadcast">Broadcast</h4>
+<p>Ethernet broadcast address : FF:FF:FF:FF:FF:FF</p>
+
+<p>Broadcast được sử dụng để tất cả các thiết bị có thể hiểu lẫn nhau.</p>
+
+<p>Người gửi sẽ gửi tới tất cả các thiết bị trên mạng LAN.</p>
 
 <h3 id="ethernet-frame">Ethernet Frame</h3>
 
 <ul>
   <li>
-    <p>Là 1 tập hợp các thông tin mang tính tổ chức cao, biểu diễn theo 1 thứ tự cụ thể.</p>
+    <p>Data-packet: là 1 concept chung để chỉ 1 tập hợp dữ liệu nhị phân được gửi thông qua network link.</p>
   </li>
   <li>
-    <p>Bằng Ethernet frame, network interface có tại tầng 1 có thể chuyển đổi chuỗi bit qua một liên kết để đưa vào trong data có ý nghĩa (decode)</p>
+    <p>Là 1 tập hợp (data-packet) các thông tin mang tính tổ chức cao, biểu diễn theo 1 thứ tự cụ thể.</p>
   </li>
   <li>
-    <p>Các phần trong frame là bắt buộc và có độ dài cố định.</p>
+    <p>Bằng Ethernet frame, network interface có tại tầng 1 có thể chuyển đổi chuỗi bit qua một liên kết (data link) để cho ra 1 data có ý nghĩa (decode).</p>
   </li>
+</ul>
+
+<p><img src="/assets/images/line-coding.png" alt="" /></p>
+
+<ul>
+  <li>Các phần trong frame là bắt buộc và có độ dài cố định.</li>
 </ul>
 
 <p><img src="/assets/images/ethernet-frame.png" alt="" /></p>
 
+<p>Thứ tự và các thành phần của Ethernet Frame gồm:</p>
+
 <ul>
-  <li>Preamble: phần mở đầu, chia làm 7 bytes đệm + 1 byte SDF (dùng để làm dấu giới hạn khung bắt đầu).
-Được các network interface dùng để đồng bộ hóa các đồng hồ nội bộ mà chúng sử dụng nhằm điều chỉnh speed tại nơi mà chúng gởi dữ liệu.</li>
+  <li>Preamble (8 bytes): phần mở đầu, chia làm 7 bytes đệm + 1 byte SDF (dùng để làm dấu giới hạn khung bắt đầu, sau nó là khung dữ liệu thực tế).
+Phần này được các network interface dùng để đồng bộ hóa các đồng hồ nội bộ mà chúng sử dụng nhằm điều chỉnh speed tại nơi mà chúng gởi dữ liệu.</li>
+  <li>Destination MAC Address (48 bits/6 bytes): địa chỉ phần cứng đích, là bên nhận data.</li>
+  <li>Source Address (6 bytes):  địa chỉ MAC nguồn.</li>
+  <li>VLAN header (4 bytes): nếu trong khung có 4 bytes này thì nghĩa là đây là VLAN frame. Nếu có VLAN, thì sau nó phải có EtherType field.
+    <blockquote>
+      <p>VLAN (Virtual LAN) là kỹ thuật cho phép ta có nhiều LAN hoạt động trên cùng 1 thiết bị vật lý (switch,..). VLAN được sử dụng để tách biệt traffic truy cập khác nhau với các thiết bị cùng mạng kết nối.</p>
+    </blockquote>
+  </li>
 </ul>
+
+<p><img src="/assets/images/vlan.png" alt="" /></p>
+
+<ul>
+  <li>
+    <p>EtherType field (2 bytes): được dùng để diễn giải protocol (giao thức) của nội dung dữ liệu.</p>
+  </li>
+  <li>
+    <p>Payload (từ 46-1500 bytes): là data chính cần được vận chuyển, chứa data tầng 3,4,5.</p>
+  </li>
+  <li>
+    <p>FCS (4 bytes): viết tắt của Frame Check Sequence, là 1 con số có độ dài 32 bit, biểu diễn checksum value cho toàn bộ ethernet frame.</p>
+
+    <ul>
+      <li>
+        <p>Checksum value: được tính bằng cách biểu diễn chu kỳ kiểm tra dự phòng (CRC) trên frame.</p>
+      </li>
+      <li>
+        <p>Cyclical redundancy check (CRC): là một khái niệm quan trọng đối với tính toàn vẹn dữ liệu (data integrity), và được dùng cho toàn bộ các tính toán học, không chỉ riêng truyền tải network. Đây là 1 phép toán học sử dụng phân chia đa thức để tạo ra 1 con số đại diện cho 1 tập dữ liệu lớn hơn và luôn kết thúc bằng 1 số checksum.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>=&gt; Mục đích của checksum là để kiểm tra xem data bên đầu nhận có bị hỏng không.</p>
+
+<p>Quy trình thực hiện:</p>
+
+<ul>
+  <li>Thiết bị sẵn sàng lên frame để gửi đi</li>
+  <li>Thiết bị bắt đầu thu thập đủ các thông tin cần có của 1 frame (trừ checksum)</li>
+  <li>Thực hiện CRC trên các thông tin đó và gắn số checksum thu được.</li>
+  <li>Đưa FCS vào frame hoàn chỉnh.</li>
+  <li>Đưa frame vào một data link dùng protocol Ethernet</li>
+  <li>Đầu thiết bị bên nhận thu thập các trường dữ liệu nhận được và tính toán lại checksum để so sánh với số checksum của frame gởi.
+Nếu không khớp nhau, nó sẽ vứt ra ngoài vì trong quá trình truyền đã khiến data bị hỏng.
+=&gt; Và nhiệm vụ của tầng trên sẽ quyết định xem data đó có nên được truyền lại hay không. 
+=&gt; Kết luận: bản thân Ethernet chỉ báo cáo cho tầng trên biết về tính toàn vẹn của dữ liệu, chứ không có nhiệm vụ phục hồi dữ liệu.</li>
+</ul>
+
+<p>Cụ thể hình ảnh cho quy trình:
+<img src="/assets/images/CRC.png" alt="" />
+Sau đó đưa vào link và bên nhận nhận được, rồi bên nhận sẽ tính toán lại số checksum:
+<img src="/assets/images/checksum.png" alt="" /></p>
+
+<h2 id="4-tầng-3---network">4. Tầng 3 - Network</h2>
+<h3 id="ip-address">IP Address</h3>
+
+<ul>
+  <li>Là một con số 32-bit được tạo thành từ 4 octet. Mỗi octet có độ dài 8-bit và biểu diễn dưới dạng số thập phân từ 0 đến 255.</li>
+</ul>
+
+<p>Ví dụ: 12.34.56.78</p>
+
+<ul>
+  <li>Các tổ chức lớn thường sử dụng IP address để xác định máy nào hơn là sử dụng MAC address để truyền tải dữ liệu trong mạng.
+=&gt; IP có phân cấp rõ ràng và lưu trữ dữ liệu dễ dàng hơn.</li>
+</ul>
+
+<blockquote>
+  <p>Ví dụ công ty IBM có octet đầu được cấp riêng là 9. Thì khi router từ sender gửi dữ liệu thấy số 9 ở octet đầu của địa chỉ IP nhận (IP là 9.0.0.1 chẳng hạn), nó sẽ biết là cần gửi đến router của IBM, sau đó router của IBM sẽ tự xử lý phân phối dữ liệu đến các máy tính trong network của IBM thông qua các octet còn lại.</p>
+</blockquote>
+
+<ul>
+  <li>Lưu ý: IP address thuộc về networks, chứ không thuộc về thiết bị được kết nối với các network.
+    <blockquote>
+      <p>Nghĩa là network (mạng) khác nhau sẽ có nhiệm vụ cấp phát IP khác nhau cho thiết bị của bạn bằng công nghệ DHCP khi bạn bật mạng của network đó.</p>
+    </blockquote>
+  </li>
+  <li>DHCP hay còn gọi là Dynamic IP Address (địa chỉ IP động) được dùng để cấp phát IP động cho các clients.</li>
+  <li>Static IP Address thì thường được dùng để cấp phát IP tĩnh cho server và các thiết bị mạng (router,…)</li>
+</ul>
+
+<h3 id="ip-datagrams--encapsulation">IP Datagrams &amp; Encapsulation</h3>
+<h4 id="ip-datagram">IP Datagram</h4>
+<ul>
+  <li>
+    <p>Là data-packet (gói tin) ở tầng network theo giao thức IP.</p>
+  </li>
+  <li>
+    <p>2 phần chính của IP datagram là header và payload.
+<img src="/assets/images/ip-datagram.png" alt="" /></p>
+  </li>
+</ul>
+
+<p>Ý nghĩa các trường trong datagram header:</p>
+
+<ul>
+  <li>
+    <p>Version (4-bit): version của Internet protocol.
+Ví dụ: IP version 4 thì Internet protocol là IPv4.</p>
+  </li>
+  <li>
+    <p>Header Length (4-bit): ghi số độ dài của header, thường là 20 bytes đối với IPv4. 20 byte cũng là độ dài tối thiểu của IP header.</p>
+  </li>
+  <li>
+    <p>Service Type (8-bit): chi tiết về chất lượng dịch vụ, hoặc QoS, các công nghệ áp dụng.</p>
+  </li>
+  <li>
+    <p>Total Length (16-bit): tổng chiều dài của IP datagram.
+=&gt; Kích thước tối đa là con số lớn nhất có thể biểu diễn bằng 16 bits là 65,535.
+=&gt; Nếu kích thước lớn hơn con số tối đa mà network hiện tại cho phép, IP layer sẽ chia làm các data-packet (gói tin/datagram) nhỏ hơn.</p>
+  </li>
+  <li>
+    <p>Identification (16-bit): là số 16 bit được dùng để group các messages lại với nhau.
+=&gt; Trường này giúp nhóm các gói tin bị tách ra lại với nhau thành 1 phần của đường truyền.</p>
+  </li>
+  <li>
+    <p>Flags (4-bit): chỉ ra rằng datagram này có được phép phân mảng hay không, hoặc đã được phân mảnh chưa.</p>
+  </li>
+  <li>
+    <p>Fragment Offset (12-bit): là quá trình phân mảnh datagram ra các datagram nhỏ hơn (nếu vượt quá giới hạn của network nó đang được truyền đến).</p>
+  </li>
+  <li>
+    <p>Time to Live - TTL (8-bit): là trường chỉ ra bao nhiêu bước nhảy để 1 datagram có thể đi đến IP đích trước khi bị vứt đi. Đến số 0 thì router biết được là nó ko cần forward data nữa.
+<img src="/assets/images/TTL.png" alt="" />
+Mục đích của bước này là để đảm bảo khi có cấu hình sai trong router gây ra vòng lặp vô tận như hình:
+<img src="/assets/images/TTL-loop.png" alt="" /></p>
+  </li>
+  <li>
+    <p>Protocol (8-bit): thông tin về transport layer protocol được sử dụng ở gói tin này. (TCP, UDP,…)</p>
+  </li>
+  <li>
+    <p>Header checksum (16-bit): số checksum nội dung của toàn bộ IP datagram header.
+=&gt; Checksum phải được tính toán lại mỗi lần TTL chạm 1 bộ định tuyến (vì có IP thay đổi)</p>
+  </li>
+  <li>
+    <p>Source &amp; Destination IP Address (32-bit) : địa chỉ IP nguồn và IP đích.</p>
+  </li>
+  <li>
+    <p>Options: trường tùy chọn được dùng để thiết lặp các đặc tính đặc biệt cho datagram được dùng chủ yếu cho các mục đích testing. Trường này có độ dài biến đổi.</p>
+  </li>
+  <li>
+    <p>Padding: thường dùng khi có trường Option. Là chuỗi số 0 để đảm bảo kích thước của header đúng kích thước tổng.</p>
+  </li>
+</ul>
+
+<h4 id="encapsulation">Encapsulation</h4>
+<p>Phần data payload section của Ethernet frame sẽ là toàn bộ IP datagram.</p>
+
+<p>Quá trình gôm các data trong IP datagram lại với nhau thành frame gọi là encapsulation (tương tự payload của Ethernet frame).</p>
+
+<ul>
+  <li>
+    <p>Toàn bộ data của IP datagram được đóng gói lại làm payload cho tầng ngay dưới nó (tầng 2), đó gọi là quá trình encapsulation. Các tầng khác cũng hoạt động như thế.</p>
+  </li>
+  <li>
+    <p>Tầng sau đó sẽ dùng toàn bộ payload của tầng trước đó.</p>
+  </li>
+</ul>
+
+<p><img src="/assets/images/encapsulation.png" alt="" /></p>
+
 
 </div>
 
