@@ -605,6 +605,59 @@ Mục đích của bước này là để đảm bảo khi có cấu hình sai t
 
 <p><img src="/assets/images/encapsulation.png" alt="" /></p>
 
+<h3 id="ip-address-classes">IP Address Classes</h3>
+
+<p>Là cách xác định cách địa chỉ global IP phân chia không gian.</p>
+
+<ul>
+  <li>
+    <p>Class A: octet đầu là network ID, 3 octet sau là host ID.</p>
+  </li>
+  <li>
+    <p>Class B: 2 octet đầu là network ID, 2 octet sau là host ID.</p>
+  </li>
+  <li>
+    <p>Class C: 3 octet đầu là network ID, octet cuối là host ID.</p>
+  </li>
+</ul>
+
+<p><img src="/assets/images/ip-class.png" alt="" /></p>
+
+<h3 id="address-resolution-protocol-arp">Address Resolution Protocol (ARP)</h3>
+
+<p>Là giao thức được dùng để khám phá địa chỉ MAC của một node với địa chỉ IP tương ứng.</p>
+
+<p>Các thiết bị mạng sẽ lưu giữ 1 bảng ARP local chứa thông tin địa chỉ MAC ứng với IP của các thiết bị mạng đã từng kết nối (trong 1 khoảng thời gian nhất định).</p>
+
+<p>Thiết bị truyền sẽ tìm đến địa chỉ đích bằng cách phát tín hiệu <code>broadcast</code> FF:FF:FF:FF:FF:FF cho tất cả các máy tính trong mạng local rằng tôi muốn tìm địa chỉ MAC của máy có địa chỉ IP này.</p>
+
+<p>Máy có địa chỉ IP đó sẽ lên tiếng và gửi ARP response chứa địa chỉ MAC lại cho sender (thiết bị truyền).</p>
+
+<p>Giờ thì thiết bị truyền có thể đưa MAC address vào Ethernet frame để truyền tải dữ liệu.</p>
+
+<h3 id="subnetting">Subnetting</h3>
+
+<p>Là quá trình tách network lớn thành nhiều network nhỏ hơn gọi là các subnetworks hoặc subnets.</p>
+
+<p><img src="/assets/images/subnetting.png" alt="" /></p>
+
+<h4 id="subnet-mask">Subnet Mask</h4>
+
+<p>IP: 9.100.100.100
+Subnet mask: 255.255.255.224
+Subnet mask in binary: 11111111 11111111 11111111 11100000</p>
+
+<p><img src="/assets/images/subnet-id.png" alt="" />
+Hình trên là ví dụ của subnet mask: 255.255.255.0
+=&gt; 9.100.100.100/27</p>
+
+<blockquote>
+  <p>Có 27 số 1 (các số 1 này là subnet ID).</p>
+</blockquote>
+
+<p>Subnet mask là cách để máy tính sử dụng toán tử AND để xác định địa chỉ IP đó có tồn tại trên cùng network hay không.</p>
+
+<h4 id="cidr">CIDR</h4>
 
 </div>
 

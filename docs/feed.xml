@@ -5,8 +5,8 @@
     <description>Grow yourself and develop with me!</description>
     <link>https://tuyen-nnt.github.io/</link>
     <atom:link href="https://tuyen-nnt.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 23 Oct 2021 23:55:13 +0700</pubDate>
-    <lastBuildDate>Sat, 23 Oct 2021 23:55:13 +0700</lastBuildDate>
+    <pubDate>Wed, 27 Oct 2021 23:13:56 +0700</pubDate>
+    <lastBuildDate>Wed, 27 Oct 2021 23:13:56 +0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -464,6 +464,59 @@ Mục đích của bước này là để đảm bảo khi có cấu hình sai t
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/encapsulation.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
+&lt;h3 id=&quot;ip-address-classes&quot;&gt;IP Address Classes&lt;/h3&gt;
+
+&lt;p&gt;Là cách xác định cách địa chỉ global IP phân chia không gian.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Class A: octet đầu là network ID, 3 octet sau là host ID.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Class B: 2 octet đầu là network ID, 2 octet sau là host ID.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Class C: 3 octet đầu là network ID, octet cuối là host ID.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/ip-class.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;address-resolution-protocol-arp&quot;&gt;Address Resolution Protocol (ARP)&lt;/h3&gt;
+
+&lt;p&gt;Là giao thức được dùng để khám phá địa chỉ MAC của một node với địa chỉ IP tương ứng.&lt;/p&gt;
+
+&lt;p&gt;Các thiết bị mạng sẽ lưu giữ 1 bảng ARP local chứa thông tin địa chỉ MAC ứng với IP của các thiết bị mạng đã từng kết nối (trong 1 khoảng thời gian nhất định).&lt;/p&gt;
+
+&lt;p&gt;Thiết bị truyền sẽ tìm đến địa chỉ đích bằng cách phát tín hiệu &lt;code&gt;broadcast&lt;/code&gt; FF:FF:FF:FF:FF:FF cho tất cả các máy tính trong mạng local rằng tôi muốn tìm địa chỉ MAC của máy có địa chỉ IP này.&lt;/p&gt;
+
+&lt;p&gt;Máy có địa chỉ IP đó sẽ lên tiếng và gửi ARP response chứa địa chỉ MAC lại cho sender (thiết bị truyền).&lt;/p&gt;
+
+&lt;p&gt;Giờ thì thiết bị truyền có thể đưa MAC address vào Ethernet frame để truyền tải dữ liệu.&lt;/p&gt;
+
+&lt;h3 id=&quot;subnetting&quot;&gt;Subnetting&lt;/h3&gt;
+
+&lt;p&gt;Là quá trình tách network lớn thành nhiều network nhỏ hơn gọi là các subnetworks hoặc subnets.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/subnetting.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;subnet-mask&quot;&gt;Subnet Mask&lt;/h4&gt;
+
+&lt;p&gt;IP: 9.100.100.100
+Subnet mask: 255.255.255.224
+Subnet mask in binary: 11111111 11111111 11111111 11100000&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/subnet-id.png&quot; alt=&quot;&quot; /&gt;
+Hình trên là ví dụ của subnet mask: 255.255.255.0
+=&amp;gt; 9.100.100.100/27&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Có 27 số 1 (các số 1 này là subnet ID).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Subnet mask là cách để máy tính sử dụng toán tử AND để xác định địa chỉ IP đó có tồn tại trên cùng network hay không.&lt;/p&gt;
+
+&lt;h4 id=&quot;cidr&quot;&gt;CIDR&lt;/h4&gt;
 </description>
         <pubDate>Mon, 18 Oct 2021 00:00:00 +0700</pubDate>
         <link>https://tuyen-nnt.github.io/network/</link>

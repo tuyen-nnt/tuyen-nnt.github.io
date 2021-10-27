@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<link rel="icon" href="/assets/images/logo.png">
+
+<title>Import Data - Part 2 | Tuyen Nguyen</title>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Import Data - Part 2 | My Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Import Data - Part 2" />
+<meta name="author" content="tuyennnt" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="1. Import + Load + Tạo HTTP/GET REQUEST Lưu file mềm xuống local: urlretrieve(url, &#39;filename.csv&#39;)" />
+<meta property="og:description" content="1. Import + Load + Tạo HTTP/GET REQUEST Lưu file mềm xuống local: urlretrieve(url, &#39;filename.csv&#39;)" />
+<link rel="canonical" href="https://tuyen-nnt.github.io/import-data-medium/" />
+<meta property="og:url" content="https://tuyen-nnt.github.io/import-data-medium/" />
+<meta property="og:site_name" content="My Blog" />
+<meta property="og:image" content="https://tuyen-nnt.github.io/assets/images/import1.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-07-18T00:00:00+07:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="https://tuyen-nnt.github.io/assets/images/import1.png" />
+<meta property="twitter:title" content="Import Data - Part 2" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","author":{"@type":"Person","name":"tuyennnt"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://tuyen-nnt.github.io/import-data-medium/"},"image":"https://tuyen-nnt.github.io/assets/images/import1.png","headline":"Import Data - Part 2","dateModified":"2021-07-18T00:00:00+07:00","datePublished":"2021-07-18T00:00:00+07:00","url":"https://tuyen-nnt.github.io/import-data-medium/","description":"1. Import + Load + Tạo HTTP/GET REQUEST Lưu file mềm xuống local: urlretrieve(url, &#39;filename.csv&#39;)","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://tuyen-nnt.github.io/assets/images/ava.png"},"name":"tuyennnt"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    
+<link href="/assets/css/prism.css" rel="stylesheet">
+
+<link href="/assets/css/theme.css" rel="stylesheet">
+
+<script src="/assets/js/jquery.min.js"></script>
+
+</head>
+
+
+
+
+<body>
+	<!-- defer loading of font and font awesome -->
+	<noscript id="deferred-styles">
+		<link href="https://fonts.googleapis.com/css?family=Sen:400,700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+	</noscript>
+
+<!-- Begin Sidebar Navigation
+================================================== -->
+
+<div class="sidebar">    
+</div>   
+<div class="nav-icon">
+    <div class="hamburger-bar"></div>
+</div>
+<div id="blackover-nav" class="blackover"></div>
+<nav id="menu">
+    <ul>
+        <h3>Navigation</h3>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/authors">Contributors <span class="badge badge-primary">new</span></a></li>
+        <li><a target="_blank" href="https://bootstrapstarter.com/jekyll-theme-memoirs/">Get Memoirs</a></li>      
+        <li><a href="/contact">Contact</a></li>       
+    </ul>   
+</nav>
+
+<script src="/assets/js/lunr.js"></script>
+
+<style>
+    
+</style>
+
+<div class="wrap-search">
+    <div class="d-flex align-items-center ml-auto">
+        <i class="fas fa-search show-search"></i>
+        <form class="bd-search ml-3" onSubmit="return lunr_search(document.getElementById('lunrsearch').value);">
+            <input type="text" class="form-control bigradius text-small launch-modal-search" id="lunrsearch" name="q" maxlength="255" value="" placeholder="Type and enter..."/>
+        </form>
+    </div>
+</div>
+
+<div id="lunrsearchresults">
+    <ul></ul>
+</div>
+
+<script src="/assets/js/lunrsearchengine.js"></script>
+
+
+<!-- End Sidebar Navigation
+================================================== -->
+
+<div class="site-content ">
+
+<div class="container">
+
+    <!-- Site Logo/Name
+    ================================================== -->
+   
+    <a class="navbar-brand" href="/">
+        <img src="/assets/images/ava.png" alt="Tuyen Nguyen">
+    </a>  
+   
+
+    <!-- Site Tag
+    ================================================== -->
+    
+
+    <!-- Content
+    ================================================== -->
+    <div class="main-content">
+        <div class="entry-header">
+    <!-- Post Title -->
+    <h1 class="posttitle">Import Data - Part 2</h1>
+    <!-- Author & Date  Box -->
+    
+    
+    <div class="d-flex align-items-center mt-4">
+        <div>
+            
+            <img class="author-thumb" src="/assets/images/ava.png" alt="Tuyen">
+            
+        </div>            
+        <div>
+        Written by Tuyen on 
+        <span class="post-date"><time class="post-date" datetime="2021-07-18">18 Jul 2021</time></span>           
+        
+        </div>            
+    </div>
+    
+</div>
+
+<!-- Adsense under title if enabled from _config.yml (change your pub id and slot) -->
+
+
+<!-- Featured Image -->
+
+<div class="entry-featured-image">
+    
+    <img class="featured-image " src="/assets/images/import1.png" alt="Import Data - Part 2">
+    
+</div>
+
+
+<!-- Content -->
+<!-- Post, Page Content
+================================================== -->
+<div class="article-post">
+    <!-- Toc if any -->
+    
+    <!-- End Toc -->
+    <h4 id="1-import--load--tạo-httpget-request">1. Import + Load + Tạo HTTP/GET REQUEST</h4>
+<ul>
+  <li>Lưu file mềm xuống local:
+<code>urlretrieve(url, 'filename.csv')</code></li>
+</ul>
+
+<p>Trước tiên phải <code>from urllib.request import urlretrieve</code></p>
+
+<ul>
+  <li>Mở và đọc file mềm trên web:
+<code>
+df = pd.read_csv(url, sep=';')
+</code></li>
+  <li>
+    <p>Show các dòng đầu tiên của df:
+<code>
+print(df.head())
+</code></p>
+  </li>
+  <li>URL (Uniform/Universal Resource Locator)
+phần lớn là các địa chỉ web, ngoài ra còn là FTP (file transfer protocol)</li>
+</ul>
+
+<p>URL gồm 2 phần:</p>
+
+<ul>
+  <li>Protocol Identifier : http hoặc https</li>
+  <li>
+    <p>Tên resource: datacamp.com
+=&gt; tạo thành 1 địa chỉ web</p>
+  </li>
+  <li>
+    <p>HTTP (HyperText Transfer Protocol)
+Là protocol ứng dụng cho các hệ thống thông tin phân tán, cộng tác và siêu phương tiện, nền tảng giao tiếp dữ liệu cho WWW.
+HTTPS - có độ an toàn bảo mật cao hơn HTTP</p>
+  </li>
+  <li>Mỗi khi truy cập vào 1 trang web nghĩa là bạn đang gửi 1 HTTP request cho 1 server. Request này được gọi là GET request, đây là loại request phổ biến nhất.</li>
+</ul>
+
+<blockquote>
+  <p>urlretrieve : gửi GET request và lưu dữ liệu xuống local máy</p>
+</blockquote>
+
+<ul>
+  <li>HTML (HyperText Markup Language)</li>
+</ul>
+
+<h4 id="2-các-cách-gửi-get-request">2. Các cách gửi GET request:</h4>
+
+<ul>
+  <li><strong>Cách 1</strong>: sử dụng <code>urllib.request</code>
+=&gt; <code>from urllib.request import urlopen, Request</code></li>
+</ul>
+
+<p>Một số functions của package <code>urllib.request</code></p>
+
+<ul>
+  <li><code>request = Request(url)</code> : đóng gói GET request</li>
+  <li><code>response = urlopen(request)</code> : 
+gửi request và catch phản hồi =&gt; trả về HTTP response object có tích hợp method read() và close()</li>
+  <li><code>html = response.read()</code> : trả về HTML định dạng string</li>
+  <li>
+    <p><code>response.close()</code>: dùng xong nhớ đóng lại</p>
+  </li>
+  <li><strong>Cách 2</strong>: rất phổ biến, sử dụng package <code>requests</code></li>
+</ul>
+
+<p>Cho phép gửi HTTP request có tổ chức mà ko cần làm thủ công</p>
+
+<p>requests.get(url) : sau khi import package requests, hàm request.get() sẽ đóng gói request thông qua url, gửi request đi và nhận lại phản hồi và lưu vào biến r.</p>
+<blockquote>
+  <p>Ở đây hàm <code>request.get()</code> sẽ làm nhiệm vụ của <code>Request(url)</code> và <code>urlopen(request đã đóng gói)</code>của cách 1</p>
+</blockquote>
+
+<p>r.text : r là biến lưu response của hàm trên, sử dụng method .text cho response để chuyển HTML của url sang dạng string.</p>
+
+<h4 id="3-scraping-web-trong-python">3. Scraping web trong Python</h4>
+
+<p>HTML là sự kết hợp của data có cấu trúc và không cấu trúc.</p>
+
+<ul>
+  <li>Hàm <code>BeautifulSoup()</code> có tác dụng parse và trích xuất data từ HTML, và làm cho các tag được biểu diễn đẹp hơn.</li>
+</ul>
+
+<p>Cách sử dụng: 
+<code>from bs4 import BeautifulSoup</code></p>
+
+<p>Sau khi gửi nhận phản hồi của GET request, ta được file html như trên.</p>
+
+<p>Sau đó, ta dùng hàm <code>BeautifulSoup</code> để extract các data có cấu trúc của file html, lưu kết quả là một object vào một biến mới. Kết quả của hàm <code>BeautifulSoup</code>có tích hợp hàm <code>.prettify()</code> để làm đẹp kết quả.</p>
+
+<p><code>soup = BeautifulSoup(html_doc)
+print(soup.prettify())</code></p>
+
+<ul>
+  <li>
+    <p>Các hàm khác có thể dùng sau khi parse và nhận kết quả từ BeautifulSoup:</p>
+
+    <ul>
+      <li><code>soup.title()</code> : trích title của file html</li>
+      <li><code>soup.get_text()</code>: trích tất cả text của file html</li>
+      <li><code>soup.find_all()</code> : tìm tất cả các data theo điều kiện hoặc tag nào đó.
+  Ví dụ:
+        <pre><code>  for link in soup.find_all('a'):
+  print(link.get('href')
+</code></pre>
+        <p>hoặc</p>
+        <pre><code>  for link in a_tags:
+  print(link.get('href'))
+</code></pre>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>=&gt; Ở đây, ta sử dụng vòng lặp for kết hợp hàm <code>.find_all()</code> extract data nằm trong tag <code>&lt;a&gt;</code> của file html và in ra từng link của mỗi dòng tìm được, ta cũng có thể lưu <code>soup.find_all()</code> vào một biến nào đó.
+Hàm <code>link.get('href')</code> dùng để extract giá trị link của attribute href trong tag <code>&lt;a&gt;</code></p>
+
+<h4 id="4-load-và-khám-phá-file-json">4. Load và khám phá file JSON</h4>
+<h6 id="file-json-nằm-ở-local">FIle JSON nằm ở local</h6>
+
+<ul>
+  <li>Bước 1: Tạo connection với file JSON trong local và load file
+    <pre><code>with open("tên file.json") as json_file :
+  json_data = json.load(json_file)
+</code></pre>
+    <p>Ở đây json_data là 1 object dictionary, ta check bằng <code>type(json_data)</code> ra kết quả <code>dict</code></p>
+  </li>
+  <li>Bước 2: Sử dụng vòng lặp <code>for</code> để in cặp key-value ra
+    <pre><code>for k in json_data.keys():
+  print(k + ': ', json_data[k])
+</code></pre>
+    <p>Từ object dictionary trên, ta dùng àm <code>.keys</code> để truy cập vào keys của file và dùng cú pháp <code>dictionary[key]</code> để truy cập vào value.</p>
+  </li>
+</ul>
+
+<h4 id="5-apis-và-tương-tác-cơ-bản">5. APIs và tương tác cơ bản</h4>
+
+<h5 id="api-là-gì">API là gì?</h5>
+<ul>
+  <li>Là một bộ protocols và routines để xây dựng và tương tác với phần mềm</li>
+  <li>Một tập hợp code cho phép 02 chương trình phần mềm giao tiếp với nhau
+Ví dụ nếu muốn stream data của Twitter thì ta cùng API của Twitter.</li>
+  <li>Thông thường data thường được lấy về từ APIs ở định dạng JSON.</li>
+</ul>
+
+<h5 id="url-có-gì-và-làm-thể-nào-để-nó-biết-pull-data-từ-api-về">URL có gì và làm thể nào để nó biết pull data từ API về?</h5>
+
+<p><code>url = 'http://www.omdbapi.com/?t=hackers'</code></p>
+
+<ul>
+  <li>http - dấu hiệu là ta đang tạo 1 HTTP request</li>
+  <li>www.omdbapi.com - nghĩa là ta đang query OMDB API</li>
+  <li><code>?t=hackers</code>
+    <ul>
+      <li>Đây gọi là Query String</li>
+      <li>Không có quy ước và không buộc có trong đường dẫn</li>
+      <li>Sau dấu <code>?</code> là phần query. Theo document trên trang chủ OMDB API thì có nghĩ là ta đang muốn trả về data của bộ phim có title (t) ‘Hackers’. Cụ thể xem phần Usage + Parameters.</li>
+    </ul>
+  </li>
+</ul>
+
+<pre><code># Import package
+import requests
+
+# Assign URL to variable: url
+url = 'https://en.wikipedia.org/w/api.php?action=query&amp;prop=extracts&amp;format=json&amp;exintro=&amp;titles=pizza'
+
+# Package the request, send the request and catch the response: r
+r = requests.get(url)
+
+# Decode the JSON data into a dictionary: json_data
+json_data = r.json()
+
+print(json_data)
+
+# Print the Wikipedia page extract
+pizza_extract = json_data['query']['pages']['24768']['extract']
+print(pizza_extract)
+</code></pre>
+
+<p>Ở 2 dòng code cuối, để biết tại sao code như thế, ta truy cập url trên browser, nó sẽ hiện ra các tab. Ta muốn extract data từ api của url thì ta mở từ tab <code>query &gt; pages &gt; 24768 &gt; extract</code> thì sẽ nhận được data từ api đó.</p>
+
+<h5 id="load-và-khám-phá-twitter-data">Load và khám phá Twitter data</h5>
+<pre><code># Import package
+import json
+
+# String of path to file: tweets_data_path
+tweets_data_path = 'tweets.txt'
+
+# Initialize empty list to store tweets: tweets_data
+tweets_data = []
+
+# Open connection to file
+tweets_file = open(tweets_data_path, "r")
+
+# Read in tweets and store in list: tweets_data
+for line in tweets_file:
+    tweet = json.loads(line)
+    tweets_data.append(tweet)
+
+# Close connection to file
+tweets_file.close()
+
+# Print the keys of the first tweet dict
+print(tweets_data[0].keys())
+</code></pre>
+
+<ul>
+  <li>Đầu tiên ta gán đường dẫn tên file chứa Twitter data ở local máy vào 1 biến.</li>
+  <li>Tiếp theo ta tạo 1 mảng rỗng để chứa mỗi dòng tweet là 1 phần tử trong mảng.</li>
+  <li>Sau đó ta mở connection đến file local đó thông qua dường dẫn <code>tweets_data_path</code> và lưu vào <code>tweets_file</code>.</li>
+  <li>Tiếp theo ta dùng vòng lặp for để đọc từng dòng của <code>tweets_file</code>:
+    <ul>
+      <li>Dùng hàm <code>json.load(line)</code> để load từng dòng lưu vào biến <code>tweet</code>, <em>để dùng hàm trên phải import <code>json</code> package</em>
+        <blockquote>
+          <p>Note: mỗi lần load <code>line</code> để lưu vào <code>tweet</code> là một dictionary.</p>
+        </blockquote>
+      </li>
+      <li>Sử dụng biến mảng <code>tweets_data</code> kết hợp hàm <code>append(tweet)</code> để add thêm phần tử dictionary mới (hay còn gọi là tweet) vào mảng.</li>
+      <li>In ra tất cả các <code>keys</code> của phần tử đầu tiên (tweet hay dict) của mảng.</li>
+    </ul>
+  </li>
+</ul>
+
+<h5 id="đưa-mảng-vào-dataframe-sử-dụng-package-pandas-để-phân-tích">Đưa mảng vào Dataframe sử dụng package pandas để phân tích</h5>
+
+<pre><code># Import package
+import pandas as pd
+
+# Build DataFrame of tweet texts and languages
+df = pd.DataFrame(tweets_data, columns=['text','lang'])
+ 
+# Print head of DataFrame
+
+print(df.head())
+</code></pre>
+<ul>
+  <li>Hàm <code>pd.Dataframe()</code> cần 2 tham số là data và column để xây dựng df
+    <ul>
+      <li>Tham số đầu có thể là mảng, dict hoặc dataframe</li>
+      <li>Tham số thứ 2 là column label, nếu không có label thì dùng RangeIndex(0,1,2,…n). Nếu có label trong data như ví dụ trên, ta chỉ cần <code>columns=['text','lang']</code> để chọn label cho column muốn rút giá trị. Ở ví dụ trên ta sẽ tạo 2 cột <code>text</code> và <code>lang</code>.</li>
+    </ul>
+  </li>
+</ul>
+
+<h5 id="streaming">Streaming</h5>
+<pre><code># Initialize Stream listener
+l = MyStreamListener()
+
+# Create your Stream object with authentication
+stream = tweepy.Stream(auth, l)
+
+# Filter Twitter Streams to capture data by the keywords:
+stream.filter(track=['clinton', 'trump', 'sanders', 'cruz'])
+</code></pre>
+
+<ul>
+  <li>
+    <p>Class <code>MyStreamListener()</code> được khai báo sẵn tại đây: https://gist.github.com/hugobowne/18f1c0c0709ed1a52dc5bcd462ac69f4</p>
+  </li>
+  <li>
+    <p>Ta tạo object <code>stream</code>bằng cách đưa vào hàm <code>tweepy.Stream()</code> athentication handler <code>auth</code> và object <code>l</code> - stream listener trên.</p>
+  </li>
+  <li>
+    <p>Object <code>stream</code> có tích hợp hàm <code>.filter()</code>, trong hàm này có attribute <code>track=[]</code> là list chứa các keyword mà ban muốn filter.</p>
+  </li>
+</ul>
+
+<h5 id="phân-tích-data-cơ-bản">Phân tích data cơ bản</h5>
+<pre><code>import re
+
+def word_in_text(word, text):
+    word = word.lower()
+    text = text.lower()
+    match = re.search(word, text)
+
+    if match:
+        return True
+    return False
+</code></pre>
+
+<ul>
+  <li>Ở trên ta có hàm <code>word_in_text()</code> để đếm số lượng tweet chứa keyword. Nhưng ở đây chúng ta chưa đếm, mà chỉ đưa kết quả nếu True sẽ +1 vào biến đếm ở bước tiếp theo.</li>
+</ul>
+
+<pre><code># Initialize list to store tweet counts
+[clinton, trump, sanders, cruz] = [0, 0, 0, 0]
+
+# Iterate through df, counting the number of tweets in which
+# each candidate is mentioned
+for index, row in df.iterrows():
+    clinton += word_in_text('clinton', row['text'])
+    trump += word_in_text('trump', row['text'])
+    sanders += word_in_text('sanders', row['text'])
+    cruz += word_in_text('cruz', row['text'])
+</code></pre>
+
+<ul>
+  <li>Tiếp theo ta sẽ tạo list trong Python, mỗi item sẽ có giá trị đếm bắt đầu =0. Mục đích ở đây là để đếm số tweet count được cho mỗi keyword.</li>
+  <li>Sử dụng vòng lặp để đi từng row và check, nếu gặp keyword sẽ +1 vào biến đếm. Nếu True (nghĩa là có keyword đó) thì += 1.</li>
+</ul>
+
+<h5 id="basic-data-visualization">Basic Data visualization</h5>
+
+<pre><code># Import packages
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+
+# Set seaborn style
+sns.set(color_codes=True)
+
+# Create a list of labels:cd
+cd = ['clinton', 'trump', 'sanders', 'cruz']
+
+# Plot the bar chart
+ax = sns.barplot(cd, [clinton, trump, sanders, cruz])
+ax.set(ylabel="count")
+plt.show()
+</code></pre>
+
+<ul>
+  <li>Đầu tiên cần import 2 package như trên để vẽ biểu đồ</li>
+  <li>Hàm <code>sns.barplot()</code> có 2 tham số:
+    <ul>
+      <li>Tham số đầu: list label cần biểu diễn giá trị</li>
+      <li>Tham số thứ 2: list chứa giá trị của các label cần biểu diễn. List này đã được khởi tạo và đếm ở code trước đó.</li>
+    </ul>
+  </li>
+</ul>
+
+
+</div>
+
+<!-- Rating -->
+
+
+<!-- Author Box if enabled from _config.yml -->
+<!-- Author Box -->
+
+
+<div class="authorbox mb-5 mt-5 pt-4 pb-4">   
+    <div class="row">
+        <div class="wrapavname col-md-3 text-center">
+            
+            <img  class="author-thumb" src="/assets/images/ava.png" alt="Tuyen">
+            
+            <p class="mt-4 mb-0 small text-center">
+                <a target="_blank" class="d-inline-block mx-1 text-dark" href="https://www.tuyen-nnt.github.io"><i class="fa fa-link"></i></a> 
+                <a target="_blank" class="d-inline-block mx-1 text-dark" href=""><i class="fab fa-twitter"></i></a>
+                <a class="d-inline-block mx-1 text-dark" href="mailto:tuyendev96@gmail.com"><i class="fa fa-envelope"></i></a>
+            </p>
+        </div>
+        <div class="col-md-9">
+            <h4>Tuyen</h4>
+            <p class="mt-3 mb-0">Author of this blog, mostly about Technical which is the field I am interested in.</p>
+        </div>
+    </div> 
+</div> 
+
+
+
+<!-- Comments if not disabled with comments: false -->
+<!-- Comments
+================================================== -->
+ 
+<div class="comments mt-5">
+    <button class="btn btn-outline-dark py-2 px-5 d-block w-100 show-comments"><i class="fa fa-comments text-muted"></i> &nbsp; Load Comments</button>         
+    <div id="comments">  
+        <h4 class="mb-4">Comments</h4>                 
+            <section class="disqus">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'demowebsite'; 
+        var disqus_developer = 0;
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+     
+    <div class="clearfix"></div>              
+    </div>    
+</div>       
+
+
+<!-- Share -->
+<div class="share">
+    <p>
+        Share
+    </p>
+    <ul>
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://twitter.com/intent/tweet?text=Import Data - Part 2&url=https://tuyen-nnt.github.io/import-data-medium/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                <i class="fab fa-twitter"></i>
+            </a>
+        </li>
+
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://facebook.com/sharer.php?u=https://tuyen-nnt.github.io/import-data-medium/" onclick="window.open(this.href, 'facebook-share', 'width=550,height=435');return false;">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+        </li>
+
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://tuyen-nnt.github.io/import-data-medium/" onclick="window.open(this.href, 'width=550,height=435');return false;">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+        </li>
+
+    </ul>
+</div>
+
+
+<!-- Related Post -->
+<!-- Related Posts
+================================================== -->
+<div class=" related-posts ">  
+
+    
+    <h2 class="text-center mb-4">Explore more like this</h2>
+    
+    
+    <div class="d-flex justify-content-center align-items-center">
+    
+    <!-- Categories -->
+    
+    
+    <a class="smoothscroll badge badge-primary text-capitalize" href="/categories#Data">Data</a>                
+    
+
+    <!-- Tags -->  
+    
+    
+
+    </div>
+
+    
+    
+    
+    <div class="blog-grid-container">
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+            <!-- begin post -->
+
+
+<div class="blog-grid-item">
+    <div class="card h-100">
+        <div class="maxthumb">
+            <a href="/data-analysis/">
+                
+
+                    
+                        <img class="img-thumb" src="/assets/images/DA-step.png" alt="Tìm hiểu về Data Analysis"> 
+                    
+
+                
+            </a>
+        </div>
+        <div class="card-body">
+            <h2 class="card-title">
+                <a class="text-dark" href="/data-analysis/">Tìm hiểu về Data Analysis</a>
+                
+            </h2>
+            <h4 class="card-text">Bài viết này sẽ hướng dẫn các bước cơ bản: Tìm data phù hợp rồi collect chúng Đọc data trong môi trường dev Chuẩn bị phân tích bằng cách cleaning...</h4>
+        </div>
+        <div class="card-footer bg-white">
+            <div class="wrapfooter">
+                
+                <span class="meta-footer-thumb">
+                
+                <img class="author-thumb" src="/assets/images/ava.png" alt="Tuyen">
+                
+                </span>
+                <span class="author-meta">
+                <span class="post-name font-weight-bold">Tuyen</span> 
+                
+                <span class="post-date">03 Sep 2021</span>
+                </span>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end post -->
+            
+            
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+            <!-- begin post -->
+
+
+<div class="blog-grid-item">
+    <div class="card h-100">
+        <div class="maxthumb">
+            <a href="/python-intermediate/">
+                
+
+                    
+                        <img class="img-thumb" src="/assets/images/python1.png" alt="Python - Part 2"> 
+                    
+
+                
+            </a>
+        </div>
+        <div class="card-body">
+            <h2 class="card-title">
+                <a class="text-dark" href="/python-intermediate/">Python - Part 2</a>
+                
+            </h2>
+            <h4 class="card-text">1. Dictionaries Là tập hợp các cặp key:value khi cần kết nối dữ liệu với nhau như 1 table để tra cứu nhanh và có thể chỉ ra unique keys...</h4>
+        </div>
+        <div class="card-footer bg-white">
+            <div class="wrapfooter">
+                
+                <span class="meta-footer-thumb">
+                
+                <img class="author-thumb" src="/assets/images/ava.png" alt="Tuyen">
+                
+                </span>
+                <span class="author-meta">
+                <span class="post-name font-weight-bold">Tuyen</span> 
+                
+                <span class="post-date">02 Aug 2021</span>
+                </span>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end post -->
+            
+            
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+            <!-- begin post -->
+
+
+<div class="blog-grid-item">
+    <div class="card h-100">
+        <div class="maxthumb">
+            <a href="/python-basic/">
+                
+
+                    
+                        <img class="img-thumb" src="/assets/images/python1.png" alt="Python - Part 1"> 
+                    
+
+                
+            </a>
+        </div>
+        <div class="card-body">
+            <h2 class="card-title">
+                <a class="text-dark" href="/python-basic/">Python - Part 1</a>
+                
+            </h2>
+            <h4 class="card-text">I. LIST
+
+</h4>
+        </div>
+        <div class="card-footer bg-white">
+            <div class="wrapfooter">
+                
+                <span class="meta-footer-thumb">
+                
+                <img class="author-thumb" src="/assets/images/ava.png" alt="Tuyen">
+                
+                </span>
+                <span class="author-meta">
+                <span class="post-name font-weight-bold">Tuyen</span> 
+                
+                <span class="post-date">11 Jul 2021</span>
+                </span>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end post -->
+            
+            
+                
+        </div>        
+</div>
+
+<!-- Review with LD-JSON, adapt it for your needs if you like, but make sure you test the generated HTML source code first: 
+https://search.google.com/structured-data/testing-tool/u/0/
+================================================== -->
+
+    </div>
+
+    
+    <!-- Newsletter
+    ================================================== -->
+    <div class="newsletter text-center">
+        <span class="h4"><img src="/assets/images/ava.png" class="newsletter-logo" alt="My Blog"> &nbsp; Never miss a <b>story</b> from us, subscribe to our newsletter</span>
+        <form action="https://wowthemes.us11.list-manage.com/subscribe/post?u=8aeb20a530e124561927d3bd8&amp;id=8c3d2d214b" method="post" name="mc-embedded-subscribe-form" class="wj-contact-form validate" target="_blank" novalidate>
+            <div class="mc-field-group d-inline-flex">
+            <input type="email" placeholder="Your e-mail" name="EMAIL" class="required email" id="mce-EMAIL" autocomplete="on" required>
+            <input type="submit" value="Subscribe" name="subscribe" class="heart">
+            </div>
+        </form>
+    </div>
+    
+    
+</div>
+
+<!-- Begin Footer
+================================================== -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-12 text-center text-lg-left">
+                Copyright © 2021 Tuyen Nguyen 
+            </div>
+            <div class="col-md-6 col-sm-12 text-center text-lg-right">    
+                <a target="_blank" href="https://www.wowthemes.net/memoirs-free-jekyll-theme/">Memoirs Jekyll Theme</a> by WowThemes.net
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- End Footer
+================================================== -->
+
+</div> <!-- /.site-content -->
+
+<!-- Scripts (if you need bootstrap.js, please add it yourself. I didn't use it for performance reasons, it was not needed in this theme)
+================================================== -->
+
+<script src="/assets/js/prism.js"></script>
+
+<script src="/assets/js/theme.js"></script>
+
+
+
+
+<script id="dsq-count-scr" src="//demowebsite.disqus.com/count.js"></script>
+
+
+</body>
+</html>
