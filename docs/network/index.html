@@ -643,21 +643,64 @@ Mục đích của bước này là để đảm bảo khi có cấu hình sai t
 
 <h4 id="subnet-mask">Subnet Mask</h4>
 
-<p>IP: 9.100.100.100
-Subnet mask: 255.255.255.224
-Subnet mask in binary: 11111111 11111111 11111111 11100000</p>
+<ul>
+  <li>
+    <p>IP: 9.100.100.100</p>
+  </li>
+  <li>
+    <p>Subnet mask: 255.255.255.224</p>
+  </li>
+  <li>
+    <p>Subnet mask in binary: 11111111 11111111 11111111 11100000</p>
+  </li>
+</ul>
 
-<p><img src="/assets/images/subnet-id.png" alt="" />
-Hình trên là ví dụ của subnet mask: 255.255.255.0
-=&gt; 9.100.100.100/27</p>
-
+<p>=&gt; 9.100.100.100/27</p>
 <blockquote>
   <p>Có 27 số 1 (các số 1 này là subnet ID).</p>
 </blockquote>
 
+<p><img src="/assets/images/subnet-id.png" alt="" />
+Hình trên là ví dụ của subnet mask: 255.255.255.0</p>
+
 <p>Subnet mask là cách để máy tính sử dụng toán tử AND để xác định địa chỉ IP đó có tồn tại trên cùng network hay không.</p>
 
-<h4 id="cidr">CIDR</h4>
+<h4 id="cidr--notation">CIDR (/ notation)</h4>
+<p>Là một cách tiếp cận linh hoạt để cung cấp số lượng địa chỉ IP phù hợp với nhu cầu. CIDR cho phép network tự phân chia kích thước.
+<img src="/assets/images/subnet-2.png" alt="" /></p>
+
+<p>Nó dựa vào subnet để Demarcate (phân định).</p>
+
+<p>Demarcation point là cách để mô tả nơi 1 network hay system kết thúc và cái khác bắt đầu.</p>
+
+<p>Một IP thường có Network ID, Subnet ID, Host ID.
+Tuy nhiên với CIDR, Network ID và Subnet ID thường được kết hợp làm một.</p>
+
+<blockquote>
+  <p>Nếu công ty cần nhiều hơn 1 class C số lượng địa chỉ IP max mà class C có thể cung cấp (254). Thay vì tạo 2 class C để gấp đôi thì giờ đây với CIDR, nó chỉ cần kết tnoosi không gian địa chỉ liên tục với nhau với mask /23 hay có thể nói là 255.255.254.0.</p>
+</blockquote>
+
+<p>Giờ đây router chỉ cần biết 1 entry trong routing table để vận chuyển lưu lượng đến các địa chỉ đích thay vì 2.</p>
+
+<blockquote>
+  <p>Trước đây network ID là tĩnh và chỉ có class A,B,C để phân định kích thước cố định và chỉ có subnet mới có thể thay đổi. Với CIDR thì mọi chuyện đã khác.</p>
+</blockquote>
+
+<p><img src="/assets/images/CIDR-23.png" alt="" /></p>
+
+<p>Phân tích hình trên 1 chút:</p>
+<ul>
+  <li>
+    <p>Hãy nhớ là ta sẽ luôn mất 2 host ID trên mỗi mạng. (giá trị đầu và cuối trong range)</p>
+  </li>
+  <li>
+    <p>Nếu không dùng CIDR, ta cần 2 network class C nên = 254+254</p>
+  </li>
+  <li>
+    <p>/23 nghĩa là thêm được 1 bit cho Host ID = 2^9</p>
+  </li>
+</ul>
+
 
 </div>
 
