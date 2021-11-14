@@ -48,13 +48,14 @@ Bắt đầu làm việc trên Mongo Shell gõ: ``mongo``. Gõ ``cls`` trong she
 > lưu ý định dạng file json, phần tử street nằm dưới dấu ``{``, phần tử {name nằm dưới dấu ``:``
 
 
-* Tạo user admin: 
-
-```db.createUser({
+* Tạo user admin:
+ 
+```
+db.createUser({
 		  user:"brad",
 		  pwd:"1234"
 		  roles:["readWrite", "dbAdmin"]
-  })
+})
 ```
   
 * Tạo collections (như table trong relational DB) : ``db.createCollection('<tên collection>')``
@@ -63,42 +64,104 @@ Bắt đầu làm việc trên Mongo Shell gõ: ``mongo``. Gõ ``cls`` trong she
 
 * Insert documents vào collection:
 ```
-db.customers.insert({"first_name":"John", "last_name":"Doe"}, {"first_name":"Steven", "last_name":"Smith", "gender": "male"});
+db.customers.insert({first_name:"John", last_name:"Doe"}, {first_name:"Steven", last_name:"Smith", gender: "male"});
 ```
 > Vì Mongo là NoSQL nên nó có thể add thêm các doc với fieldname tùy ý.
 
 * List ra các documents (hàm pretty() giúp dễ nhìn hơn): ``db.customers.find().pretty();``
 
 * Update document:
+
 Cách 1: ghi lại tất cả các field
 
 ```
-db.customers.update({"first_name":"John"}, {"first_name":"John", "last_name":"Doe", "gender":"male"}
+db.customers.update({first_name:"John"}, {first_name:"John", last_name:"Doe", "gender":"male"}
 ```
 
 Cách 2: dùng ``$set`` để không cần lặp lại các field giữ nguyên.
 
 ```
-db.customers.update({"first_name":"John"}, {$set:{gender:"male"}});
+db.customers.update({first_name:"John"}, {$set:{gender:"male"}});
 ```
 
 * Tăng số cho 1 field dùng trong tính toán:
 Ví dụ tăng 5 tuổi cho John. 
 ```
-db.customers.update({"first_name":"John"}, {$set:{age:45}});
+db.customers.update({first_name:"John"}, {$set:{age:45}});
 
-db.customers.update({"first_name":"John"}, {$inc:{age:5}});
+db.customers.update({first_name:"John"}, {$inc:{age:5}});
 ```
 
 * Xóa field name bất kỳ của 1 document:
 Ví dụ xóa trường age của John.
 ```
-db.customers.update({"first_name":"John"}, {$unset:{age}});
+db.customers.update({first_name:"John"}, {$unset:{age}});
 ```
 
 * Update nếu không thỏa điều kiện thì insert doc mới dùng ``upsert``:
 
 ```
-db.customers.update({"first_name":"Mary"}, {"first_name":"Mary", "last_name":"Samson"},{upsert: true});
+db.customers.update({first_name:"Mary"}, {first_name:"Mary", last_name:"Samson"},{upsert: true});
 ```
 
+* Rename fieldname: 
+```
+db.customers.update({first_name:"Mary"}, {$rename:{"gender": "sex"}});
+```
+
+* Remove document:
+```
+db.customers.remove({first_name:"Mary"})
+```
+
+* Remove document limit 1:
+```
+db.customers.remove({first_name:"Mary"}, {justOne: true});
+```
+
+* Query tìm kiếm:
+
+```
+db.customers.find({first_name:"Mary"});
+
+// show limit 
+db.customers.find().limit(4);
+
+//select doc có tuổi > 40
+db.customers.find({age:{$gt:40}})
+
+//select doc có name là Mary hoặc John
+db.customers.find({$or:[{first_name:"Mary"}, {first_name:"John"}]})
+
+//select doc có field name là object
+db.customers.find({"address.city":"Boston"})
+
+//select doc có fieldname là array, chọn ra các doc có mem1 trong array memberships
+db.customers.find({memberships:"mem1"})
+```
+
+* Sort 
+```
+// ASC : 1
+db.customers.find().sort({last_name:1);
+
+// DESC: -1
+db.customers.find().sort({last_name:1);
+
+```
+
+* Count document
+
+```
+db.customers.find().count();
+
+// count có điều kiện
+db.customers.find({gender:"male"}).count();
+```
+
+* Function:
+```
+db.customers.find().forEach(function(doc){print("Customer Name"+ doc.first_name)});
+```
+> Customer Name: John
+Customer Name: Mary
