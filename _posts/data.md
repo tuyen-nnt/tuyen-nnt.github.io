@@ -204,4 +204,42 @@ Authors Thomas Erl, Wajid Khattak, and Paul Buhler proposed a big data analytics
 
 This life cycle appears to have three or four more steps than the previous life cycle models. But in reality, they have just broken down what we have been referring to as Prepare and Process into smaller steps. It emphasizes the individual tasks required for gathering, preparing, and cleaning data before the analysis phase.
 
-For more information, refer to Big Data Adoption and Planning Considerations. 
+
+-------------------------
+#### Questions on data log
+
+Are there any trends you noticed in your behavior?
+
+Are there factors that influence your decision-making?
+
+Is there anything you identified that might influence your future behavior?
+
+#### Analytical thinking
+![](/assets/images/analytical-thinking.png)
+
+Các câu hỏi mà DA thường đặt ra nhiều nhất:
+
+* **Five Whys**	: hỏi liên tục cho tới khi tìm được root cause.
+
+* ``Where are the gaps in our process?``: xác định khoảng cách giữa tình trạng hiện tại và mục tiêu tương lai mà tìm ra cây cầu để đạt được điều đó.
+ Đánh giá process thực hiện của hiện tại. 
+ 
+ * ``What did we not consider before?``: câu hỏi giúp nhận biết được thông tin gì, thủ tục gì bị thiếu trong quy trình giúp đưa ra quyết định và chiến lược tốt hơn. 
+ 
+ 
+#### Data analysis life-circle
+
+Planning > Capture (collect, routing) > Managing (cleansing, storing) > Analyze > Archive > Destroy 
+ 
+     Plan: Decside what kind of data is needed, how it will be managed, and who will be responsible for it.
+
+    Capture: Collect or bring in data from a variety of different sources.
+
+    Manage: Care for and maintain the data. This includes determining how and where it is stored and the tools used to do so.
+
+    Analyze: Use the data to solve problems, make decisions, and support business goals.
+
+    Archive: Keep relevant data stored for long-term and future reference.
+
+    Destroy: Remove data from storage and delete any shared copies of the data.
+ 
