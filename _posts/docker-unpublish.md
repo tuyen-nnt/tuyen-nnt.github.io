@@ -80,6 +80,7 @@ sẽ cho kết quả ra file hello.txt trên.
  Cài đặc Docker
  Tạo 1 program và Tạo file plain text Dockerfile ghi hướng dẫn để đưa cho docker đóng gói ứng dụng thành 1 image. Image chứa tất cả mọi thứ để chương trình chạy.
  IMAGE bao gồm:
+ 
  * A cut-down OS
  * Môi trường runtime (vd như Node, Python)
  * File ứng dụng
