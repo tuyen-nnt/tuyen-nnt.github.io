@@ -1,6 +1,14 @@
 Các cách query:
 
 - Dùng Query string
+```
+GET /ecommerce/product/_search?q=*
+hoặc 
+GET /ecommerce/product/_search?q=pasta
+hoặc có field name:
+GET /ecommerce/product/_search?q=name:pasta
+```
+
 - Dùng Compound Queries (Query DSL)
 
 ```
@@ -38,7 +46,7 @@ Cre: https://stackoverflow.com/questions/28768277/elasticsearch-difference-betwe
 
 * ``must``: truy vấn bắt buộc phải xuất hiện trong kết quả trả về, và các truy vấn con trong must có mối quan hệ AND với nhau.
 
-* ``should``: nếu truy vấn có trong kết quả thì score sẽ tăng thêm, score này được tính bằng 1 số phép toán học.
+* ``should``: nếu truy vấn có trong kết quả thì score sẽ tăng thêm, score này được tính bằng 1 số phép toán học. Các filter con trong should có mỗi quan hệ OR với nhau.
 
 => Vì must và should nằm trong bool nên nếu chỉ có should mà không có must hay must_not thì truy vấn trong should (nếu chỉ có 1 filter) bắt buộc xuất hiện trong kết quả. 
 
