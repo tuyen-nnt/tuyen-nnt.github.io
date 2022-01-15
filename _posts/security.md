@@ -51,7 +51,7 @@ Các bước truy cập server EP:
 
 => exit 
 
-* ssh -L 8080:127.0.0.1:80 -N -f root@ssh.ep-eng.io -p 61461 -i .ssh/id_rsa
+* ``ssh -L 8080:127.0.0.1:80 -N -f root@ssh.ep-eng.io -p 61461 -i .ssh/id_rsa``
 
 Thiết lập ssh tunnel. Ánh xạ port 80 của application lên port 8080 của máy chủ localhost.
 
