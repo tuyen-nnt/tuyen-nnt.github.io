@@ -1,0 +1,45 @@
+Các cách query:
+
+- Dùng Query string
+- Dùng Compound Queries (Query DSL)
+
+```
+GET /<index>/<category>/_search
+{
+	"query": {
+		"bool": {
+			"must": [
+				{ "match": { "name": "pasta" } }
+			]
+			"should": [
+			{ "match": { "name": "spaghetti" } }
+			]
+		}
+	}
+}
+```
+
+Giải thích về ``must`` và ``should``:
+```
+must means: The clause (query) must appear in matching documents. These clauses must match, like logical AND.
+
+should means: At least one of these clauses must match, like logical OR.
+
+Basically they are used like logical operators AND and OR. See this.
+
+Now in a bool query:
+
+must means: Clauses that must match for the document to be included.
+
+should means: If these clauses match, they increase the _score; otherwise, they have no effect. They are simply used to refine the relevance score for each document.
+
+Cre: https://stackoverflow.com/questions/28768277/elasticsearch-difference-between-must-and-should-bool-query
+```
+
+* ``must``: truy vấn bắt buộc phải xuất hiện trong kết quả trả về, và các truy vấn con trong must có mối quan hệ AND với nhau.
+
+* ``should``: nếu truy vấn có trong kết quả thì score sẽ tăng thêm, score này được tính bằng 1 số phép toán học.
+
+=> Vì must và should nằm trong bool nên nếu chỉ có should mà không có must hay must_not thì truy vấn trong should (nếu chỉ có 1 filter) bắt buộc xuất hiện trong kết quả. 
+
+
