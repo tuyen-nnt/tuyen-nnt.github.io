@@ -1,0 +1,78 @@
+
+<hr />
+<p>layout: post
+title:  “(ENG) The basics of Spark PART 2”
+author: tuyennnt
+categories: [ Data ]
+image: assets/images/spark.png
+—</p>
+
+<ul>
+  <li>
+    <p>PySpark APIs tương tự như Pandas và Scikit-learn</p>
+  </li>
+  <li>Schema là nơi lưu và control thông tin của dataframe bao gồm tên các cột, kiểu dữ liệu, empty values,… Ngoài ra nó còn giúp DFs tối ưu queries. Nếu để schema=None thì spark sẽ tự suy luận kiểu data,… dựa trên data của bạn. Còn không có thể tự quy định schema như ví dụ sau:
+    <pre><code>schema1 = StructType([StructField('id', IntegerType(), True),
+                   StructField('create_date', StringType(), True),
+                   StructField('txn_date', StringType(), True)])
+</code></pre>
+  </li>
+  <li>Retrieve SparkContext version
+<code>sc.version</code>
+    <blockquote>
+      <p>2.3.1</p>
+    </blockquote>
+  </li>
+  <li>Retrieve Python version of SparkContext 
+<code>sc.pythonVer</code>
+    <blockquote>
+      <p>3.6</p>
+    </blockquote>
+  </li>
+  <li>master: URL of cluster or “local” string to run in local mode of SparkContext
+<code>sc.master</code>
+    <blockquote>
+      <p>local[*]</p>
+    </blockquote>
+  </li>
+  <li>Tạo spark Dataframe
+<code>spark.createDataFrame()</code></li>
+</ul>
+
+<h3 id="cách-load-data-vào-pyspark">Cách Load data vào PySpark</h3>
+<h4 id="load-data-vào-sparkcontext">Load data vào SparkContext</h4>
+<ul>
+  <li>Cách 1 : 
+Dùng  <code>parallelize</code> method của SparkContext với input là 1 list.
+    <pre><code>rdd = sc.parallelize([1,2,3,4,5])
+</code></pre>
+    <blockquote>
+      <p>Tạo parallelize collection lưu số từ 1 đến 5</p>
+    </blockquote>
+  </li>
+  <li>Cách 2:
+Dùng method của SparkContext <code>textFile()</code>
+    <pre><code>rdd2 = sc.textFile("test.txt")
+</code></pre>
+  </li>
+</ul>
+
+<h4 id="load-data-vào-spark-dataframe">Load data vào Spark dataframe</h4>
+<ul>
+  <li>Cách 1: load data từ file và tạo thành dataframe
+Dùng method của SparkSession
+    <pre><code>spark.read.csv("...", header = True, inferSchema=True)
+spark.read.json("...")
+spark.read.txt("...")
+</code></pre>
+  </li>
+  <li>Cách 2 : Tạo dataframe từ RDD
+Đầu tiên phải tạo RDD từ list. Optional là tạo thêm list của columns tên là <code>names</code>
+df = spark.createDataFrame(RDD, schema=names)</li>
+</ul>
+
+<p><img src="/assets/images/rdd-df.png" alt="" /></p>
+
+<h4 id="read--write-file-từ-hdfs">Read &amp; Write file từ HDFS:</h4>
+<p>https://saagie.zendesk.com/hc/en-us/articles/360029759552-PySpark-Read-and-Write-Files-from-HDFS</p>
+

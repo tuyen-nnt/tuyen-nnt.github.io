@@ -5,8 +5,8 @@
     <description>Grow yourself and develop with me!</description>
     <link>https://tuyen-nnt.github.io/</link>
     <atom:link href="https://tuyen-nnt.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 22 Jan 2022 23:25:28 +0700</pubDate>
-    <lastBuildDate>Sat, 22 Jan 2022 23:25:28 +0700</lastBuildDate>
+    <pubDate>Sat, 22 Jan 2022 23:33:32 +0700</pubDate>
+    <lastBuildDate>Sat, 22 Jan 2022 23:33:32 +0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -30,7 +30,7 @@
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;Các hệ quản trị cơ sở dữ liệu khác nhau sẽ có tên gọi cho WAL log khác nhau. Trong MySQL sẽ là &lt;code&gt;binlosg&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Các hệ quản trị cơ sở dữ liệu khác nhau sẽ có tên gọi cho WAL log khác nhau. Trong MySQL sẽ là &lt;code&gt;binlog&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;Ngoài ra 1 transaction được xem là thành công thì các statements của nó phải toàn bộ thành công, ngược lại nếu 1 trong các statement cấu thành 1 transaction thất bại thì là thất bại. Điều này đảm bảo tính &lt;code&gt;automicity&lt;/code&gt; trong ACID để được gọi là 1 database transaction.&lt;/p&gt;
 
@@ -156,7 +156,75 @@ https://en.wikipedia.org/wiki/ACID&lt;/p&gt;
       </item>
     
       <item>
-        <title>Access Web  data</title>
+        <title>Query Elasticsearch</title>
+        <description>&lt;p&gt;Các cách query:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Dùng Query string
+    &lt;pre&gt;&lt;code&gt;GET /ecommerce/product/_search?q=*
+hoặc 
+GET /ecommerce/product/_search?q=pasta
+hoặc có field name:
+GET /ecommerce/product/_search?q=name:pasta
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Dùng Compound Queries (Query DSL)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code&gt;GET /&amp;lt;index&amp;gt;/&amp;lt;category&amp;gt;/_search
+{
+	&quot;query&quot;: {
+		&quot;bool&quot;: {
+			&quot;must&quot;: [
+				{ &quot;match&quot;: { &quot;name&quot;: &quot;pasta&quot; } }
+			]
+			&quot;should&quot;: [
+			{ &quot;match&quot;: { &quot;name&quot;: &quot;spaghetti&quot; } }
+			]
+		}
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Giải thích về &lt;code&gt;must&lt;/code&gt; và &lt;code&gt;should&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;must means: The clause (query) must appear in matching documents. These clauses must match, like logical AND.
+
+should means: At least one of these clauses must match, like logical OR.
+
+Basically they are used like logical operators AND and OR. See this.
+
+Now in a bool query:
+
+must means: Clauses that must match for the document to be included.
+
+should means: If these clauses match, they increase the _score; otherwise, they have no effect. They are simply used to refine the relevance score for each document.
+
+Cre: https://stackoverflow.com/questions/28768277/elasticsearch-difference-between-must-and-should-bool-query
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;must&lt;/code&gt;: truy vấn bắt buộc phải xuất hiện trong kết quả trả về, và các truy vấn con trong must có mối quan hệ AND với nhau.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;should&lt;/code&gt;: nếu truy vấn có trong kết quả thì score sẽ tăng thêm, score này được tính bằng 1 số phép toán học. Các filter con trong should có mỗi quan hệ OR với nhau.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;=&amp;gt; Vì must và should nằm trong bool nên nếu chỉ có should mà không có must hay must_not thì truy vấn trong should (nếu chỉ có 1 filter) bắt buộc xuất hiện trong kết quả.&lt;/p&gt;
+
+</description>
+        <pubDate>Sat, 15 Jan 2022 00:00:00 +0700</pubDate>
+        <link>https://tuyen-nnt.github.io/elasticsearch/</link>
+        <guid isPermaLink="true">https://tuyen-nnt.github.io/elasticsearch/</guid>
+        
+        
+        <category>Data</category>
+        
+      </item>
+    
+      <item>
+        <title>Làm được gì từ web data?</title>
         <description>&lt;p&gt;Mở socket » connect đến đường dẫn và port » Tạo biến string cmd request GET, POST,… » encode string cmd thành dạng byte » gửi request đi.&lt;/p&gt;
 
 &lt;p&gt;Nhận response về từ thế giới bên ngoài (ngầm hiểu là UTF-8 » decode response từ dạng byte thành dạng unicode.&lt;/p&gt;
@@ -306,6 +374,8 @@ Vậy tiếp theo ta phải thống nhất dữ liệu ở format nào để mà
         <link>https://tuyen-nnt.github.io/access-web-data/</link>
         <guid isPermaLink="true">https://tuyen-nnt.github.io/access-web-data/</guid>
         
+        
+        <category>Data</category>
         
       </item>
     
@@ -2253,350 +2323,6 @@ Mỗi data structure sẽ có cách loop các nhau và cách định nghĩa sequ
         <category>Programing</category>
         
         <category>Python</category>
-        
-      </item>
-    
-      <item>
-        <title>Import Data - Part 2</title>
-        <description>&lt;h4 id=&quot;1-import--load--tạo-httpget-request&quot;&gt;1. Import + Load + Tạo HTTP/GET REQUEST&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;Lưu file mềm xuống local:
-&lt;code&gt;urlretrieve(url, 'filename.csv')&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Trước tiên phải &lt;code&gt;from urllib.request import urlretrieve&lt;/code&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Mở và đọc file mềm trên web:
-&lt;code&gt;
-df = pd.read_csv(url, sep=';')
-&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Show các dòng đầu tiên của df:
-&lt;code&gt;
-print(df.head())
-&lt;/code&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;URL (Uniform/Universal Resource Locator)
-phần lớn là các địa chỉ web, ngoài ra còn là FTP (file transfer protocol)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;URL gồm 2 phần:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Protocol Identifier : http hoặc https&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Tên resource: datacamp.com
-=&amp;gt; tạo thành 1 địa chỉ web&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;HTTP (HyperText Transfer Protocol)
-Là protocol ứng dụng cho các hệ thống thông tin phân tán, cộng tác và siêu phương tiện, nền tảng giao tiếp dữ liệu cho WWW.
-HTTPS - có độ an toàn bảo mật cao hơn HTTP&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Mỗi khi truy cập vào 1 trang web nghĩa là bạn đang gửi 1 HTTP request cho 1 server. Request này được gọi là GET request, đây là loại request phổ biến nhất.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;urlretrieve : gửi GET request và lưu dữ liệu xuống local máy&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;HTML (HyperText Markup Language)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;2-các-cách-gửi-get-request&quot;&gt;2. Các cách gửi GET request:&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Cách 1&lt;/strong&gt;: sử dụng &lt;code&gt;urllib.request&lt;/code&gt;
-=&amp;gt; &lt;code&gt;from urllib.request import urlopen, Request&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Một số functions của package &lt;code&gt;urllib.request&lt;/code&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;code&gt;request = Request(url)&lt;/code&gt; : đóng gói GET request&lt;/li&gt;
-  &lt;li&gt;&lt;code&gt;response = urlopen(request)&lt;/code&gt; : 
-gửi request và catch phản hồi =&amp;gt; trả về HTTP response object có tích hợp method read() và close()&lt;/li&gt;
-  &lt;li&gt;&lt;code&gt;html = response.read()&lt;/code&gt; : trả về HTML định dạng string&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;code&gt;response.close()&lt;/code&gt;: dùng xong nhớ đóng lại&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Cách 2&lt;/strong&gt;: rất phổ biến, sử dụng package &lt;code&gt;requests&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Cho phép gửi HTTP request có tổ chức mà ko cần làm thủ công&lt;/p&gt;
-
-&lt;p&gt;requests.get(url) : sau khi import package requests, hàm request.get() sẽ đóng gói request thông qua url, gửi request đi và nhận lại phản hồi và lưu vào biến r.&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;Ở đây hàm &lt;code&gt;request.get()&lt;/code&gt; sẽ làm nhiệm vụ của &lt;code&gt;Request(url)&lt;/code&gt; và &lt;code&gt;urlopen(request đã đóng gói)&lt;/code&gt;của cách 1&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;r.text : r là biến lưu response của hàm trên, sử dụng method .text cho response để chuyển HTML của url sang dạng string.&lt;/p&gt;
-
-&lt;h4 id=&quot;3-scraping-web-trong-python&quot;&gt;3. Scraping web trong Python&lt;/h4&gt;
-
-&lt;p&gt;HTML là sự kết hợp của data có cấu trúc và không cấu trúc.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Hàm &lt;code&gt;BeautifulSoup()&lt;/code&gt; có tác dụng parse và trích xuất data từ HTML, và làm cho các tag được biểu diễn đẹp hơn.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Cách sử dụng: 
-&lt;code&gt;from bs4 import BeautifulSoup&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Sau khi gửi nhận phản hồi của GET request, ta được file html như trên.&lt;/p&gt;
-
-&lt;p&gt;Sau đó, ta dùng hàm &lt;code&gt;BeautifulSoup&lt;/code&gt; để extract các data có cấu trúc của file html, lưu kết quả là một object vào một biến mới. Kết quả của hàm &lt;code&gt;BeautifulSoup&lt;/code&gt;có tích hợp hàm &lt;code&gt;.prettify()&lt;/code&gt; để làm đẹp kết quả.&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;soup = BeautifulSoup(html_doc)
-print(soup.prettify())&lt;/code&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Các hàm khác có thể dùng sau khi parse và nhận kết quả từ BeautifulSoup:&lt;/p&gt;
-
-    &lt;ul&gt;
-      &lt;li&gt;&lt;code&gt;soup.title()&lt;/code&gt; : trích title của file html&lt;/li&gt;
-      &lt;li&gt;&lt;code&gt;soup.get_text()&lt;/code&gt;: trích tất cả text của file html&lt;/li&gt;
-      &lt;li&gt;&lt;code&gt;soup.find_all()&lt;/code&gt; : tìm tất cả các data theo điều kiện hoặc tag nào đó.
-  Ví dụ:
-        &lt;pre&gt;&lt;code&gt;  for link in soup.find_all('a'):
-  print(link.get('href')
-&lt;/code&gt;&lt;/pre&gt;
-        &lt;p&gt;hoặc&lt;/p&gt;
-        &lt;pre&gt;&lt;code&gt;  for link in a_tags:
-  print(link.get('href'))
-&lt;/code&gt;&lt;/pre&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;=&amp;gt; Ở đây, ta sử dụng vòng lặp for kết hợp hàm &lt;code&gt;.find_all()&lt;/code&gt; extract data nằm trong tag &lt;code&gt;&amp;lt;a&amp;gt;&lt;/code&gt; của file html và in ra từng link của mỗi dòng tìm được, ta cũng có thể lưu &lt;code&gt;soup.find_all()&lt;/code&gt; vào một biến nào đó.
-Hàm &lt;code&gt;link.get('href')&lt;/code&gt; dùng để extract giá trị link của attribute href trong tag &lt;code&gt;&amp;lt;a&amp;gt;&lt;/code&gt;&lt;/p&gt;
-
-&lt;h4 id=&quot;4-load-và-khám-phá-file-json&quot;&gt;4. Load và khám phá file JSON&lt;/h4&gt;
-&lt;h6 id=&quot;file-json-nằm-ở-local&quot;&gt;FIle JSON nằm ở local&lt;/h6&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Bước 1: Tạo connection với file JSON trong local và load file
-    &lt;pre&gt;&lt;code&gt;with open(&quot;tên file.json&quot;) as json_file :
-  json_data = json.load(json_file)
-&lt;/code&gt;&lt;/pre&gt;
-    &lt;p&gt;Ở đây json_data là 1 object dictionary, ta check bằng &lt;code&gt;type(json_data)&lt;/code&gt; ra kết quả &lt;code&gt;dict&lt;/code&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Bước 2: Sử dụng vòng lặp &lt;code&gt;for&lt;/code&gt; để in cặp key-value ra
-    &lt;pre&gt;&lt;code&gt;for k in json_data.keys():
-  print(k + ': ', json_data[k])
-&lt;/code&gt;&lt;/pre&gt;
-    &lt;p&gt;Từ object dictionary trên, ta dùng àm &lt;code&gt;.keys&lt;/code&gt; để truy cập vào keys của file và dùng cú pháp &lt;code&gt;dictionary[key]&lt;/code&gt; để truy cập vào value.&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;5-apis-và-tương-tác-cơ-bản&quot;&gt;5. APIs và tương tác cơ bản&lt;/h4&gt;
-
-&lt;h5 id=&quot;api-là-gì&quot;&gt;API là gì?&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;Là một bộ protocols và routines để xây dựng và tương tác với phần mềm&lt;/li&gt;
-  &lt;li&gt;Một tập hợp code cho phép 02 chương trình phần mềm giao tiếp với nhau
-Ví dụ nếu muốn stream data của Twitter thì ta cùng API của Twitter.&lt;/li&gt;
-  &lt;li&gt;Thông thường data thường được lấy về từ APIs ở định dạng JSON.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;url-có-gì-và-làm-thể-nào-để-nó-biết-pull-data-từ-api-về&quot;&gt;URL có gì và làm thể nào để nó biết pull data từ API về?&lt;/h5&gt;
-
-&lt;p&gt;&lt;code&gt;url = 'http://www.omdbapi.com/?t=hackers'&lt;/code&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;http - dấu hiệu là ta đang tạo 1 HTTP request&lt;/li&gt;
-  &lt;li&gt;www.omdbapi.com - nghĩa là ta đang query OMDB API&lt;/li&gt;
-  &lt;li&gt;&lt;code&gt;?t=hackers&lt;/code&gt;
-    &lt;ul&gt;
-      &lt;li&gt;Đây gọi là Query String&lt;/li&gt;
-      &lt;li&gt;Không có quy ước và không buộc có trong đường dẫn&lt;/li&gt;
-      &lt;li&gt;Sau dấu &lt;code&gt;?&lt;/code&gt; là phần query. Theo document trên trang chủ OMDB API thì có nghĩ là ta đang muốn trả về data của bộ phim có title (t) ‘Hackers’. Cụ thể xem phần Usage + Parameters.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code&gt;# Import package
-import requests
-
-# Assign URL to variable: url
-url = 'https://en.wikipedia.org/w/api.php?action=query&amp;amp;prop=extracts&amp;amp;format=json&amp;amp;exintro=&amp;amp;titles=pizza'
-
-# Package the request, send the request and catch the response: r
-r = requests.get(url)
-
-# Decode the JSON data into a dictionary: json_data
-json_data = r.json()
-
-print(json_data)
-
-# Print the Wikipedia page extract
-pizza_extract = json_data['query']['pages']['24768']['extract']
-print(pizza_extract)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Ở 2 dòng code cuối, để biết tại sao code như thế, ta truy cập url trên browser, nó sẽ hiện ra các tab. Ta muốn extract data từ api của url thì ta mở từ tab &lt;code&gt;query &amp;gt; pages &amp;gt; 24768 &amp;gt; extract&lt;/code&gt; thì sẽ nhận được data từ api đó.&lt;/p&gt;
-
-&lt;h5 id=&quot;load-và-khám-phá-twitter-data&quot;&gt;Load và khám phá Twitter data&lt;/h5&gt;
-&lt;pre&gt;&lt;code&gt;# Import package
-import json
-
-# String of path to file: tweets_data_path
-tweets_data_path = 'tweets.txt'
-
-# Initialize empty list to store tweets: tweets_data
-tweets_data = []
-
-# Open connection to file
-tweets_file = open(tweets_data_path, &quot;r&quot;)
-
-# Read in tweets and store in list: tweets_data
-for line in tweets_file:
-    tweet = json.loads(line)
-    tweets_data.append(tweet)
-
-# Close connection to file
-tweets_file.close()
-
-# Print the keys of the first tweet dict
-print(tweets_data[0].keys())
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Đầu tiên ta gán đường dẫn tên file chứa Twitter data ở local máy vào 1 biến.&lt;/li&gt;
-  &lt;li&gt;Tiếp theo ta tạo 1 mảng rỗng để chứa mỗi dòng tweet là 1 phần tử trong mảng.&lt;/li&gt;
-  &lt;li&gt;Sau đó ta mở connection đến file local đó thông qua dường dẫn &lt;code&gt;tweets_data_path&lt;/code&gt; và lưu vào &lt;code&gt;tweets_file&lt;/code&gt;.&lt;/li&gt;
-  &lt;li&gt;Tiếp theo ta dùng vòng lặp for để đọc từng dòng của &lt;code&gt;tweets_file&lt;/code&gt;:
-    &lt;ul&gt;
-      &lt;li&gt;Dùng hàm &lt;code&gt;json.load(line)&lt;/code&gt; để load từng dòng lưu vào biến &lt;code&gt;tweet&lt;/code&gt;, &lt;em&gt;để dùng hàm trên phải import &lt;code&gt;json&lt;/code&gt; package&lt;/em&gt;
-        &lt;blockquote&gt;
-          &lt;p&gt;Note: mỗi lần load &lt;code&gt;line&lt;/code&gt; để lưu vào &lt;code&gt;tweet&lt;/code&gt; là một dictionary.&lt;/p&gt;
-        &lt;/blockquote&gt;
-      &lt;/li&gt;
-      &lt;li&gt;Sử dụng biến mảng &lt;code&gt;tweets_data&lt;/code&gt; kết hợp hàm &lt;code&gt;append(tweet)&lt;/code&gt; để add thêm phần tử dictionary mới (hay còn gọi là tweet) vào mảng.&lt;/li&gt;
-      &lt;li&gt;In ra tất cả các &lt;code&gt;keys&lt;/code&gt; của phần tử đầu tiên (tweet hay dict) của mảng.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;đưa-mảng-vào-dataframe-sử-dụng-package-pandas-để-phân-tích&quot;&gt;Đưa mảng vào Dataframe sử dụng package pandas để phân tích&lt;/h5&gt;
-
-&lt;pre&gt;&lt;code&gt;# Import package
-import pandas as pd
-
-# Build DataFrame of tweet texts and languages
-df = pd.DataFrame(tweets_data, columns=['text','lang'])
- 
-# Print head of DataFrame
-
-print(df.head())
-&lt;/code&gt;&lt;/pre&gt;
-&lt;ul&gt;
-  &lt;li&gt;Hàm &lt;code&gt;pd.Dataframe()&lt;/code&gt; cần 2 tham số là data và column để xây dựng df
-    &lt;ul&gt;
-      &lt;li&gt;Tham số đầu có thể là mảng, dict hoặc dataframe&lt;/li&gt;
-      &lt;li&gt;Tham số thứ 2 là column label, nếu không có label thì dùng RangeIndex(0,1,2,…n). Nếu có label trong data như ví dụ trên, ta chỉ cần &lt;code&gt;columns=['text','lang']&lt;/code&gt; để chọn label cho column muốn rút giá trị. Ở ví dụ trên ta sẽ tạo 2 cột &lt;code&gt;text&lt;/code&gt; và &lt;code&gt;lang&lt;/code&gt;.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;streaming&quot;&gt;Streaming&lt;/h5&gt;
-&lt;pre&gt;&lt;code&gt;# Initialize Stream listener
-l = MyStreamListener()
-
-# Create your Stream object with authentication
-stream = tweepy.Stream(auth, l)
-
-# Filter Twitter Streams to capture data by the keywords:
-stream.filter(track=['clinton', 'trump', 'sanders', 'cruz'])
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Class &lt;code&gt;MyStreamListener()&lt;/code&gt; được khai báo sẵn tại đây: https://gist.github.com/hugobowne/18f1c0c0709ed1a52dc5bcd462ac69f4&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Ta tạo object &lt;code&gt;stream&lt;/code&gt;bằng cách đưa vào hàm &lt;code&gt;tweepy.Stream()&lt;/code&gt; athentication handler &lt;code&gt;auth&lt;/code&gt; và object &lt;code&gt;l&lt;/code&gt; - stream listener trên.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Object &lt;code&gt;stream&lt;/code&gt; có tích hợp hàm &lt;code&gt;.filter()&lt;/code&gt;, trong hàm này có attribute &lt;code&gt;track=[]&lt;/code&gt; là list chứa các keyword mà ban muốn filter.&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;phân-tích-data-cơ-bản&quot;&gt;Phân tích data cơ bản&lt;/h5&gt;
-&lt;pre&gt;&lt;code&gt;import re
-
-def word_in_text(word, text):
-    word = word.lower()
-    text = text.lower()
-    match = re.search(word, text)
-
-    if match:
-        return True
-    return False
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Ở trên ta có hàm &lt;code&gt;word_in_text()&lt;/code&gt; để đếm số lượng tweet chứa keyword. Nhưng ở đây chúng ta chưa đếm, mà chỉ đưa kết quả nếu True sẽ +1 vào biến đếm ở bước tiếp theo.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code&gt;# Initialize list to store tweet counts
-[clinton, trump, sanders, cruz] = [0, 0, 0, 0]
-
-# Iterate through df, counting the number of tweets in which
-# each candidate is mentioned
-for index, row in df.iterrows():
-    clinton += word_in_text('clinton', row['text'])
-    trump += word_in_text('trump', row['text'])
-    sanders += word_in_text('sanders', row['text'])
-    cruz += word_in_text('cruz', row['text'])
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Tiếp theo ta sẽ tạo list trong Python, mỗi item sẽ có giá trị đếm bắt đầu =0. Mục đích ở đây là để đếm số tweet count được cho mỗi keyword.&lt;/li&gt;
-  &lt;li&gt;Sử dụng vòng lặp để đi từng row và check, nếu gặp keyword sẽ +1 vào biến đếm. Nếu True (nghĩa là có keyword đó) thì += 1.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;basic-data-visualization&quot;&gt;Basic Data visualization&lt;/h5&gt;
-
-&lt;pre&gt;&lt;code&gt;# Import packages
-import seaborn as sns
-import matplotlib.pyplot as plt
-
-
-# Set seaborn style
-sns.set(color_codes=True)
-
-# Create a list of labels:cd
-cd = ['clinton', 'trump', 'sanders', 'cruz']
-
-# Plot the bar chart
-ax = sns.barplot(cd, [clinton, trump, sanders, cruz])
-ax.set(ylabel=&quot;count&quot;)
-plt.show()
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Đầu tiên cần import 2 package như trên để vẽ biểu đồ&lt;/li&gt;
-  &lt;li&gt;Hàm &lt;code&gt;sns.barplot()&lt;/code&gt; có 2 tham số:
-    &lt;ul&gt;
-      &lt;li&gt;Tham số đầu: list label cần biểu diễn giá trị&lt;/li&gt;
-      &lt;li&gt;Tham số thứ 2: list chứa giá trị của các label cần biểu diễn. List này đã được khởi tạo và đếm ở code trước đó.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Sun, 18 Jul 2021 00:00:00 +0700</pubDate>
-        <link>https://tuyen-nnt.github.io/import-data-medium/</link>
-        <guid isPermaLink="true">https://tuyen-nnt.github.io/import-data-medium/</guid>
-        
-        
-        <category>Data</category>
         
       </item>
     

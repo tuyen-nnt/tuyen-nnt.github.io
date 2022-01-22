@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<link rel="icon" href="/assets/images/logo.png">
+
+<title>Data Visualization | Tuyen Nguyen</title>
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Data Visualization | My Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Data Visualization" />
+<meta name="author" content="tuyennnt" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="1. Các loại chart cơ bản" />
+<meta property="og:description" content="1. Các loại chart cơ bản" />
+<link rel="canonical" href="https://tuyen-nnt.github.io/data-visualization/" />
+<meta property="og:url" content="https://tuyen-nnt.github.io/data-visualization/" />
+<meta property="og:site_name" content="My Blog" />
+<meta property="og:image" content="https://tuyen-nnt.github.io/assets/images/visualization.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-06-23T00:00:00+07:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="https://tuyen-nnt.github.io/assets/images/visualization.png" />
+<meta property="twitter:title" content="Data Visualization" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","author":{"@type":"Person","name":"tuyennnt"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://tuyen-nnt.github.io/data-visualization/"},"image":"https://tuyen-nnt.github.io/assets/images/visualization.png","headline":"Data Visualization","dateModified":"2021-06-23T00:00:00+07:00","datePublished":"2021-06-23T00:00:00+07:00","url":"https://tuyen-nnt.github.io/data-visualization/","description":"1. Các loại chart cơ bản","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://tuyen-nnt.github.io/assets/images/ava.png"},"name":"tuyennnt"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    
+<link href="/assets/css/prism.css" rel="stylesheet">
+
+<link href="/assets/css/theme.css" rel="stylesheet">
+
+<script src="/assets/js/jquery.min.js"></script>
+
+</head>
+
+
+
+
+<body>
+	<!-- defer loading of font and font awesome -->
+	<noscript id="deferred-styles">
+		<link href="https://fonts.googleapis.com/css?family=Sen:400,700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+	</noscript>
+
+<!-- Begin Sidebar Navigation
+================================================== -->
+
+<div class="sidebar">    
+</div>   
+<div class="nav-icon">
+    <div class="hamburger-bar"></div>
+</div>
+<div id="blackover-nav" class="blackover"></div>
+<nav id="menu">
+    <ul>
+        <h3>Navigation</h3>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/authors">Contributors <span class="badge badge-primary">new</span></a></li>
+        <li><a target="_blank" href="https://bootstrapstarter.com/jekyll-theme-memoirs/">Get Memoirs</a></li>      
+        <li><a href="/contact">Contact</a></li>       
+    </ul>   
+</nav>
+
+<script src="/assets/js/lunr.js"></script>
+
+<style>
+    
+</style>
+
+<div class="wrap-search">
+    <div class="d-flex align-items-center ml-auto">
+        <i class="fas fa-search show-search"></i>
+        <form class="bd-search ml-3" onSubmit="return lunr_search(document.getElementById('lunrsearch').value);">
+            <input type="text" class="form-control bigradius text-small launch-modal-search" id="lunrsearch" name="q" maxlength="255" value="" placeholder="Type and enter..."/>
+        </form>
+    </div>
+</div>
+
+<div id="lunrsearchresults">
+    <ul></ul>
+</div>
+
+<script src="/assets/js/lunrsearchengine.js"></script>
+
+
+<!-- End Sidebar Navigation
+================================================== -->
+
+<div class="site-content ">
+
+<div class="container">
+
+    <!-- Site Logo/Name
+    ================================================== -->
+   
+    <a class="navbar-brand" href="/">
+        <img src="/assets/images/ava.png" alt="Tuyen Nguyen">
+    </a>  
+   
+
+    <!-- Site Tag
+    ================================================== -->
+    
+
+    <!-- Content
+    ================================================== -->
+    <div class="main-content">
+        <div class="entry-header">
+    <!-- Post Title -->
+    <h1 class="posttitle">Data Visualization</h1>
+    <!-- Author & Date  Box -->
+    
+    
+    <div class="d-flex align-items-center mt-4">
+        <div>
+            
+            <img class="author-thumb" src="/assets/images/ava.png" alt="Tuyen">
+            
+        </div>            
+        <div>
+        Written by Tuyen on 
+        <span class="post-date"><time class="post-date" datetime="2021-06-23">23 Jun 2021</time></span>           
+        
+        </div>            
+    </div>
+    
+</div>
+
+<!-- Adsense under title if enabled from _config.yml (change your pub id and slot) -->
+
+
+<!-- Featured Image -->
+
+<div class="entry-featured-image">
+    
+    <img class="featured-image " src="/assets/images/visualization.png" alt="Data Visualization">
+    
+</div>
+
+
+<!-- Content -->
+<!-- Post, Page Content
+================================================== -->
+<div class="article-post">
+    <!-- Toc if any -->
+    
+    <!-- End Toc -->
+    <h4 id="1-các-loại-chart-cơ-bản">1. Các loại chart cơ bản</h4>
+
+<p>BAR CHART &amp; COLUMN CHART</p>
+
+<blockquote>
+  <p>Giúp ta nhìn vào giá trị cụ thể cho mỗi loại</p>
+</blockquote>
+
+<p>Có 4 loại:</p>
+
+<ul>
+  <li>Stacked bar và column chart
+    <blockquote>
+      <p>Biểu đồ chồng nhau theo giá trị,</p>
+    </blockquote>
+  </li>
+  <li>Clustered bar và column chart
+    <blockquote>
+      <p>Biểu đồ nhiều cột trong 1 phân loại</p>
+    </blockquote>
+  </li>
+  <li>100% stacked bar và column chart
+    <blockquote>
+      <p>Biểu đồ chồng theo %</p>
+    </blockquote>
+  </li>
+  <li>Combo chart
+    <blockquote>
+      <p>Biểu đồ kết hợp cột và biểu đồ đường</p>
+    </blockquote>
+  </li>
+</ul>
+
+<p>LINE CHART</p>
+<blockquote>
+  <p>Giúp biểu diễn chuỗi giá trị theo dạng có hình, thường là thông qua diễn tiến thay đổi của thời gian</p>
+</blockquote>
+
+<p>AREA CHART</p>
+<blockquote>
+  <p>Dựa trên Line chart nhưng được fill màu</p>
+</blockquote>
+
+<p>PIE CHART &amp; DONUT CHART</p>
+<blockquote>
+  <p>Biểu diễn mỗi quan hệ giữa các thành phần và tổng thể</p>
+</blockquote>
+
+<p>TREE MAP</p>
+<blockquote>
+  <p>Biểu diễn mỗi quan hệ giữa các thành phần và tổng thể, với các hình vuông có màu có kích cỡ riêng biểu thị phần mà các giá trị chiếm.</p>
+</blockquote>
+
+<p>CARD &amp; MULTI-ROW CARD</p>
+
+<ul>
+  <li>Card
+    <blockquote>
+      <p>biểu diễn 1 giá trị</p>
+    </blockquote>
+  </li>
+</ul>
+
+<p>*Multi-row card</p>
+<blockquote>
+  <p>dùng để biểu diễn nhiều giá trị</p>
+</blockquote>
+
+<p>GAUGE CHART &amp; KPI</p>
+<blockquote>
+  <p>được thiết kế để hiển thị dữ liệu thực tế so sánh với dữ liệu ngân sách/doanh thu hoặc mục tiêu đã lên kế hoạch.</p>
+</blockquote>
+
+<p>TABLE &amp; MATRIX</p>
+<blockquote>
+  <p>biểu diễn chi tiết dữ liệu văn bản bằng định dạng Bảng</p>
+</blockquote>
+
+<ul>
+  <li>Table:
+    <blockquote>
+      <p>chứa dữ liệu liên quan trong chuỗi logical của dòng và cột, có thể bao gồm header &amp; footer của bảng</p>
+    </blockquote>
+  </li>
+  <li>Matrix:
+    <blockquote>
+      <p>giống như bảng nhưng matrix có thể thu lại hoặc mở rộng ra bằng dòng hoặc cột</p>
+    </blockquote>
+  </li>
+</ul>
+
+<p>HIERARCHIES:</p>
+<blockquote>
+  <p>Level data từ cao đến thấp</p>
+</blockquote>
+
+<p>Ví dụ:
+Year =&gt; Quarter =&gt; Month =&gt; Day
+Company =&gt; Region =&gt; Country =&gt; DIvision =&gt; Unit</p>
+
+<p>HÀM:</p>
+<blockquote>
+  <p>Là các công thức được định nghĩa trước sẵn để biểu diễn các phép tính trên các giá trị gọi là tham trị <code>arguments</code>.</p>
+</blockquote>
+
+<h4 id="2-kiến-thức-nền-tảng-để-visualize-data">2. Kiến thức nền tảng để visualize data</h4>
+
+<p>Có 3 cách để lấy được insight của data:</p>
+<ul>
+  <li>
+    <p>Cách 1: Tính toán thống kê
+mean (trung bình), median(trung vị), standard deviation (phương sai)</p>
+  </li>
+  <li>
+    <p>Cách 2: Run model/Chạy mô hình
+Linear (Tuyến tính) hoặc hồi quy logistic</p>
+  </li>
+  <li>
+    <p>Cách 3: Vẽ plot
+scatter, bar, histogram (biểu đồ tần suất),…
+Scatter plot:
+<img src="/assets/images/plot.png" alt="" /></p>
+  </li>
+</ul>
+
+<h5 id="the-datasaurus-dozen">The Datasaurus Dozen</h5>
+
+<p><img src="/assets/images/datasaurus-dozen.png" alt="" /></p>
+
+<ul>
+  <li>Có 13 datasets, mỗi Dataset có 2 trục x và y được gọi là variable</li>
+  <li>Variable đơn giản chỉ là biệt ngữ thống kê để chỉ cột dữ liệu</li>
+  <li>Khi tính phương sai của mỗi dataset, ta sẽ tính ra 2 phương sai cho x và y trên tất cả các record. Vì dataset trên có 2 giá trị x và y.</li>
+  <li>Phương sai dùng để tính toán sự biến thiên của dữ liệu.</li>
+</ul>
+
+<h5 id="chọn-biểu-đồ-chấm-plot-loại-gì-thì-phù-hợp">Chọn biểu đồ chấm plot loại gì thì phù hợp?</h5>
+
+<p>Trước tiên phải xác định variable x và y của data thuộc loại nào. Có 3 loại:</p>
+
+<ul>
+  <li>
+    <p>Continuous : thường là số và có thể làm các phép toán cho nó.
+Ví dụ như nhiệt độ, chiều cao, doanh thu,…</p>
+  </li>
+  <li>
+    <p>Categorical : thường là dạng văn bản text, những thứ được phân loại hay mô tả.
+Ví dụ như màu mắt, quốc gia,…</p>
+  </li>
+  <li>
+    <p>Cả hai loại trên
+Ví dụ như tuổi thì dạng continuous, còn nhóm tuổi từ 25-30 thì lại là categorical.
+Thời gian thì continuous còn tháng thì categorical.</p>
+    <blockquote>
+      <p>Ở đây tùy vào mục đích visualization mà bạn sẽ quyết định nó thuộc loại nào cho phù hợp.</p>
+    </blockquote>
+  </li>
+</ul>
+
+<h5 id="khi-nào-nên-dùng-biểu-đồ-tần-suất-histogram">Khi nào nên dùng biểu đồ tần suất Histogram?</h5>
+
+<ul>
+  <li>Nếu bạn có biến continuous như trên</li>
+  <li>Khi bạn muốn biết hình dạng của sự phân tán data, ví dụ như bạn muốn biểu đồ thể hiện rõ giá trị cao nhất và thấp nhất.</li>
+</ul>
+
+<p>Một số thuật ngữ:</p>
+<ul>
+  <li>Bin (interval) : khoảng cách các ô trục trên biểu đồ, ví dụ 0-5, 5-10,… Nếu muốn rõ data hơn thì ta co bin lại 0-1, 1-2,…
+Như hình, bin 10-15 tuổi có giá trị trục y là 4, nghĩa là có 4 người từ 10-15 tuổi.</li>
+</ul>
+
+<p><img src="/assets/images/histogram.png" alt="" /></p>
+
+<p>Sự lựa chọn binwidth sẽ ảnh hưởng lớn đến hình ảnh biểu đồ. Dưới đây cho thấy nếu thu nhỏ bin lại còn 1 năm tuổi thì nhìn rất lộn xộn.</p>
+
+<p><img src="/assets/images/binwidth1.png" alt="" /></p>
+
+<p>Các tiêu chí trải nghiệm qua để chọn binwidth phù hợp:</p>
+<ul>
+  <li>
+    <p>Modality : có bao nhiêu đỉnh trong biểu đồ?
+Unimodal, bimodal hay trimodal?
+<img src="/assets/images/modality.png" alt="" /></p>
+  </li>
+  <li>
+    <p>Skewness: lệch lạc hay cân xứng?
+lệch trái, phải hay cân đối ở giữa?
+<img src="/assets/images/skewness.png" alt="" /></p>
+  </li>
+  <li>
+    <p>Kurtosis: có bao nhiêu điểm có giá trị = 0? (extreme value) 
+<img src="/assets/images/kurtosis.png" alt="" /></p>
+  </li>
+</ul>
+
+<h5 id="khi-nào-nên-vẽ-box-plots">Khi nào nên vẽ Box Plots?</h5>
+<ul>
+  <li>Khi chúng ta có 1 variable là continuous, được tách ra phân loại bởi 1 variable categorical.</li>
+  <li>Khi chúng ta muốn so sánh sự phân tán dữ liệu của variable continuous cho mỗi category (phân loại).</li>
+</ul>
+
+<p><img src="/assets/images/box-plot.png" alt="" />
+Các chỉ số trên box plots:</p>
+<ul>
+  <li>lower quartile: 1/4 có giá trị dưới số này</li>
+  <li>median : trung vị</li>
+  <li>upper quartile: 1/4 có giá trị trên số này</li>
+  <li>inter-quartile range: khoảng cách từ lower đến upper</li>
+  <li>whiskers: đường thẳng ngang hai bên, đường kẻ ra gấp 1-1,5 lần inter-quarter, dài đến mức độ đủ để biết rằng ngoài đường kẻ thì không có giá trị nào cả (extreme value).</li>
+</ul>
+
+<p><img src="/assets/images/box-plot-2.png" alt="" /></p>
+
+<ul>
+  <li>Phân loại nào chỉ có đường thẳng nghĩa là chỉ có 1 giá trị.</li>
+</ul>
+
+
+</div>
+
+<!-- Rating -->
+
+
+<!-- Author Box if enabled from _config.yml -->
+<!-- Author Box -->
+
+
+<div class="authorbox mb-5 mt-5 pt-4 pb-4">   
+    <div class="row">
+        <div class="wrapavname col-md-3 text-center">
+            
+            <img  class="author-thumb" src="/assets/images/ava.png" alt="Tuyen">
+            
+            <p class="mt-4 mb-0 small text-center">
+                <a target="_blank" class="d-inline-block mx-1 text-dark" href="https://www.tuyen-nnt.github.io"><i class="fa fa-link"></i></a> 
+                <a target="_blank" class="d-inline-block mx-1 text-dark" href=""><i class="fab fa-twitter"></i></a>
+                <a class="d-inline-block mx-1 text-dark" href="mailto:tuyendev96@gmail.com"><i class="fa fa-envelope"></i></a>
+            </p>
+        </div>
+        <div class="col-md-9">
+            <h4>Tuyen</h4>
+            <p class="mt-3 mb-0">Author of this blog, mostly about Technical which is the field I am interested in.</p>
+        </div>
+    </div> 
+</div> 
+
+
+
+<!-- Comments if not disabled with comments: false -->
+<!-- Comments
+================================================== -->
+ 
+<div class="comments mt-5">
+    <button class="btn btn-outline-dark py-2 px-5 d-block w-100 show-comments"><i class="fa fa-comments text-muted"></i> &nbsp; Load Comments</button>         
+    <div id="comments">  
+        <h4 class="mb-4">Comments</h4>                 
+            <section class="disqus">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_shortname = 'demowebsite'; 
+        var disqus_developer = 0;
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = window.location.protocol + '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+     
+    <div class="clearfix"></div>              
+    </div>    
+</div>       
+
+
+<!-- Share -->
+<div class="share">
+    <p>
+        Share
+    </p>
+    <ul>
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://twitter.com/intent/tweet?text=Data Visualization&url=https://tuyen-nnt.github.io/data-visualization/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                <i class="fab fa-twitter"></i>
+            </a>
+        </li>
+
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://facebook.com/sharer.php?u=https://tuyen-nnt.github.io/data-visualization/" onclick="window.open(this.href, 'facebook-share', 'width=550,height=435');return false;">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+        </li>
+
+        <li class="ml-1 mr-1">
+            <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://tuyen-nnt.github.io/data-visualization/" onclick="window.open(this.href, 'width=550,height=435');return false;">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+        </li>
+
+    </ul>
+</div>
+
+
+<!-- Related Post -->
+<!-- Related Posts
+================================================== -->
+<div class=" related-posts ">  
+
+    
+    <h2 class="text-center mb-4">Explore more like this</h2>
+    
+    
+    <div class="d-flex justify-content-center align-items-center">
+    
+    <!-- Categories -->
+    
+    
+    <a class="smoothscroll badge badge-primary text-capitalize" href="/categories#Data">Data</a>                
+    
+
+    <!-- Tags -->  
+    
+    
+
+    </div>
+
+    
+    
+    
+    <div class="blog-grid-container">
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+            <!-- begin post -->
+
+
+<div class="blog-grid-item">
+    <div class="card h-100">
+        <div class="maxthumb">
+            <a href="/data-analysis/">
+                
+
+                    
+                        <img class="img-thumb" src="/assets/images/DA-step.png" alt="Tìm hiểu về Data Analysis"> 
+                    
+
+                
+            </a>
+        </div>
+        <div class="card-body">
+            <h2 class="card-title">
+                <a class="text-dark" href="/data-analysis/">Tìm hiểu về Data Analysis</a>
+                
+            </h2>
+            <h4 class="card-text">Bài viết này sẽ hướng dẫn các bước cơ bản: Tìm data phù hợp rồi collect chúng Đọc data trong môi trường dev Chuẩn bị phân tích bằng cách cleaning...</h4>
+        </div>
+        <div class="card-footer bg-white">
+            <div class="wrapfooter">
+                
+                <span class="meta-footer-thumb">
+                
+                <img class="author-thumb" src="/assets/images/ava.png" alt="Tuyen">
+                
+                </span>
+                <span class="author-meta">
+                <span class="post-name font-weight-bold">Tuyen</span> 
+                
+                <span class="post-date">03 Sep 2021</span>
+                </span>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end post -->
+            
+            
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+            <!-- begin post -->
+
+
+<div class="blog-grid-item">
+    <div class="card h-100">
+        <div class="maxthumb">
+            <a href="/python-intermediate/">
+                
+
+                    
+                        <img class="img-thumb" src="/assets/images/python1.png" alt="Python - Part 2"> 
+                    
+
+                
+            </a>
+        </div>
+        <div class="card-body">
+            <h2 class="card-title">
+                <a class="text-dark" href="/python-intermediate/">Python - Part 2</a>
+                
+            </h2>
+            <h4 class="card-text">1. Dictionaries Là tập hợp các cặp key:value khi cần kết nối dữ liệu với nhau như 1 table để tra cứu nhanh và có thể chỉ ra unique keys...</h4>
+        </div>
+        <div class="card-footer bg-white">
+            <div class="wrapfooter">
+                
+                <span class="meta-footer-thumb">
+                
+                <img class="author-thumb" src="/assets/images/ava.png" alt="Tuyen">
+                
+                </span>
+                <span class="author-meta">
+                <span class="post-name font-weight-bold">Tuyen</span> 
+                
+                <span class="post-date">02 Aug 2021</span>
+                </span>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end post -->
+            
+            
+            
+        
+        
+        
+            
+            
+        
+            
+        
+            
+            <!-- begin post -->
+
+
+<div class="blog-grid-item">
+    <div class="card h-100">
+        <div class="maxthumb">
+            <a href="/import-data-medium/">
+                
+
+                    
+                        <img class="img-thumb" src="/assets/images/import1.png" alt="Import Data - Part 2"> 
+                    
+
+                
+            </a>
+        </div>
+        <div class="card-body">
+            <h2 class="card-title">
+                <a class="text-dark" href="/import-data-medium/">Import Data - Part 2</a>
+                
+            </h2>
+            <h4 class="card-text">1. Import + Load + Tạo HTTP/GET REQUEST
+
+  Lưu file mềm xuống local:
+urlretrieve(url, 'filename.csv')
+
+
+</h4>
+        </div>
+        <div class="card-footer bg-white">
+            <div class="wrapfooter">
+                
+                <span class="meta-footer-thumb">
+                
+                <img class="author-thumb" src="/assets/images/ava.png" alt="Tuyen">
+                
+                </span>
+                <span class="author-meta">
+                <span class="post-name font-weight-bold">Tuyen</span> 
+                
+                <span class="post-date">18 Jul 2021</span>
+                </span>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end post -->
+            
+            
+                
+        </div>        
+</div>
+
+<!-- Review with LD-JSON, adapt it for your needs if you like, but make sure you test the generated HTML source code first: 
+https://search.google.com/structured-data/testing-tool/u/0/
+================================================== -->
+
+    </div>
+
+    
+    <!-- Newsletter
+    ================================================== -->
+    <div class="newsletter text-center">
+        <span class="h4"><img src="/assets/images/ava.png" class="newsletter-logo" alt="My Blog"> &nbsp; Never miss a <b>story</b> from us, subscribe to our newsletter</span>
+        <form action="https://wowthemes.us11.list-manage.com/subscribe/post?u=8aeb20a530e124561927d3bd8&amp;id=8c3d2d214b" method="post" name="mc-embedded-subscribe-form" class="wj-contact-form validate" target="_blank" novalidate>
+            <div class="mc-field-group d-inline-flex">
+            <input type="email" placeholder="Your e-mail" name="EMAIL" class="required email" id="mce-EMAIL" autocomplete="on" required>
+            <input type="submit" value="Subscribe" name="subscribe" class="heart">
+            </div>
+        </form>
+    </div>
+    
+    
+</div>
+
+<!-- Begin Footer
+================================================== -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-12 text-center text-lg-left">
+                Copyright © 2021 Tuyen Nguyen 
+            </div>
+            <div class="col-md-6 col-sm-12 text-center text-lg-right">    
+                <a target="_blank" href="https://www.wowthemes.net/memoirs-free-jekyll-theme/">Memoirs Jekyll Theme</a> by WowThemes.net
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- End Footer
+================================================== -->
+
+</div> <!-- /.site-content -->
+
+<!-- Scripts (if you need bootstrap.js, please add it yourself. I didn't use it for performance reasons, it was not needed in this theme)
+================================================== -->
+
+<script src="/assets/js/prism.js"></script>
+
+<script src="/assets/js/theme.js"></script>
+
+
+
+
+<script id="dsq-count-scr" src="//demowebsite.disqus.com/count.js"></script>
+
+
+</body>
+</html>
