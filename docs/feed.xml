@@ -5,8 +5,8 @@
     <description>Grow yourself and develop with me!</description>
     <link>https://tuyen-nnt.github.io/</link>
     <atom:link href="https://tuyen-nnt.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 22 Jan 2022 23:33:32 +0700</pubDate>
-    <lastBuildDate>Sat, 22 Jan 2022 23:33:32 +0700</lastBuildDate>
+    <pubDate>Sun, 20 Feb 2022 22:55:37 +0700</pubDate>
+    <lastBuildDate>Sun, 20 Feb 2022 22:55:37 +0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
@@ -140,9 +140,78 @@ Worker có 2 khả năng đặc biệt:&lt;/p&gt;
   &lt;p&gt;Làm thế nào để phân chia input thành các phần có thể thực hiện đồng thời. Làm thế nào để tương tác với các external system.&lt;/p&gt;
 &lt;/blockquote&gt;
 
+&lt;h3 id=&quot;debezium&quot;&gt;Debezium&lt;/h3&gt;
+
+&lt;p&gt;Mysql có binlog dùng cho việc replication và recovery. File này chứa các thay đổi của database (trước khi ghi vào database) bao gồm cả thay đổi về dữ liệu table và cả schema của table.&lt;/p&gt;
+
+&lt;p&gt;Sau đó các thay đổi này mới được ghi vào database rồi sẽ được commit.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Debezium Mysql connector&lt;/strong&gt; là một plugin trong Kafka giúp kết nối Mysql với Kafka.&lt;/p&gt;
+
+&lt;p&gt;Connector này sẽ đọc sự thay đổi trong binlog và tạo ra các event INSERT/UPDATE/DELETE để đẩy lên Kafka.&lt;/p&gt;
+
+&lt;p&gt;Mysql được cài đặt sẽ xóa data trong binlog sau 1 thời gian ngắn nên Debezium Mysql connector sẽ chụp nhanh snapshot của hiện trạng dữ liệu và đọc nó ngay tại thời điểm được chụp.&lt;/p&gt;
+
+&lt;h4 id=&quot;cách-hoạt-động-của-debezium&quot;&gt;Cách hoạt động của Debezium&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Schema history topic:
+Binlog sẽ vừa lưu thay đổi về row-level data vừa lưu DDL statement để biết được schema tại 1 thời điểm có thay đổi không và thay đổi ra sao để produce event lên kafka chính xác.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Còn trên database của kafka topic, connector sẽ vừa lưu DDL statements vừa lưu vị trí có DDL statement trong binlog.&lt;/p&gt;
+
+&lt;p&gt;Khi có sự cố crash phải restart lại connector, nó sẽ đọc trong binlog tại 1 thời điểm cụ thể x. Connector sẽ rebuild lại schema từ &lt;code&gt;database history topic Kafka&lt;/code&gt; cho đến thời điểm x mà nó được start lại trong binlog.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Schema change topic:
+Bạn có thể cấu hình để Debezium Mysql connector produce các “schema change event” mô tả sự thay đổi của database.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Message được connector gửi đến cho Kafka topic name &lt;serverName&gt; được cấu hình trong connector với property ``database.server.name``  (https://debezium.io/documentation/reference/1.8/connectors/mysql.html#mysql-property-database-server-name).&lt;/serverName&gt;&lt;/p&gt;
+
+&lt;p&gt;Message này chứa payload và có thể tùy chọn để chứa luôn schema của change event message. Phần payload gồm:&lt;/p&gt;
+
+&lt;p&gt;ddl&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Provides the SQL CREATE, ALTER, or DROP statement that results in the schema change.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;databaseName&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;The name of the database to which the DDL statements are applied. The value of databaseName serves as the message key.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;pos&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;The position in the binlog where the statements appear.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;tableChanges&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;A structured representation of the entire table schema after the schema change. The tableChanges field contains an array that includes entries for each column of the table. Because the structured representation presents data in JSON or Avro format, consumers can easily read messages without first processing them through a DDL parser.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;thực-hành&quot;&gt;Thực hành&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Debezium: https://debezium.io/documentation/reference/1.8/tutorial.html#viewing-create-event&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Streaming from Mysql to Postgres và Elasticsearch
+https://debezium.io/blog/2018/01/17/streaming-to-elasticsearch/&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
 &lt;hr /&gt;
 &lt;p&gt;Ref: 
-https://en.wikipedia.org/wiki/Write-ahead_logging
+https://debezium.io/documentation/reference/1.8/connectors/mysql.html
+https://docs.confluent.io/kafka-connect-elasticsearch/current/configuration_options.html
+https://docs.confluent.io/kafka-connect-elasticsearch/current/overview.html
+https://baonq5.notion.site/Sample-connector-config-55b33df3898346fc93c94c7a697d44a6&lt;/p&gt;
+
+&lt;p&gt;https://en.wikipedia.org/wiki/Write-ahead_logging
 https://viblo.asia/p/010-apache-kafka-connect-concept-gAm5ymNL5db
 https://en.wikipedia.org/wiki/ACID&lt;/p&gt;
 </description>
@@ -213,6 +282,78 @@ Cre: https://stackoverflow.com/questions/28768277/elasticsearch-difference-betwe
 
 &lt;p&gt;=&amp;gt; Vì must và should nằm trong bool nên nếu chỉ có should mà không có must hay must_not thì truy vấn trong should (nếu chỉ có 1 filter) bắt buộc xuất hiện trong kết quả.&lt;/p&gt;
 
+&lt;hr /&gt;
+&lt;p&gt;Cách hoạt động của query clause phụ thuộc vào nó là Query context hay Filter context.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;Query context?&lt;/code&gt;
+Trả lời câu hỏi ““document này phù hợp với mệnh đề truy vấn nhiều như thế nào?”&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Query context sẽ có _score để đo mức độ phù hợp với truy vấn của document, tối đa là 1.0.&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;_score được tính bởi thuật toán đặc biệt chúng ta sẽ chưa tìm hiểu ở đây.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Query context là khi mệnh đề truy vấn được truyền vào tham số “query” trong search API.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;Filter context?&lt;/code&gt;
+Trả lời câu hỏi “document này có phù hợp với mệnh đề truy vấn không?”, CÓ hoặc KHÔNG.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Filter context là khi truyền mệnh đề truy vấn vào tham số “filter” hay “must_not”.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;match_all{}&lt;/code&gt;:
+Không cần query bên trong. Nó trả về tất cả document, tất cả đều có _score là 1.0&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;match{&quot;&amp;lt;field_name&amp;gt;&quot; : {&quot;query&quot; : &quot;&amp;lt;giá trị&amp;gt;&quot;}}&lt;/code&gt;: trả về các document thỏa giá trị mà ta cung cấp.
+Đối với giá trị text, text sẽ được analyze khi tìm kiếm, kết quả sau analyze sẽ được xây dựng thành 1 boolean query. Ta có thể cấu hình thêm tham số &lt;code&gt;operand&lt;/code&gt; (mặc định là or).&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Ngoài ra còn rất nhiều các tham số khác sử dụng trong các trường hợp phức tạp, bạn có thể đọc thêm ở https://www.elastic.co/guide/en/elasticsearch/reference/7.6/query-dsl-match-query.html&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;multi-match {&quot;query&quot;:&amp;lt;giá trị&amp;gt; , &quot;fields&quot; : [&quot;&amp;lt;field_name1&amp;gt;&quot; , &quot;&amp;lt;field_name2&amp;gt;&quot;]}&lt;/code&gt;
+Trả về các document mà các field thỏa giá trị query. Ở đây có thể dùng wildcards trong trường field để chỉ nhiều field.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Ví dụ: &lt;code&gt;*_name&lt;/code&gt; thì các field được tìm kiếm sẽ là first_name, last_name,…&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;must&lt;/code&gt;
+Mệnh đề trong must phải có trong kết quả, các mệnh đề con có mối quan hệ AND.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;must-not&lt;/code&gt;
+Mệnh đề trong must không được có trong kết quả, các query bên trong có mối quan hệ NOT và AND.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;should&lt;/code&gt;
+Kết quả trả về phải thỏa 1 trong các query của should, các query bên trong có mối quan hệ OR với nhau.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;bool&lt;/code&gt;: là 1 compound query clause.
+Boolean query được dùng để kết hợp nhiều mệnh đề query khác nhau gồm must, must-not, should, filter.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;filter&lt;/code&gt;: document trả về phải thỏa tất cả query bên trong filter, vì là filter context nên _score được bỏ qua và mệnh đề được xem xét để cache.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;range {&quot;&amp;lt;field_name&amp;gt;&quot; : { &quot;gte&quot; : &amp;lt;giá trị&amp;gt; , &quot;lt&quot; : &amp;lt;giá trị&amp;gt; }}&lt;/code&gt;:
+Trả về các document có giá trị nằm trong range đề cập trong range query.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;term {&quot;&amp;lt;field_name&amp;gt;&quot; : {&quot;value&quot; : &amp;lt;giá trị chính xác&amp;gt; }}&lt;/code&gt;
+Trả về các document có giá trị chính xác được đề cập trong term query.
+Lưu ý khi dùng term query đối với giá trị text, vì text sẽ được analyze và case sensitive.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
 </description>
         <pubDate>Sat, 15 Jan 2022 00:00:00 +0700</pubDate>
         <link>https://tuyen-nnt.github.io/elasticsearch/</link>
@@ -1355,47 +1496,299 @@ CNAME còn giúp thay đổi địa chỉ IP của 1 máy chủ ở 1 nơi thôi
 * ICANN là tổ chức tiền thân của IANA, cả hai cùng phối hợp để quản lý việc cấp phát và điều phối IP + DNS + TLD của Internet toàn cầu.
 
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;www.google.com
+&lt;p&gt;www.google.com&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Trong đó chia làm các vùng sau:
+
+* ``.com``: phần TLD
+* ``google``: phần Domain 
+* ``www``: phần sub-domain 
+=&amp;gt; Tất cả là Fully qulified Domain name (FQDN)
+
+Registrar là các công ty có thỏa thuận với ICANN để cấp phát/bán domain name chưa đăng ký cho bất kỳ ai.
+
+* Mỗi vùng domain phải &amp;lt;=63 ký tự.
+* FQDN thì tối đa 255 ký tự.
+* DNS support tối đa 127 level domain trong 1 FQDN.
+
+
+##### DNS Zones
+Ra đời để cho phép kiểm sóat nhiều level của domain name một cách dễ dàng hơn.
+
+![](/assets/images/dns-zone.png)
+
+Như hình ta sẽ có 4 cấu hình DNS server sẽ được thiết lập. 1 cho domain chính và 3 cái còn lại cho subdomains.
+
+Chúng sẽ được cấu hình thông qua ``Zone files``.
+
+* ``Zone files`` là những tệp tin cấu hình đơn giản khai báo tất cả các record của 1 zone nào đó.
+Zone file phải bao gồm SOA (Start of Authority).
+* SOA sẽ khai báo zone và tên của name server được cấp quyền để khai báo zone.
+* NS record cũng có thể xuất hiện trong file để khai báo những name server khác có thể chịu trách nhiệm cho zone này.
+* Ngoài ra cũng có thể xuất hiện các record A, AAAA, CNAME trong zone file.
+
+Ngoài việc tra cứu từ domain sang IP trong record. Ta còn sẽ bắt gặp kỹ thuật Resolve lookup zone file cho phép DNS server yêu cầu IP và trả về FQDN cùng với nó, dùng PTR record.
+
+* ``PTR`` (Pointer resource record) : phân giải IP thành name 
+
+
+
+### DHCP
+
+Để cấu hình 1 mạng tiêu chuẩn cần có IP address, Subnet mask, Gateway, Name server.
+
+Trong đó chỉ có IP là cái khác nhau cho mỗi node, còn lại thì hầu như cố định cho các node trong 1 mạng.
+
+=&amp;gt; DHCP ra đời để giúp cấu hình network cho OS máy bạn, giúp phân bổ IP
+
+* DHCP là protocol ở tầng application giúp tự động hóa việc cấu hình mạng cho các host trong network.
+Một node trong mạng sẽ truy cập DHCP server để truy vấn IP và sẽ nhận được toàn bộ cấu hình chuẩn gồm 4 cái trên.
+
+Các máy client được assign bất kỳ trong 1 dải quy định.
+Các thiết bị khác như router hay DNS server,... cần IP tĩnh để dễ diagnose khi gặp sự cố.
+
+#### DHCP discovery 
+Là quá trình client cấu hình sử dụng DHCP để có được thông tin cấu hình network.
+
+#### Quy trình DHCP cấp phát IP 
+* Client gửi thông báo broadcast tìm kiếm DHCP (gọi là DHCP discover message)
+![](/assets/images/DHCPdiscover.png)
+* DHCP server sẽ kiểm tra cấu hình của client để quyết định IP nào sẽ cấp. Tùy thuộc vào static hay dynamic hay fixed.
+* DHCP server sẽ phản hồi broadcast bằng DHCPOFFER message và trong msg có địa chỉ MAC của destination address.
+![](/assets/images/DHCPoffer.png)
+* Client có thể từ chối cấp phát IP từ 1 máy chủ DHCP bất kỳ trong mạng. Client sẽ phản hồi broadcast bằng DHCPREQUEST nói rằng ok đến DHCP server. Vì chưa có IP nên client sẽ mặc định gửi từ 0.0.0.0.
+
+![](/assets/images/DHCPrequest.png)
+* Sau đó DHCP server sẽ phản hồi broadcastr xác nhận bằng DHCPACK.
+![](/assets/images/DHCPack.png)
+
+* Client nhận message và bắt đầu thiết lập cấu hình network cho OS máy tính theo message nhận được.
+
+#### DHCP lease 
+Là hạn thời gian được sử dụng cấu hình cấp bởi DHCP. Hết thời gian này thì client phải thực hiện lại quy trình trên.
+
+Ngoài ra, client cũng có thể setup thời gian lease của nó để ngắt kết nối network đến DHCP server thông qua cách tắt mạng tự động. Điều này sẽ trả địa chỉ IP của client về danh sách IP có thể cấp phát của DHCP.
+
+### NAT (Network Address Translation)
+Là kỹ thuật cho phép gateway thường là router hay firewall rewrite IP source của 1 IP datagram đi ra network ngoài trong khi vẫn lưu giữ lại IP ban đầu để rewrite lại sau khi nhận được response từ các service ở network ngoài.
+
+Router thông thường chỉ nhận IP diagram kiểm tra trừ TTL 1 đơn vị, tính lại checksum.
+Khi có NAT thì nó sẽ rewrite lại IP.
+
+![](/assets/images/NAT.png)
+
+IP soure từ máy 1 khi hiển thị với máy 2 sẽ là IP gateway của router ở máy 2. 
+
+&amp;gt; NAT sẽ giúp bảo vệ, ẩn IP của máy 1 khi gói tin đến với máy 2 và sẽ viết lại IP chính xác của máy 1 khi router nhận được response từ máy 2.
+
+Về mặt security, không ai có thể thiết lập kết nối với máy tính của bạn nếu họ không biết địa chỉ IP. Đây gọi là ``IP masquerading`` (giả mạo IP) và là khái niệm bảo mật quan trọng. 
+
+#### NAT và Transport layer
+##### Port preservation
+Là kỹ thuật mà source port được chọn bởi máy client sẽ giống với port dùng bởi router.
+![](/assets/images/port-preservation.png)
+
+Outbound connection chọn ngẫu nhiên 1 ephomeny source port hoặc trong dải 49152 đến 65535.
+
+Lúc này router NAT chỉ cần lưu lại source port để trả response về đúng máy tính đã gửi msg đi.
+
+##### Port forwarding
+Là kỹ thuật mà destination port cụ thể có thể được cấu hình để luôn được chuyển đến node cụ thể nào đó.
+ 
+![](/assets/images/port-forwarding.png)
+
+Ví dụ trong network công ty có nhiều node (server) làm nhiều nhiệm vụ/service khác nhau. Các máy tính bên ngoài không cần biết IP của các service này là gì mà chỉ cần IP gateway của router kết nối đến network đó + destination port của service.
+
+Với port forwarding, traffic của 2 service có thể trả về cho cùng 1 IP mạng ngoài (gateway) và sẽ có cùng DNS name. Nhưng ngược lại, response có thể được trả về đến những internal server khác nhau nhờ các destination port khác nhau.
+
+&amp;gt; Kỹ thuật này giúp giả mạo IP (IP masquerading) và giúp người dùng bên ngoài tương tác với nhiều dịch vụ chạy trong cùng 1 tổ chức.
+
+##### NAT và Non-Routable Address Space
+Kể từ khi IANA đảm nhận phân bổ IP trên toàn cầu với số lượng có sẵn là 4,2 tỷ IPV4 thì đến khoảng từ năm 2010, các RIRs bắt đầu cạn kiệt IPv4.
+
+*RIRs là 5 lãnh thổ được IANA phân chia quản trị IPv4.
+    AFRINIC, which serves the continent of Africa
+
+    ARIN, which serves the United States, Canada and parts of the Caribbean
+
+    APNIC, which is responsible for most of Asia, Australia and New Zealand and Pacific Island nations
+
+    LACNIC, which covers Central and South America and any parts of the Caribbean not covered by ARIN
+
+    RIPE, which serves Europe, Russia,the Middle East, and portions of Central Asia
+    
+
+&amp;gt; IPv6 sẽ giúp giải quyết vấn đề cạn kiệt IPv4, tuy nhiên để biến IPv6 phổ biến toàn cầu cần có thêm thời gian.
+
+
+Trong thời gian này, chúng ta sẽ dùng NAT và Non-Routable Address Space làm giải pháp tạm thời.
+Điều này sẽ giúp cho hàng ngàn máy tính chỉ cần dùng 1 public IPv4 là IP gateway của router thông qua kỹ thuật NAT ở trên, giúp gửi nhận msg bình thường qua internet.
+
+![](/assets/images/limitIPv4.png)
+
+Cho đến khi IPv6 được sử dụng phổ biến, ta phải dùng kỹ thuật này để giải quyết tạm thời vấn đề cạn kiệt IPv4.
+
+Tham khảo thêm tại: https://en.wikipedia.org/wiki/IPv4_address_exhaustion
+
+### VPN &amp;amp; Proxies
+#### Virtual Private Network
+* Là công nghệ giúp mở rộng private hoặc local network ra các host mà không nằm trong network đó.
+* Là tunelling protocol. Thiết lập VPN connection là thiết lập VPN tunnel.
+![](/assets/images/vpn.png)
+&amp;gt; Phổ biến nhất là dùng cho nhân viên truy cập vào mạng công ty để xem/sử dụng resource tại nhà.
+
+Quy trình:
+
+* Nhân viên sử dụng VPN client để thiết lập tunnel đến mạng công ty. Nó giúp tạo 1 interface ảo để được cấp phát IP trong mạng công ty.
+* Lúc này client sẽ được cấp 1 IP trong mạng công ty.
+* Vậy là từ lúc này client có thể access resource của công ty bằng cách gửi message đi thông qua IP interface ảo này như thể đang kết nối mạng private của công ty.
+
+Hầu hết VPN hoạt động bằng cách sử dụng phần payload của Transport layer.
+![](/assets/images/vpn2.png)
+
+* Phần payload của message gửi từ client sẽ được mang đến VPNs end point nơi mà tất cả các layer khác trừ network, transport và application bị bỏ đi.
+* Phần payload lúc này sẽ được mã hóa để lại VPN server.
+* Sau đó phần payload sẽ được encapsulated với data link layer đúng thông tin và gửi ra đâu đó như thể từ private network của công ty.
+
+##### Two-factor authentication
+Là kỹ thuật dùng nhiều hơn username và password để authenticate.
+
+Thông thường người ta dùng mã token được generate bởi người dùng thông qua 1 phần cứng hay phần mềm chuyên dụng nào đó.
+
+![](/assets/images/vpn2.png)
+
+Ngoài ra, người ta thường dùng VPN để thiết lập ``tunnel`` giữa 2 network của 2 tòa nhà với nhau (site-to-site connectivity) thông qua việc kết nối router hoặc thiết bị VPN chuyên dụng trên 1 mạng đến 1 router trên mạng khác.
+&amp;gt; Từ đó network của 2 toà nhà có thể truy cập resource của toà nhà còn lại mà ko bị chặn.
+
+Tóm lại, VPN là 1 công nghệ tạo tunnel mã hóa để cho phép remote network hoặc 1 máy tính hoạt động như thể nó được kết nối vật lý đến 1 network nào đó.
+
+#### Proxies 
+Dịch vụ proxy là 1 server đại diện cho client để access 1 service khác. 
+Nó ngồi giữa client và các servers khác.
+
+1 số lợi ích của proxy:
+* Anonymity: ẩn danh
+* Security: bảo mật
+* Content filtering: lọc nội dung
+* Increased performance: tăng hiệu suất
+
+Gateway router là 1 ví dụ cho proxy. Proxy là khái niệm trừu tượng và nó hiện diện ở bất cứ layer nào.
+
+##### Web proxy
+* Lúc trước dùng để caching data giúp truy xuất lại nhanh hơn vì web proxy là cái sẽ đại diện cho client để truy xuất data từ service. Thời nay ít được dùng vì các tổ chức có khả năng xử lý mạnh mẽ nên không cần nữa. 
+
+
+* Hiện nay web proxy được sử dụng để ngăn chặn 1 ai đó truy cập vào các trang web. 
+Ví dụ: công ty chặn nhân viên vào facebook trong giờ làm việc để tăng năng suất.
+![](/assets/images/web-proxy.png)
+
+##### Reverse proxy
+Là 1 dịch vụ như là 1 server độc lập nhưng thực chất đại diện cho nhiều server đằng sau nó.
+
+Ví dụ: 
+
+* Tất cả traffic sẽ được kết nối đến 1 máy chủ web server của Twitter (gọi là reverse proxy) sẽ có nhiều web server sống phía sau nó để giúp quản lý số lượng lớn các request.
+
+Proxy server sẽ phân phối đến các app server theo hình thức Round robin để đảm bảo load balancing như DNS.
+
+ ![](/assets/images/reverse -proxy.png)
+ 
+* Một ứng dụng khác là để giải mã. Lúc này các application server chỉ cần phục vụ việc show web, còn lại proxy server lo. 
+
+
+### Một số định nghĩa khác cần nắm:
+
+* ``Traceroute`` và ``mtr``: là 1 tính năng cho phép thấy đường đi giữa 2 nodes, và cho thông tin về mỗi hop trên đường đi.
+Nó dùng kỹ thuật thông minh tại TTl field ở IP level. Đặt TTL đầu tiên là 1 và tăng dần giúp xác định lỗi nằm ở bước hop nào.
+ ![](/assets/images/traceroute.png)
+ 
+ Traceroute ở mỗi bước sẽ gửi 3 gói tin, số đầu mỗi dòng là số thứ tự hop. 
+  ![](/assets/images/traceroute2.png)
+ 
+ ``mtr`` cũng tương tự nhưng chạy thời gian thực và thấy rõ hơn các thay đổi, liên tục cập nhật data tổng hợp được về traceroute.
+ 
+* Netcat/Test-NetConnection: để xem tầng transport có đang hoạt động không.
+Cú pháp: ``nc host port``
+
+Cách hoạt động: câu lệnh sẽ cố thiết lập kết nối tới port X của webserver (gửi data từ tầng app đến listening service).
+	* Nếu kết nối thành công: 1 con trỏ nháy đầu dòng xuất hiện đợi input.
+	* Nếu kết nối thất bại: câu lệnh sẽ dừng.
+
+=&amp;gt; Nếu muốn không cần input chỉ để biết trạng thái thì thêm flag ``-z `v`` nghĩa là Zero input/output mode và verbose.
+
+* Name resolution tool: 
+``nslookup &amp;lt;webserver_optional&amp;gt;`` để trả về  record tra cứu lỗi.
+&amp;gt;Hoặc có thể nhập nslookup rồi nhập tiếp trong env của nó. Ví dụ:
+&lt;/code&gt;&lt;/pre&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;webserver
+set type=MX (loại tài nguyên)
+set debug (thêm chi tiết)
+```&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Public DNS server: là các name server được thiết lập đặc biệt để bất cứ ai cũng có thể sử dụng miễn phí. Ví dụ 8.8.8.8 và 8.8.4.4 của Google&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Lưu ý dùng của các công ty uy tín tránh bị attack. Nếu không phải debug thì nên dùng name server cung cấp bởi ISP của bạn.
+&lt;img src=&quot;/assets/images/DNS-attack.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;DNS Registration &amp;amp; expiration
+Registrar là 1 tổ chức có nhiệm vụ giao domain name cho tổ chức hoặc cá nhân.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Mua domain name:
+	* Đăng ký tài khoản trên trang của registrar
+	* Tìm tên miền muốn mua
+	* Đồng ý với số tiền và thời hạn sử dụng
+	* Thanh toán
+	* Ghi nhớ HSD mà gia hạn trước thời gian hết hạn.&lt;/p&gt;
+
+&lt;p&gt;Ngoài ra ta có thể transfer domain giữa các registrar và cá nhân:
+&lt;img src=&quot;/assets/images/transfer-domain.png&quot; alt=&quot;&quot; /&gt;
+	* Bên nhận generate 1 chuỗi ký tự độc nhất để gửi cho bên transfer.
+	* Bên transfer sẽ ghi cùng chuỗi ký tự đó trên 1 text record được cấu hình trong DNS setting để xác nhận là họ sở hữu domain này và được phép transfer.
+	* Hai bên chấp thuận trao đổi quyền sở hữu.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Host files
+Là flat file chứa trên mỗi dòng, 1 địa chỉ network đi theo bởi host name.
+Nói cách khác nó cho phép máy tính cá nhân cho rằng 1 tên miền luôn trỏ vào 1 IP cụ thể.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Ví dụ: 1.2.3.4 webserver&lt;/p&gt;
+
+&lt;h3 id=&quot;interview-sample&quot;&gt;Interview sample&lt;/h3&gt;
+
+&lt;p&gt;Tình huống: nhân viên nội bộ truy cập URL nội bộ của công ty gặp lỗi “Trang không hiển thị được”.&lt;/p&gt;
+
+&lt;p&gt;Quy trình debug có thể tham khảo như sau:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Hỏi xem thông báo lỗi là gì.&lt;/li&gt;
+  &lt;li&gt;Hỏi xem người khác có vào được ko.&lt;/li&gt;
+  &lt;li&gt;Xin tên web để thử tra cứu trên máy mình.&lt;/li&gt;
+  &lt;li&gt;Nói user thử truy cập trang web khác.&lt;/li&gt;
+  &lt;li&gt;Hỏi user dùng os nào và hướng dẫn nhập lệnh ifconfig. Kết quả là 1 loạt các thông số sau:
+```&lt;/li&gt;
+  &lt;li&gt;IP: là 1 địa chỉ duy nhất được cấp cho máy tính để giao tiếp trên Internet với các máy tính khác.&lt;/li&gt;
+  &lt;li&gt;Default gateway: như 1 điểm truy cập được máy tính sử dụng để chia sẻ thông tin với 1 máy tính khác hoặc trên Internet, có thể xem như là 1 router.&lt;/li&gt;
+  &lt;li&gt;DNS: là domain name system dịch domain name thành IP.&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;DHCP: giúp tự động cấp địa chỉ IP cho máy tính và gửi cấu hình mạng cho máy tính.
 ```
-Trong đó chia làm các vùng sau:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;code&gt;.com&lt;/code&gt;: phần TLD&lt;/li&gt;
-  &lt;li&gt;&lt;code&gt;google&lt;/code&gt;: phần Domain&lt;/li&gt;
-  &lt;li&gt;&lt;code&gt;www&lt;/code&gt;: phần sub-domain 
-=&amp;gt; Tất cả là Fully qulified Domain name (FQDN)&lt;/li&gt;
+=&amp;gt; phát hiện IP range của network là 172.x.x.x nhưng IP của máy tính lại là 192.x.x.x.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Hỏi xem máy tính có dùng DHCP không? (nên dùng để tự động cấp phát)
+=&amp;gt; Có thể do mình cấu hình IP tĩnh cho máy nên không truy cập được, cần vào DHCP settings để điều chỉnh cho gán tự động.
+=&amp;gt; Cũng có thể DHCP cấu hình sai hoặc kết nối với mạng sai nên địa chỉ IP bị sai range.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Hỏi xem đang kết nối mạng dây hay không dây. Nếu laptop hay điện thoại thì không dây (wi-fi).
+=&amp;gt; Kiểm tra wifi đang kết nối mạng nào, có phải mạng công ty không.
+=&amp;gt; Lỗi do kết nối mạng ngoài đường không phải mạng công ty.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;Registrar là các công ty có thỏa thuận với ICANN để cấp phát/bán domain name chưa đăng ký cho bất kỳ ai.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Mỗi vùng domain phải &amp;lt;=63 ký tự.&lt;/li&gt;
-  &lt;li&gt;FQDN thì tối đa 255 ký tự.&lt;/li&gt;
-  &lt;li&gt;DNS support tối đa 127 level domain trong 1 FQDN.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;dns-zones&quot;&gt;DNS Zones&lt;/h5&gt;
-&lt;p&gt;Ra đời để cho phép kiểm sóat nhiều level của domain name một cách dễ dàng hơn.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/dns-zone.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Như hình ta sẽ có 4 cấu hình DNS server sẽ được thiết lập. 1 cho domain chính và 3 cái còn lại cho subdomains.&lt;/p&gt;
-
-&lt;p&gt;Chúng sẽ được cấu hình thông qua &lt;code&gt;Zone files&lt;/code&gt;.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;code&gt;Zone files&lt;/code&gt; là những tệp tin cấu hình đơn giản khai báo tất cả các record của 1 zone nào đó.
-Zone file phải bao gồm SOA (Start of Authority).&lt;/li&gt;
-  &lt;li&gt;SOA sẽ khai báo zone và tên của name server được cấp quyền để khai báo zone.&lt;/li&gt;
-  &lt;li&gt;NS record cũng có thể xuất hiện trong file để khai báo những name server khác có thể chịu trách nhiệm cho zone này.&lt;/li&gt;
-  &lt;li&gt;Ngoài ra cũng có thể xuất hiện các record A, AAAA, CNAME trong zone file.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Ngoài việc tra cứu từ domain sang IP trong record. Ta còn sẽ bắt gặp kỹ thuật Resolve lookup zone file cho phép DNS server yêu cầu IP và trả về FQDN cùng với nó, dùng PTR record.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;code&gt;PTR&lt;/code&gt; (Pointer resource record) : phân giải IP thành name&lt;/li&gt;
-&lt;/ul&gt;
-
+&lt;p&gt;Tóm lại, luôn tìm ra lỗi nằm ở đâu trước khi vào sửa nó.&lt;/p&gt;
 </description>
         <pubDate>Mon, 18 Oct 2021 00:00:00 +0700</pubDate>
         <link>https://tuyen-nnt.github.io/network/</link>
@@ -1772,6 +2165,103 @@ print(p)
   &lt;p&gt;Dưới 300000$ thì income hầu như không thay đổi trước và sau 1995. Đường màu cam lệch sang phải ở mốc income 100000-150000$ nghĩa là income sau 1995 của những người có thu nhập cao có xu hướng tăng lên.&lt;/p&gt;
 &lt;/blockquote&gt;
 
+&lt;h3 id=&quot;changelog&quot;&gt;Changelog&lt;/h3&gt;
+&lt;p&gt;Changelogs take you down the last mile&lt;/p&gt;
+
+&lt;p&gt;A changelog can build on your automated version history by giving you an even more detailed record of your work. This is where data analysts record all the changes they make to the data. Here is another way of looking at it. Version histories record what was done in a data change for a project, but don’t tell us why. Changelogs are super useful for helping us understand the reasons changes have been made. Changelogs have no set format and you can even make your entries in a blank document. But if you are using a shared changelog, it is best to agree with other data analysts on the format of all your log entries.&lt;/p&gt;
+
+&lt;p&gt;Typically, a changelog records this type of information:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Data, file, formula, query, or any other component that changed
+
+Description of what changed
+
+Date of the change
+
+Person who made the change
+
+Person who approved the change 
+
+Version number 
+
+Reason for the change
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let’s say you made a change to a formula in a spreadsheet because you observed it in another report and you wanted your data to match and be consistent. If you found out later that the report was actually using the wrong formula, an automated version history would help you undo the change. But if you also recorded the reason for the change in a changelog, you could go back to the creators of the report and let them know about the incorrect formula. If the change happened a while ago, you might not remember who to follow up with. Fortunately, your changelog would have that information ready for you! By following up, you would ensure data integrity outside your project. You would also be showing personal integrity as someone who can be trusted with data. That is the power of a changelog!&lt;/p&gt;
+
+&lt;p&gt;Finally, a changelog is important for when lots of changes to a spreadsheet or query have been made. Imagine an analyst made four changes and the change they want to revert to is change #2. Instead of clicking the undo feature three times to undo change #2 (and losing changes #3 and #4), the analyst can undo just change #2 and keep all the other changes. Now, our example was for just 4 changes, but try to think about how important that changelog would be if there were hundreds of changes to keep track of.&lt;/p&gt;
+
+&lt;h3 id=&quot;version-control-system&quot;&gt;Version control system&lt;/h3&gt;
+&lt;p&gt;What also happens IRL (in real life)
+Image of a woman writing something down. There are two speech bubbles floating near her&lt;/p&gt;
+
+&lt;p&gt;A junior analyst probably only needs to know the above with one exception. If an analyst is making changes to an existing SQL query that is shared across the company, the company most likely uses what is called a version control system. An example might be a query that pulls daily revenue to build a dashboard for senior management.&lt;/p&gt;
+
+&lt;p&gt;Here is how a version control system affects a change to a query:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;A company has official versions of important queries in their version control system.
+
+An analyst makes sure the most up-to-date version of the query is the one they will change. This is called syncing 
+
+The analyst makes a change to the query.
+
+The analyst might ask someone to review this change. This is called a code review and can be informally or formally done. An informal review could be as simple as asking a senior analyst to take a look at the change.
+
+After a reviewer approves the change, the analyst submits the updated version of the query to a repository in the company's version control system. This is called a code commit. A best practice is to document exactly what the change was and why it was made in a comments area. Going back to our example of a query that pulls daily revenue, a comment might be: Updated revenue to include revenue coming from the new product, Calypso.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;data-cleaning&quot;&gt;Data cleaning&lt;/h2&gt;
+
+&lt;p&gt;Data-cleaning verification: A checklist&lt;/p&gt;
+
+&lt;p&gt;This reading will give you a checklist of common problems you can refer to when doing your data cleaning verification, no matter what tool you are using. When it comes to data cleaning verification, there is no one-size-fits-all approach or a single checklist that can be universally applied to all projects. Each project has its own organization and data requirements that lead to a unique list of things to run through for verification. 
+Image of a clipboard, pencil and post-it notes&lt;/p&gt;
+
+&lt;p&gt;Keep in mind, as you receive more data or a better understanding of the project goal(s), you might want to revisit some or all of these steps. 
+Correct the most common problems&lt;/p&gt;
+
+&lt;p&gt;Make sure you identified the most common problems and corrected them, including:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Sources of errors: Did you use the right tools and functions to find the source of the errors in your dataset?
+
+Null data: Did you search for NULLs using conditional formatting and filters?
+
+Misspelled words: Did you locate all misspellings?
+
+Mistyped numbers: Did you double-check that your numeric data has been entered correctly?
+
+Extra spaces and characters: Did you remove any extra spaces or characters using the TRIM function?
+
+Duplicates: Did you remove duplicates in spreadsheets using the Remove Duplicates function or DISTINCT in SQL?
+
+Mismatched data types: Did you check that numeric, date, and string data are typecast correctly?
+
+Messy (inconsistent) strings: Did you make sure that all of your strings are consistent and meaningful?
+
+Messy (inconsistent) date formats: Did you format the dates consistently throughout your dataset?
+
+Misleading variable labels (columns): Did you name your columns meaningfully?
+
+Truncated data: Did you check for truncated or missing data that needs correction?
+
+Business Logic: Did you check that the data makes sense given your knowledge of the business? 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Review the goal of your project&lt;/p&gt;
+
+&lt;p&gt;Once you have finished these data cleaning tasks, it is a good idea to review the goal of your project and confirm that your data is still aligned with that goal. This is a continuous process that you will do throughout your project– but here are three steps you can keep in mind while thinking about this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Confirm the business problem 
+
+Confirm the goal of the project
+
+Verify that data can solve the problem and is aligned to the goal 
+After the change is submitted, everyone else in the company will be able to access and use this new query when they sync to the most up-to-date queries stored in the version control system.
+
+If the query has a problem or business needs change, the analyst can undo the change to the query using the version control system. The analyst can look at a chronological list of all changes made to the query and who made each change. Then, after finding their own change, the analyst can revert to the previous version.
+
+The query is back to what it was before the analyst made the change. And everyone at the company sees this reverted, original query, too.
+&lt;/code&gt;&lt;/pre&gt;
 </description>
         <pubDate>Fri, 03 Sep 2021 00:00:00 +0700</pubDate>
         <link>https://tuyen-nnt.github.io/data-analysis/</link>

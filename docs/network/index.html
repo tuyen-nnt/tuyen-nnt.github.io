@@ -941,47 +941,299 @@ CNAME còn giúp thay đổi địa chỉ IP của 1 máy chủ ở 1 nơi thôi
 * ICANN là tổ chức tiền thân của IANA, cả hai cùng phối hợp để quản lý việc cấp phát và điều phối IP + DNS + TLD của Internet toàn cầu.
 
 </code></pre>
-<p>www.google.com
+<p>www.google.com</p>
+<pre><code>Trong đó chia làm các vùng sau:
+
+* ``.com``: phần TLD
+* ``google``: phần Domain 
+* ``www``: phần sub-domain 
+=&gt; Tất cả là Fully qulified Domain name (FQDN)
+
+Registrar là các công ty có thỏa thuận với ICANN để cấp phát/bán domain name chưa đăng ký cho bất kỳ ai.
+
+* Mỗi vùng domain phải &lt;=63 ký tự.
+* FQDN thì tối đa 255 ký tự.
+* DNS support tối đa 127 level domain trong 1 FQDN.
+
+
+##### DNS Zones
+Ra đời để cho phép kiểm sóat nhiều level của domain name một cách dễ dàng hơn.
+
+![](/assets/images/dns-zone.png)
+
+Như hình ta sẽ có 4 cấu hình DNS server sẽ được thiết lập. 1 cho domain chính và 3 cái còn lại cho subdomains.
+
+Chúng sẽ được cấu hình thông qua ``Zone files``.
+
+* ``Zone files`` là những tệp tin cấu hình đơn giản khai báo tất cả các record của 1 zone nào đó.
+Zone file phải bao gồm SOA (Start of Authority).
+* SOA sẽ khai báo zone và tên của name server được cấp quyền để khai báo zone.
+* NS record cũng có thể xuất hiện trong file để khai báo những name server khác có thể chịu trách nhiệm cho zone này.
+* Ngoài ra cũng có thể xuất hiện các record A, AAAA, CNAME trong zone file.
+
+Ngoài việc tra cứu từ domain sang IP trong record. Ta còn sẽ bắt gặp kỹ thuật Resolve lookup zone file cho phép DNS server yêu cầu IP và trả về FQDN cùng với nó, dùng PTR record.
+
+* ``PTR`` (Pointer resource record) : phân giải IP thành name 
+
+
+
+### DHCP
+
+Để cấu hình 1 mạng tiêu chuẩn cần có IP address, Subnet mask, Gateway, Name server.
+
+Trong đó chỉ có IP là cái khác nhau cho mỗi node, còn lại thì hầu như cố định cho các node trong 1 mạng.
+
+=&gt; DHCP ra đời để giúp cấu hình network cho OS máy bạn, giúp phân bổ IP
+
+* DHCP là protocol ở tầng application giúp tự động hóa việc cấu hình mạng cho các host trong network.
+Một node trong mạng sẽ truy cập DHCP server để truy vấn IP và sẽ nhận được toàn bộ cấu hình chuẩn gồm 4 cái trên.
+
+Các máy client được assign bất kỳ trong 1 dải quy định.
+Các thiết bị khác như router hay DNS server,... cần IP tĩnh để dễ diagnose khi gặp sự cố.
+
+#### DHCP discovery 
+Là quá trình client cấu hình sử dụng DHCP để có được thông tin cấu hình network.
+
+#### Quy trình DHCP cấp phát IP 
+* Client gửi thông báo broadcast tìm kiếm DHCP (gọi là DHCP discover message)
+![](/assets/images/DHCPdiscover.png)
+* DHCP server sẽ kiểm tra cấu hình của client để quyết định IP nào sẽ cấp. Tùy thuộc vào static hay dynamic hay fixed.
+* DHCP server sẽ phản hồi broadcast bằng DHCPOFFER message và trong msg có địa chỉ MAC của destination address.
+![](/assets/images/DHCPoffer.png)
+* Client có thể từ chối cấp phát IP từ 1 máy chủ DHCP bất kỳ trong mạng. Client sẽ phản hồi broadcast bằng DHCPREQUEST nói rằng ok đến DHCP server. Vì chưa có IP nên client sẽ mặc định gửi từ 0.0.0.0.
+
+![](/assets/images/DHCPrequest.png)
+* Sau đó DHCP server sẽ phản hồi broadcastr xác nhận bằng DHCPACK.
+![](/assets/images/DHCPack.png)
+
+* Client nhận message và bắt đầu thiết lập cấu hình network cho OS máy tính theo message nhận được.
+
+#### DHCP lease 
+Là hạn thời gian được sử dụng cấu hình cấp bởi DHCP. Hết thời gian này thì client phải thực hiện lại quy trình trên.
+
+Ngoài ra, client cũng có thể setup thời gian lease của nó để ngắt kết nối network đến DHCP server thông qua cách tắt mạng tự động. Điều này sẽ trả địa chỉ IP của client về danh sách IP có thể cấp phát của DHCP.
+
+### NAT (Network Address Translation)
+Là kỹ thuật cho phép gateway thường là router hay firewall rewrite IP source của 1 IP datagram đi ra network ngoài trong khi vẫn lưu giữ lại IP ban đầu để rewrite lại sau khi nhận được response từ các service ở network ngoài.
+
+Router thông thường chỉ nhận IP diagram kiểm tra trừ TTL 1 đơn vị, tính lại checksum.
+Khi có NAT thì nó sẽ rewrite lại IP.
+
+![](/assets/images/NAT.png)
+
+IP soure từ máy 1 khi hiển thị với máy 2 sẽ là IP gateway của router ở máy 2. 
+
+&gt; NAT sẽ giúp bảo vệ, ẩn IP của máy 1 khi gói tin đến với máy 2 và sẽ viết lại IP chính xác của máy 1 khi router nhận được response từ máy 2.
+
+Về mặt security, không ai có thể thiết lập kết nối với máy tính của bạn nếu họ không biết địa chỉ IP. Đây gọi là ``IP masquerading`` (giả mạo IP) và là khái niệm bảo mật quan trọng. 
+
+#### NAT và Transport layer
+##### Port preservation
+Là kỹ thuật mà source port được chọn bởi máy client sẽ giống với port dùng bởi router.
+![](/assets/images/port-preservation.png)
+
+Outbound connection chọn ngẫu nhiên 1 ephomeny source port hoặc trong dải 49152 đến 65535.
+
+Lúc này router NAT chỉ cần lưu lại source port để trả response về đúng máy tính đã gửi msg đi.
+
+##### Port forwarding
+Là kỹ thuật mà destination port cụ thể có thể được cấu hình để luôn được chuyển đến node cụ thể nào đó.
+ 
+![](/assets/images/port-forwarding.png)
+
+Ví dụ trong network công ty có nhiều node (server) làm nhiều nhiệm vụ/service khác nhau. Các máy tính bên ngoài không cần biết IP của các service này là gì mà chỉ cần IP gateway của router kết nối đến network đó + destination port của service.
+
+Với port forwarding, traffic của 2 service có thể trả về cho cùng 1 IP mạng ngoài (gateway) và sẽ có cùng DNS name. Nhưng ngược lại, response có thể được trả về đến những internal server khác nhau nhờ các destination port khác nhau.
+
+&gt; Kỹ thuật này giúp giả mạo IP (IP masquerading) và giúp người dùng bên ngoài tương tác với nhiều dịch vụ chạy trong cùng 1 tổ chức.
+
+##### NAT và Non-Routable Address Space
+Kể từ khi IANA đảm nhận phân bổ IP trên toàn cầu với số lượng có sẵn là 4,2 tỷ IPV4 thì đến khoảng từ năm 2010, các RIRs bắt đầu cạn kiệt IPv4.
+
+*RIRs là 5 lãnh thổ được IANA phân chia quản trị IPv4.
+    AFRINIC, which serves the continent of Africa
+
+    ARIN, which serves the United States, Canada and parts of the Caribbean
+
+    APNIC, which is responsible for most of Asia, Australia and New Zealand and Pacific Island nations
+
+    LACNIC, which covers Central and South America and any parts of the Caribbean not covered by ARIN
+
+    RIPE, which serves Europe, Russia,the Middle East, and portions of Central Asia
+    
+
+&gt; IPv6 sẽ giúp giải quyết vấn đề cạn kiệt IPv4, tuy nhiên để biến IPv6 phổ biến toàn cầu cần có thêm thời gian.
+
+
+Trong thời gian này, chúng ta sẽ dùng NAT và Non-Routable Address Space làm giải pháp tạm thời.
+Điều này sẽ giúp cho hàng ngàn máy tính chỉ cần dùng 1 public IPv4 là IP gateway của router thông qua kỹ thuật NAT ở trên, giúp gửi nhận msg bình thường qua internet.
+
+![](/assets/images/limitIPv4.png)
+
+Cho đến khi IPv6 được sử dụng phổ biến, ta phải dùng kỹ thuật này để giải quyết tạm thời vấn đề cạn kiệt IPv4.
+
+Tham khảo thêm tại: https://en.wikipedia.org/wiki/IPv4_address_exhaustion
+
+### VPN &amp; Proxies
+#### Virtual Private Network
+* Là công nghệ giúp mở rộng private hoặc local network ra các host mà không nằm trong network đó.
+* Là tunelling protocol. Thiết lập VPN connection là thiết lập VPN tunnel.
+![](/assets/images/vpn.png)
+&gt; Phổ biến nhất là dùng cho nhân viên truy cập vào mạng công ty để xem/sử dụng resource tại nhà.
+
+Quy trình:
+
+* Nhân viên sử dụng VPN client để thiết lập tunnel đến mạng công ty. Nó giúp tạo 1 interface ảo để được cấp phát IP trong mạng công ty.
+* Lúc này client sẽ được cấp 1 IP trong mạng công ty.
+* Vậy là từ lúc này client có thể access resource của công ty bằng cách gửi message đi thông qua IP interface ảo này như thể đang kết nối mạng private của công ty.
+
+Hầu hết VPN hoạt động bằng cách sử dụng phần payload của Transport layer.
+![](/assets/images/vpn2.png)
+
+* Phần payload của message gửi từ client sẽ được mang đến VPNs end point nơi mà tất cả các layer khác trừ network, transport và application bị bỏ đi.
+* Phần payload lúc này sẽ được mã hóa để lại VPN server.
+* Sau đó phần payload sẽ được encapsulated với data link layer đúng thông tin và gửi ra đâu đó như thể từ private network của công ty.
+
+##### Two-factor authentication
+Là kỹ thuật dùng nhiều hơn username và password để authenticate.
+
+Thông thường người ta dùng mã token được generate bởi người dùng thông qua 1 phần cứng hay phần mềm chuyên dụng nào đó.
+
+![](/assets/images/vpn2.png)
+
+Ngoài ra, người ta thường dùng VPN để thiết lập ``tunnel`` giữa 2 network của 2 tòa nhà với nhau (site-to-site connectivity) thông qua việc kết nối router hoặc thiết bị VPN chuyên dụng trên 1 mạng đến 1 router trên mạng khác.
+&gt; Từ đó network của 2 toà nhà có thể truy cập resource của toà nhà còn lại mà ko bị chặn.
+
+Tóm lại, VPN là 1 công nghệ tạo tunnel mã hóa để cho phép remote network hoặc 1 máy tính hoạt động như thể nó được kết nối vật lý đến 1 network nào đó.
+
+#### Proxies 
+Dịch vụ proxy là 1 server đại diện cho client để access 1 service khác. 
+Nó ngồi giữa client và các servers khác.
+
+1 số lợi ích của proxy:
+* Anonymity: ẩn danh
+* Security: bảo mật
+* Content filtering: lọc nội dung
+* Increased performance: tăng hiệu suất
+
+Gateway router là 1 ví dụ cho proxy. Proxy là khái niệm trừu tượng và nó hiện diện ở bất cứ layer nào.
+
+##### Web proxy
+* Lúc trước dùng để caching data giúp truy xuất lại nhanh hơn vì web proxy là cái sẽ đại diện cho client để truy xuất data từ service. Thời nay ít được dùng vì các tổ chức có khả năng xử lý mạnh mẽ nên không cần nữa. 
+
+
+* Hiện nay web proxy được sử dụng để ngăn chặn 1 ai đó truy cập vào các trang web. 
+Ví dụ: công ty chặn nhân viên vào facebook trong giờ làm việc để tăng năng suất.
+![](/assets/images/web-proxy.png)
+
+##### Reverse proxy
+Là 1 dịch vụ như là 1 server độc lập nhưng thực chất đại diện cho nhiều server đằng sau nó.
+
+Ví dụ: 
+
+* Tất cả traffic sẽ được kết nối đến 1 máy chủ web server của Twitter (gọi là reverse proxy) sẽ có nhiều web server sống phía sau nó để giúp quản lý số lượng lớn các request.
+
+Proxy server sẽ phân phối đến các app server theo hình thức Round robin để đảm bảo load balancing như DNS.
+
+ ![](/assets/images/reverse -proxy.png)
+ 
+* Một ứng dụng khác là để giải mã. Lúc này các application server chỉ cần phục vụ việc show web, còn lại proxy server lo. 
+
+
+### Một số định nghĩa khác cần nắm:
+
+* ``Traceroute`` và ``mtr``: là 1 tính năng cho phép thấy đường đi giữa 2 nodes, và cho thông tin về mỗi hop trên đường đi.
+Nó dùng kỹ thuật thông minh tại TTl field ở IP level. Đặt TTL đầu tiên là 1 và tăng dần giúp xác định lỗi nằm ở bước hop nào.
+ ![](/assets/images/traceroute.png)
+ 
+ Traceroute ở mỗi bước sẽ gửi 3 gói tin, số đầu mỗi dòng là số thứ tự hop. 
+  ![](/assets/images/traceroute2.png)
+ 
+ ``mtr`` cũng tương tự nhưng chạy thời gian thực và thấy rõ hơn các thay đổi, liên tục cập nhật data tổng hợp được về traceroute.
+ 
+* Netcat/Test-NetConnection: để xem tầng transport có đang hoạt động không.
+Cú pháp: ``nc host port``
+
+Cách hoạt động: câu lệnh sẽ cố thiết lập kết nối tới port X của webserver (gửi data từ tầng app đến listening service).
+	* Nếu kết nối thành công: 1 con trỏ nháy đầu dòng xuất hiện đợi input.
+	* Nếu kết nối thất bại: câu lệnh sẽ dừng.
+
+=&gt; Nếu muốn không cần input chỉ để biết trạng thái thì thêm flag ``-z `v`` nghĩa là Zero input/output mode và verbose.
+
+* Name resolution tool: 
+``nslookup &lt;webserver_optional&gt;`` để trả về  record tra cứu lỗi.
+&gt;Hoặc có thể nhập nslookup rồi nhập tiếp trong env của nó. Ví dụ:
+</code></pre>
+<blockquote>
+  <p>webserver
+set type=MX (loại tài nguyên)
+set debug (thêm chi tiết)
+```</p>
+  <ul>
+    <li>Public DNS server: là các name server được thiết lập đặc biệt để bất cứ ai cũng có thể sử dụng miễn phí. Ví dụ 8.8.8.8 và 8.8.4.4 của Google</li>
+  </ul>
+</blockquote>
+
+<p>Lưu ý dùng của các công ty uy tín tránh bị attack. Nếu không phải debug thì nên dùng name server cung cấp bởi ISP của bạn.
+<img src="/assets/images/DNS-attack.png" alt="" /></p>
+
+<ul>
+  <li>DNS Registration &amp; expiration
+Registrar là 1 tổ chức có nhiệm vụ giao domain name cho tổ chức hoặc cá nhân.</li>
+</ul>
+
+<p>Mua domain name:
+	* Đăng ký tài khoản trên trang của registrar
+	* Tìm tên miền muốn mua
+	* Đồng ý với số tiền và thời hạn sử dụng
+	* Thanh toán
+	* Ghi nhớ HSD mà gia hạn trước thời gian hết hạn.</p>
+
+<p>Ngoài ra ta có thể transfer domain giữa các registrar và cá nhân:
+<img src="/assets/images/transfer-domain.png" alt="" />
+	* Bên nhận generate 1 chuỗi ký tự độc nhất để gửi cho bên transfer.
+	* Bên transfer sẽ ghi cùng chuỗi ký tự đó trên 1 text record được cấu hình trong DNS setting để xác nhận là họ sở hữu domain này và được phép transfer.
+	* Hai bên chấp thuận trao đổi quyền sở hữu.</p>
+
+<ul>
+  <li>Host files
+Là flat file chứa trên mỗi dòng, 1 địa chỉ network đi theo bởi host name.
+Nói cách khác nó cho phép máy tính cá nhân cho rằng 1 tên miền luôn trỏ vào 1 IP cụ thể.</li>
+</ul>
+
+<p>Ví dụ: 1.2.3.4 webserver</p>
+
+<h3 id="interview-sample">Interview sample</h3>
+
+<p>Tình huống: nhân viên nội bộ truy cập URL nội bộ của công ty gặp lỗi “Trang không hiển thị được”.</p>
+
+<p>Quy trình debug có thể tham khảo như sau:</p>
+<ul>
+  <li>Hỏi xem thông báo lỗi là gì.</li>
+  <li>Hỏi xem người khác có vào được ko.</li>
+  <li>Xin tên web để thử tra cứu trên máy mình.</li>
+  <li>Nói user thử truy cập trang web khác.</li>
+  <li>Hỏi user dùng os nào và hướng dẫn nhập lệnh ifconfig. Kết quả là 1 loạt các thông số sau:
+```</li>
+  <li>IP: là 1 địa chỉ duy nhất được cấp cho máy tính để giao tiếp trên Internet với các máy tính khác.</li>
+  <li>Default gateway: như 1 điểm truy cập được máy tính sử dụng để chia sẻ thông tin với 1 máy tính khác hoặc trên Internet, có thể xem như là 1 router.</li>
+  <li>DNS: là domain name system dịch domain name thành IP.</li>
+  <li>
+    <p>DHCP: giúp tự động cấp địa chỉ IP cho máy tính và gửi cấu hình mạng cho máy tính.
 ```
-Trong đó chia làm các vùng sau:</p>
-<ul>
-  <li><code>.com</code>: phần TLD</li>
-  <li><code>google</code>: phần Domain</li>
-  <li><code>www</code>: phần sub-domain 
-=&gt; Tất cả là Fully qulified Domain name (FQDN)</li>
+=&gt; phát hiện IP range của network là 172.x.x.x nhưng IP của máy tính lại là 192.x.x.x.</p>
+  </li>
+  <li>
+    <p>Hỏi xem máy tính có dùng DHCP không? (nên dùng để tự động cấp phát)
+=&gt; Có thể do mình cấu hình IP tĩnh cho máy nên không truy cập được, cần vào DHCP settings để điều chỉnh cho gán tự động.
+=&gt; Cũng có thể DHCP cấu hình sai hoặc kết nối với mạng sai nên địa chỉ IP bị sai range.</p>
+  </li>
+  <li>Hỏi xem đang kết nối mạng dây hay không dây. Nếu laptop hay điện thoại thì không dây (wi-fi).
+=&gt; Kiểm tra wifi đang kết nối mạng nào, có phải mạng công ty không.
+=&gt; Lỗi do kết nối mạng ngoài đường không phải mạng công ty.</li>
 </ul>
 
-<p>Registrar là các công ty có thỏa thuận với ICANN để cấp phát/bán domain name chưa đăng ký cho bất kỳ ai.</p>
-
-<ul>
-  <li>Mỗi vùng domain phải &lt;=63 ký tự.</li>
-  <li>FQDN thì tối đa 255 ký tự.</li>
-  <li>DNS support tối đa 127 level domain trong 1 FQDN.</li>
-</ul>
-
-<h5 id="dns-zones">DNS Zones</h5>
-<p>Ra đời để cho phép kiểm sóat nhiều level của domain name một cách dễ dàng hơn.</p>
-
-<p><img src="/assets/images/dns-zone.png" alt="" /></p>
-
-<p>Như hình ta sẽ có 4 cấu hình DNS server sẽ được thiết lập. 1 cho domain chính và 3 cái còn lại cho subdomains.</p>
-
-<p>Chúng sẽ được cấu hình thông qua <code>Zone files</code>.</p>
-
-<ul>
-  <li><code>Zone files</code> là những tệp tin cấu hình đơn giản khai báo tất cả các record của 1 zone nào đó.
-Zone file phải bao gồm SOA (Start of Authority).</li>
-  <li>SOA sẽ khai báo zone và tên của name server được cấp quyền để khai báo zone.</li>
-  <li>NS record cũng có thể xuất hiện trong file để khai báo những name server khác có thể chịu trách nhiệm cho zone này.</li>
-  <li>Ngoài ra cũng có thể xuất hiện các record A, AAAA, CNAME trong zone file.</li>
-</ul>
-
-<p>Ngoài việc tra cứu từ domain sang IP trong record. Ta còn sẽ bắt gặp kỹ thuật Resolve lookup zone file cho phép DNS server yêu cầu IP và trả về FQDN cùng với nó, dùng PTR record.</p>
-
-<ul>
-  <li><code>PTR</code> (Pointer resource record) : phân giải IP thành name</li>
-</ul>
-
+<p>Tóm lại, luôn tìm ra lỗi nằm ở đâu trước khi vào sửa nó.</p>
 
 </div>
 

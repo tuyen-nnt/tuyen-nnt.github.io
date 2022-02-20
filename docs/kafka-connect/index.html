@@ -281,9 +281,78 @@ Worker có 2 khả năng đặc biệt:</p>
   <p>Làm thế nào để phân chia input thành các phần có thể thực hiện đồng thời. Làm thế nào để tương tác với các external system.</p>
 </blockquote>
 
+<h3 id="debezium">Debezium</h3>
+
+<p>Mysql có binlog dùng cho việc replication và recovery. File này chứa các thay đổi của database (trước khi ghi vào database) bao gồm cả thay đổi về dữ liệu table và cả schema của table.</p>
+
+<p>Sau đó các thay đổi này mới được ghi vào database rồi sẽ được commit.</p>
+
+<p><strong>Debezium Mysql connector</strong> là một plugin trong Kafka giúp kết nối Mysql với Kafka.</p>
+
+<p>Connector này sẽ đọc sự thay đổi trong binlog và tạo ra các event INSERT/UPDATE/DELETE để đẩy lên Kafka.</p>
+
+<p>Mysql được cài đặt sẽ xóa data trong binlog sau 1 thời gian ngắn nên Debezium Mysql connector sẽ chụp nhanh snapshot của hiện trạng dữ liệu và đọc nó ngay tại thời điểm được chụp.</p>
+
+<h4 id="cách-hoạt-động-của-debezium">Cách hoạt động của Debezium</h4>
+
+<ul>
+  <li>Schema history topic:
+Binlog sẽ vừa lưu thay đổi về row-level data vừa lưu DDL statement để biết được schema tại 1 thời điểm có thay đổi không và thay đổi ra sao để produce event lên kafka chính xác.</li>
+</ul>
+
+<p>Còn trên database của kafka topic, connector sẽ vừa lưu DDL statements vừa lưu vị trí có DDL statement trong binlog.</p>
+
+<p>Khi có sự cố crash phải restart lại connector, nó sẽ đọc trong binlog tại 1 thời điểm cụ thể x. Connector sẽ rebuild lại schema từ <code>database history topic Kafka</code> cho đến thời điểm x mà nó được start lại trong binlog.</p>
+
+<ul>
+  <li>Schema change topic:
+Bạn có thể cấu hình để Debezium Mysql connector produce các “schema change event” mô tả sự thay đổi của database.</li>
+</ul>
+
+<p>Message được connector gửi đến cho Kafka topic name <serverName> được cấu hình trong connector với property ``database.server.name``  (https://debezium.io/documentation/reference/1.8/connectors/mysql.html#mysql-property-database-server-name).</serverName></p>
+
+<p>Message này chứa payload và có thể tùy chọn để chứa luôn schema của change event message. Phần payload gồm:</p>
+
+<p>ddl</p>
+
+<pre><code>Provides the SQL CREATE, ALTER, or DROP statement that results in the schema change.
+</code></pre>
+
+<p>databaseName</p>
+
+<pre><code>The name of the database to which the DDL statements are applied. The value of databaseName serves as the message key.
+</code></pre>
+
+<p>pos</p>
+
+<pre><code>The position in the binlog where the statements appear.
+</code></pre>
+
+<p>tableChanges</p>
+
+<pre><code>A structured representation of the entire table schema after the schema change. The tableChanges field contains an array that includes entries for each column of the table. Because the structured representation presents data in JSON or Avro format, consumers can easily read messages without first processing them through a DDL parser.
+</code></pre>
+
+<h3 id="thực-hành">Thực hành</h3>
+
+<ul>
+  <li>
+    <p>Debezium: https://debezium.io/documentation/reference/1.8/tutorial.html#viewing-create-event</p>
+  </li>
+  <li>
+    <p>Streaming from Mysql to Postgres và Elasticsearch
+https://debezium.io/blog/2018/01/17/streaming-to-elasticsearch/</p>
+  </li>
+</ul>
+
 <hr />
 <p>Ref: 
-https://en.wikipedia.org/wiki/Write-ahead_logging
+https://debezium.io/documentation/reference/1.8/connectors/mysql.html
+https://docs.confluent.io/kafka-connect-elasticsearch/current/configuration_options.html
+https://docs.confluent.io/kafka-connect-elasticsearch/current/overview.html
+https://baonq5.notion.site/Sample-connector-config-55b33df3898346fc93c94c7a697d44a6</p>
+
+<p>https://en.wikipedia.org/wiki/Write-ahead_logging
 https://viblo.asia/p/010-apache-kafka-connect-concept-gAm5ymNL5db
 https://en.wikipedia.org/wiki/ACID</p>
 

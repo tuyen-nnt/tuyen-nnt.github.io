@@ -5,13 +5,498 @@
     <description>Grow yourself and develop with me!</description>
     <link>https://tuyen-nnt.github.io/</link>
     <atom:link href="https://tuyen-nnt.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 29 Oct 2021 00:26:43 +0700</pubDate>
-    <lastBuildDate>Fri, 29 Oct 2021 00:26:43 +0700</lastBuildDate>
+    <pubDate>Sat, 22 Jan 2022 23:25:28 +0700</pubDate>
+    <lastBuildDate>Sat, 22 Jan 2022 23:25:28 +0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
     
       <item>
+        <title>Kafka Connect</title>
+        <description>&lt;h4 id=&quot;write-head-logging&quot;&gt;Write-head logging&lt;/h4&gt;
+
+&lt;p&gt;WAL là một trong các kỹ thuật cung cấp tính chất Atomicity và Durability (2 trong số 2 tính chất ACID) trong hệ thống database.&lt;/p&gt;
+
+&lt;p&gt;Các thay đổi được lưu lại trong log và sẽ phải được ghi vào trong stable storage (thường không phải là disk vì không có tính chất automic) trước khi các thay đổi đó được ghi vào database.&lt;/p&gt;
+
+&lt;p&gt;Trong 1 cái hệ thống sử dụng WAL, tất cả mọi thay đổi được ghi vào log trước khi được áp dụng. Thường thì các thay đổi &lt;code&gt;redo&lt;/code&gt; và &lt;code&gt;undo&lt;/code&gt; được lưu vào trong log.&lt;/p&gt;
+
+&lt;p&gt;Ok, mục đích sử dụng của WAL có thể hiểu được qua ví dụ sau:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Khi mà chương trình của bạn đang chạy nhưng bị crash hay mất điện giữa chừng. Sau khi khởi động lại thì chương trình cần biết là operation đã thành công hay thành công 1 nửa hay thất bại hay như thế nào.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Lúc này nếu sử dụng WAL, thì chương trình có thể xem log để so sánh với những gì đã thực hiện và chưa thực hiện lúc chương trình bị crash và quyết định xem sẽ undo lại operation hay hoàn tất nốt operation hoặc giữ nguyên mọi thứ.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Các hệ quản trị cơ sở dữ liệu khác nhau sẽ có tên gọi cho WAL log khác nhau. Trong MySQL sẽ là &lt;code&gt;binlosg&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Ngoài ra 1 transaction được xem là thành công thì các statements của nó phải toàn bộ thành công, ngược lại nếu 1 trong các statement cấu thành 1 transaction thất bại thì là thất bại. Điều này đảm bảo tính &lt;code&gt;automicity&lt;/code&gt; trong ACID để được gọi là 1 database transaction.&lt;/p&gt;
+
+&lt;h3 id=&quot;kafka-connect&quot;&gt;Kafka Connect&lt;/h3&gt;
+
+&lt;p&gt;Kafka Connect là 1 component của Kafka giúp kết nối và transfer data giữa các external system với Kafka.&lt;/p&gt;
+
+&lt;p&gt;Bây giờ đi từ use case, bạn cần kết nối data giữa Order database đến Kafka Cluster và từ Kafka Cluster kết nối đến Data warehouse để phân tích data, có 2 cách:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Cách 1: Sửa source code của Order service để tạo producer trong đó đọc data từ database rồi gửi đến Kafka cluster.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Nhược điểm: khi cần thay đổi code cho producer thì phải deploy lại service có thể gây downtime ảnh hưởng đến người dùng. 
+Phụ thuộc vào Order service chạy hay không chạy (nếu service có multi-replicas thì không sao).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Cách 2: Tạo Kafka producer độc lập đọc data từ Order database và produce đến Kafka broker.
+    &lt;blockquote&gt;
+      &lt;p&gt;Nhược điểm: cần maintain thêm service này cho Kafka producer
+Cần thiết kế để scalable, fault tolerance,…&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;=&amp;gt; Kafka Connect sử dụng cách 2.
+Hiện Kafka connect đã có open-source framework cho phép chọn loại connector (là loại source/target) rồi config và sử dụng, hoặc bạn có thể tự viết connector riêng dựa trên framework này.&lt;/p&gt;
+
+&lt;p&gt;Ta sử dụng có sẵn thì sẽ không cần 1 dòng code nào mà chỉ cần tạo config để nó hoạt động còn lại Kafka connect sẽ tự lo.&lt;/p&gt;
+
+&lt;p&gt;Tương tự ta sẽ cần config cho 1 Kafka connect để connect từ Kafka cluster đến Data warehouse.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/kafka-connect.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Có 2 loại connect là Source connector và Sink connector:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Bên trái được gọi là &lt;code&gt;Source connector&lt;/code&gt;: pull data từ source system và gửi đến Kafka cluster.
+Bên phải là &lt;code&gt;Sink connector&lt;/code&gt;: consume data từ topic và sink đến hệ thống đích.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;cách-hoạt-động-của-kafka-connect&quot;&gt;Cách hoạt động của Kafka connect&lt;/h4&gt;
+
+&lt;p&gt;Kafka connect như 1 interface, ở abstract level, tạo các API để 3rd party có thể sử dụng dựa trên cách hoạt động của từng service.&lt;/p&gt;
+
+&lt;p&gt;Nó chỉ cung cấp phần API đóng mở connection, tạo statement, execute query, tương tác với database. Còn lại là việc của database driver cụ thể như JDBC driver cho Mysql,…&lt;/p&gt;
+
+&lt;p&gt;Kafka connect framework bao gồm:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    Source connector:
+        SourceConnector.
+        SourceTask.
+    Sink connector:
+        SinkConnector.
+        SinkTask.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;=&amp;gt; Ta chỉ cần implement 2 class cho mỗi Kafka connect là:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    SourceConnector và SourceTask.
+    Hoặc SinkConnector và SinkTask.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Còn lại 1 số thứ cơ bản như độ scalibility , fault tolerance hay error handling đã có Kafka connect lo.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/mysql-kafkaconnect-es.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;kafka-connect-transformation&quot;&gt;Kafka connect Transformation&lt;/h3&gt;
+
+&lt;p&gt;Đôi khi trong quá trình transfer data, ta có thể cần phải điều chỉnh messages để biến đổi nó theo như format mà chúng ta muốn.&lt;/p&gt;
+
+&lt;p&gt;Khi đó ta có thể dùng tính năng Single Message Transformations - SMTs để làm điều này trong config của Source connector hoặc Sink connector.&lt;/p&gt;
+
+&lt;p&gt;SMTs bao gồm 1 số thao tác phổ biến:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Thêm field mới cho message.&lt;/li&gt;
+  &lt;li&gt;Filter message dựa trên field.&lt;/li&gt;
+  &lt;li&gt;Rename field.&lt;/li&gt;
+  &lt;li&gt;Route message đến các topic khác nhau.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;kafka-connect-architecture&quot;&gt;Kafka connect Architecture&lt;/h4&gt;
+&lt;p&gt;Gồm các keyword chính:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;1) Worker : là công nhân thực thi các task để gửi msgs đến Kafka cluster. (còn việc read/write từ/đến source thì là của Source/SinkTask theo config của ta xong rồi mới chuyển cho worker thực thi nhé)
+```
+Worker có 2 khả năng đặc biệt:&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Fault tolerance: khi worker gặp sự cố sẽ phân task cho worker khác handle tiếp.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Self-managed: khi có worker mới các task sẽ được phân phối lại đảm bảo load balance.
+```
+=&amp;gt; Có 4 tính năng Reliability, High avalability, Scalability, Load balancing.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;2) Connector : tạo API kết nối với các system&lt;/li&gt;
+  &lt;li&gt;3) Task : ví dụ transfer từ table 1 sang table 2 là 1 task&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;OK, vậy việc của chúng ta bây giờ là:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Làm thế nào để phân chia input thành các phần có thể thực hiện đồng thời. Làm thế nào để tương tác với các external system.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr /&gt;
+&lt;p&gt;Ref: 
+https://en.wikipedia.org/wiki/Write-ahead_logging
+https://viblo.asia/p/010-apache-kafka-connect-concept-gAm5ymNL5db
+https://en.wikipedia.org/wiki/ACID&lt;/p&gt;
+</description>
+        <pubDate>Sat, 22 Jan 2022 00:00:00 +0700</pubDate>
+        <link>https://tuyen-nnt.github.io/kafka-connect/</link>
+        <guid isPermaLink="true">https://tuyen-nnt.github.io/kafka-connect/</guid>
+        
+        
+        <category>Data</category>
+        
+      </item>
+    
+      <item>
+        <title>Access Web  data</title>
+        <description>&lt;p&gt;Mở socket » connect đến đường dẫn và port » Tạo biến string cmd request GET, POST,… » encode string cmd thành dạng byte » gửi request đi.&lt;/p&gt;
+
+&lt;p&gt;Nhận response về từ thế giới bên ngoài (ngầm hiểu là UTF-8 » decode response từ dạng byte thành dạng unicode.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/unicode.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;UTF-8 là bảng mã tham chiếu có thể detect được bảng mã ASCII hay UTF-8 (xét từ ASCII trước) mà allocate động kích thước của ký tự trong khoảng từ 1-4 bytes. Được recommend để dùng cho việc encode data giữa 2 hệ thống khác nhau.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Trong Python 3 thì tất cả kiểu dữ liệu string đều dùng bảng mã unicode. Còn Python 2 thì phân rõ 1 string bất kỳ đang được mã hóa thành kiểu dữ liệu là unicode hay string, còn byte và string thì giống nhau là kiểu string thôi.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;beautiful-soup-for-html&quot;&gt;Beautiful soup (for HTML)&lt;/h4&gt;
+&lt;p&gt;Cài đặt vào chương trình python hoặc extract thư mục bs4.zip bỏ vào cùng folder chứa file code sử dụng thư viện này.
+&lt;img src=&quot;/assets/images/install-bs4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;from bs4 import BeautifulSoup&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;read() : hàm đọc nguyên block data bao gồm cả \n&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;soup = BeautifulSoup(html, 'html.parser')&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;với html là data được read() từ url nhập vào
+sau đó sẽ được beautifulsoup parse (biến đổi) thành 1 soup object được clean sạch sẽ, xinh đẹp.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/bs4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Sau đó, chúng ta sẽ parse ra list danh sách tất cả các thẻ &lt;code&gt;&amp;lt;a&amp;gt;&lt;/code&gt; và đọc từng object trong list &lt;code&gt;tags&lt;/code&gt; để get và in ra attribute &lt;code&gt;href&lt;/code&gt; hoặc None.&lt;/p&gt;
+
+&lt;h4 id=&quot;summary&quot;&gt;Summary&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Web scraping là lấy data từ web về, có 2 ngữ cảnh để diễn tả:
+    &lt;ul&gt;
+      &lt;li&gt;Là khi 1 chương trình hay đoan script giả vờ như là 1 browser thu thập data của web, extract, và tìm kiếm web khác để làm thu thập tiếp.&lt;/li&gt;
+      &lt;li&gt;Web Crawling data là như 1 cỗ máy tìm kiếm đi thu thập rà data trên mạng từ nơi này đến nơi khác như spider (chú ý về pháp lý).&lt;/li&gt;
+      &lt;li&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;TCP/IP cung cấp pipes/sockets giữa các ứng dụng&lt;/li&gt;
+  &lt;li&gt;Người ta tạo ra protocol cho application để sử dụng các pipes này.&lt;/li&gt;
+  &lt;li&gt;HTTP là 1 giao thức powerful đơn giản.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;=&amp;gt; Với sự hỗ trợ cho HTML, HTTP và socket, Python đã giúp đơn giản hóa quá trình gửi và nhận dữ liệu từ web chỉ với vài dòng code khi dùng lib &lt;code&gt;urllib&lt;/code&gt;.&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;h3 id=&quot;data-on-web&quot;&gt;Data on Web&lt;/h3&gt;
+
+&lt;p&gt;Việc trao đổi dữ liệu giữa 2 ứng dụng có network độc lập được support tốt khi sử dụng giao thức HTTP.
+Vậy tiếp theo ta phải thống nhất dữ liệu ở format nào để mà trao đổi giữa 2 ứng dụng (ví dụ 2 app xài 2 ngôn ngữ khác nhau chẳng hạn). Có 2 format phổ biến là XML và JSON.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/wire-protocol.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;xml&quot;&gt;XML&lt;/h4&gt;
+&lt;p&gt;Dùng để share structure data giữa các system.&lt;/p&gt;
+
+&lt;p&gt;Gồm các thành phần cơ bản sau:
+&lt;img src=&quot;/assets/images/xml-basic.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Các tag trong XML không quan trọng khoảng trắng như code, chỉ phân biệt khoảng trắng của text trong tag.&lt;/p&gt;
+
+&lt;p&gt;Serialization/De-serialization: là quá trình chuyển đổi data từ 1 system ra cấu trúc chung và chuyển đổi ngược lại để gửi cho system khác.&lt;/p&gt;
+
+&lt;p&gt;XML như 1 cái cây nhị phân.
+&lt;img src=&quot;/assets/images/xml-tree.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;XML cũng có cấu trúc đường dẫn như thư mục a/b/c sẽ lấy được data bất kỳ.&lt;/p&gt;
+
+&lt;h4 id=&quot;xml-schema&quot;&gt;XML Schema&lt;/h4&gt;
+&lt;p&gt;Như một cái hợp đồng giữa 2 ứng dụng trao đổi kết nối với nhau. Schema sẽ check cú pháp của XML thỏa các điều kiện đã đặt ra ban đầu. Điều này giúp 2 ứng dụng không bàn cãi về lỗi do XML hay do bản thân của ứng dụng khiến kết nối bị lỗi. (Ta phải xác định lỗi và chặn đứng ngay thời điểm trao đổi dữ liệu.)
+&lt;img src=&quot;/assets/images/xml-schema.png&quot; alt=&quot;&quot; /&gt; 
+=&amp;gt; XML Schema được thiết lập để giải quyết những bất đồng giữa các ứng dụng hợp tác.
+Đuôi file là &lt;code&gt;.XSD&lt;/code&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;XML Validation: là hành động lấy từ XML Document và XML Schema Contract và gửi đến XML Validator.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/xml-validation.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;parsing-xml&quot;&gt;Parsing XML&lt;/h4&gt;
+&lt;p&gt;Có 2 xu hướng khi parsing đó là:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Hành trình đi từ đầu cây đến cuối cây.
+&lt;img src=&quot;/assets/images/xml-parsing1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Tạo ra list các cây rồi đi từ đầu cây đến cuối cây.
+&lt;img src=&quot;/assets/images/xml-parsing2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;=&amp;gt; XML schema rất quan trọng, đặc biệt khi cây trở nên phức tạp và có ai đó chỉnh sửa XML không theo cú pháp quy định làm ảnh hưởng đến code parsing. Khi đó Schema sẽ là thứ hỗ trợ tốt việc phân định nguyên nhân gây lỗi khi parsing.&lt;/p&gt;
+
+&lt;h4 id=&quot;json&quot;&gt;JSON&lt;/h4&gt;
+
+&lt;p&gt;Là định dạng phổ biến nhất hiện tại vì nó đơn giản, ánh xạ trực tiếp vào cấu trúc nội bộ của các ngôn ngữ lập trình. Nó gần với các kiểu dữ liệu lập trình nên thân thiện và dễ sử dụng. JSON sẽ không bao giờ thay đổi mà chỉ có cái khác thay thế nó thôi.&lt;/p&gt;
+
+&lt;p&gt;JSON là object literal notation in Javascript, được biểu diễn bằng kiểu dữ liệu “lists” và “dictionaries”.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/json.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;api&quot;&gt;API&lt;/h4&gt;
+&lt;p&gt;Là specification để chỉ ra pattern của URL, cú pháp của dữ liệu mà ta dự định gửi đi và cú pháp dữ liệu ta muốn nhận về.&lt;/p&gt;
+
+&lt;p&gt;Implementation của API là những người mà sử dụng API đó:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Nhà sản xuất API: là người giữ data và tạo ra API sau đó xuất khẩu nó và định nghĩa, đưa ra luật lệ.&lt;/li&gt;
+  &lt;li&gt;Người dùng API: là người đọc document của nhà sản xuất, viết mã code và tuân thủ các quy tắc của nhà sản xuất đối với API đó.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;API sẽ trả về định dạng JSON, sau đó chúng ta sẽ parse nó để phục vụ mục đích riêng.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/api-parsing.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;uh là handler, nó không thực sự kéo data về mà chỉ mới mở ra.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;data có kiểu dữ liệu là Python unicode string&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;js là 1 Python dictionary (object) vì dùng hàm &lt;code&gt;json.loads&lt;/code&gt;&lt;/em&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;securing-api-request&quot;&gt;Securing API request&lt;/h4&gt;
+&lt;p&gt;Nhà cung cấp API họ phải tốn nhiều nguồn lực để lưu trữ, nghiên cứu dữ liệu nên data được cung cấp bởi API thường rất có giá trị.&lt;/p&gt;
+
+&lt;p&gt;Nhà cung cấp thường giới hạn truy cập hoặc yêu cầu có API key, hoặc charge phí. Họ sẽ thay đổi rule của API khi mọi thứ phát triển hơn.&lt;/p&gt;
+
+&lt;h5 id=&quot;authentification--authorization&quot;&gt;Authentification &amp;amp; authorization&lt;/h5&gt;
+&lt;p&gt;Đọc documentation của API và nó sẽ nói bạn sẽ cần làm gì.&lt;/p&gt;
+
+&lt;p&gt;Dòng dưới đây execute phần authorization, &lt;code&gt;twurl&lt;/code&gt; import từ file code tự viết &lt;code&gt;twurl.py&lt;/code&gt;:
+&lt;img src=&quot;/assets/images/twurl.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Sau khi đọc data từ bên ngoài trở thành dạng string biểu diễn cho dictionary, để biết limit còn lại của việc pull data từ API của bên khác. Ta chỉ cần cast thành dict, đọc header và chỉ số &lt;code&gt;x-rate-limit-remaining&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;OK, để setup authentication, ta cần tạo 1 file ở đây ví dụ là file hidden.py lấy trên trang web document API:
+&lt;img src=&quot;/assets/images/oauth.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Để làm điều này ta đã phải sử dụng giao thức OAuth, thực tế là chúng ta đang ký tên lên URL. Kết quả trả về sẽ là URL + chữ ký trên URL.
+&lt;img src=&quot;/assets/images/twurl2.png&quot; alt=&quot;&quot; /&gt; 
+&lt;em&gt;import oauth là thư viện của Python&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Và đây là file main hoàn chỉnh:
+&lt;img src=&quot;/assets/images/twitter2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;json.dumps là hàm convert 1 Python dictionary (object) thành json string&lt;/em&gt;&lt;/p&gt;
+</description>
+        <pubDate>Tue, 21 Dec 2021 00:00:00 +0700</pubDate>
+        <link>https://tuyen-nnt.github.io/access-web-data/</link>
+        <guid isPermaLink="true">https://tuyen-nnt.github.io/access-web-data/</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>MongoDB cơ bản</title>
+        <description>&lt;h3 id=&quot;bắt-đầu-với-mongodb&quot;&gt;Bắt đầu với MongoDB&lt;/h3&gt;
+
+&lt;p&gt;Install MongoDB:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo apt update
+sudo apt install -y mongodb
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Tạo folder mongodb/data/db &amp;amp; mongodb/log để đảm bảo các dữ liệu được lưu vào file system.&lt;/p&gt;
+
+&lt;p&gt;Navigate tới thư mục chạy chương trình: &lt;code&gt;cd mongodb/bin&lt;/code&gt; (folder được tạo có sẵn sau khi install)&lt;/p&gt;
+
+&lt;p&gt;Mount đường dẫn để cho phép chương trình run as service: &lt;code&gt;mongod --directoryperdb --dbpath \home\tuyen\mongodb\data\db --logpath \home\tuyen\mongodb\log\mongo.log --logappend --rest --install&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Run as service in background: &lt;code&gt;sudo systemctl start mongod&lt;/code&gt;
+hoặc &lt;code&gt;service mongodb start&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Bắt đầu làm việc trên Mongo Shell gõ: &lt;code&gt;mongo&lt;/code&gt;. Gõ &lt;code&gt;cls&lt;/code&gt; trong shell nếu muốn clear màn hình console.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;các-câu-lệnh-thao-tác-với-mongodb&quot;&gt;Các câu lệnh thao tác với MongoDB&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;List các database:
+&lt;code&gt;show dbs&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Tạo database mới và switch sang db đó: &lt;code&gt;use &amp;lt;tên db&amp;gt;&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Show db đang hoạt động : &lt;code&gt;db&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Cú pháp json của &lt;code&gt;document&lt;/code&gt; (như 1 row trong Mysql):&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code&gt;{
+	first_name:&quot;John&quot;,
+	last_name:&quot;Doe&quot;,
+	memberships: [&quot;mem1&quot;, &quot;mem2&quot;] //array
+	address:{
+		      street:&quot;4 main st&quot;,
+		      city: &quot;Boston&quot;
+    }
+
+	contacts:[
+		     {name: &quot;Brad&quot;, relationship:&quot;friend&quot;},
+ 	 ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;lưu ý định dạng file json, phần tử street nằm dưới dấu &lt;code&gt;{&lt;/code&gt;, phần tử {name nằm dưới dấu &lt;code&gt;:&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Tạo user admin:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code&gt;db.createUser({
+		  user:&quot;brad&quot;,
+		  pwd:&quot;1234&quot;
+		  roles:[&quot;readWrite&quot;, &quot;dbAdmin&quot;]
+})
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Tạo collections (như table trong relational DB) : &lt;code&gt;db.createCollection('&amp;lt;tên collection&amp;gt;')&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Show collections: &lt;code&gt;show collections&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Insert documents vào collection:
+    &lt;pre&gt;&lt;code&gt;db.customers.insert({first_name:&quot;John&quot;, last_name:&quot;Doe&quot;}, {first_name:&quot;Steven&quot;, last_name:&quot;Smith&quot;, gender: &quot;male&quot;});
+&lt;/code&gt;&lt;/pre&gt;
+    &lt;blockquote&gt;
+      &lt;p&gt;Vì Mongo là NoSQL nên nó có thể add thêm các doc với fieldname tùy ý.&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;List ra các documents (hàm pretty() giúp dễ nhìn hơn): &lt;code&gt;db.customers.find().pretty();&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Update document:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Cách 1: ghi lại tất cả các field&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;db.customers.update({first_name:&quot;John&quot;}, {first_name:&quot;John&quot;, last_name:&quot;Doe&quot;, &quot;gender&quot;:&quot;male&quot;}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Cách 2: dùng &lt;code&gt;$set&lt;/code&gt; để không cần lặp lại các field giữ nguyên.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;db.customers.update({first_name:&quot;John&quot;}, {$set:{gender:&quot;male&quot;}});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Tăng số cho 1 field dùng trong tính toán:
+Ví dụ tăng 5 tuổi cho John.
+```
+db.customers.update({first_name:”John”}, {$set:{age:45}});&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;db.customers.update({first_name:”John”}, {$inc:{age:5}});&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+* Xóa field name bất kỳ của 1 document:
+Ví dụ xóa trường age của John.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;db.customers.update({first_name:”John”}, {$unset:{age}});&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+* Update nếu không thỏa điều kiện thì insert doc mới dùng ``upsert``:
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;db.customers.update({first_name:”Mary”}, {first_name:”Mary”, last_name:”Samson”},{upsert: true});&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+* Rename fieldname: 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;db.customers.update({first_name:”Mary”}, {$rename:{“gender”: “sex”}});&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+* Remove document:
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;db.customers.remove({first_name:”Mary”})&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+* Remove document limit 1:
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;db.customers.remove({first_name:”Mary”}, {justOne: true});&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+* Query tìm kiếm:
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;db.customers.find({first_name:”Mary”});&lt;/p&gt;
+
+&lt;p&gt;// show limit 
+db.customers.find().limit(4);&lt;/p&gt;
+
+&lt;p&gt;//select doc có tuổi &amp;gt; 40
+db.customers.find({age:{$gt:40}})&lt;/p&gt;
+
+&lt;p&gt;//select doc có name là Mary hoặc John
+db.customers.find({$or:[{first_name:”Mary”}, {first_name:”John”}]})&lt;/p&gt;
+
+&lt;p&gt;//select doc có field name là object
+db.customers.find({“address.city”:”Boston”})&lt;/p&gt;
+
+&lt;p&gt;//select doc có fieldname là array, chọn ra các doc có mem1 trong array memberships
+db.customers.find({memberships:”mem1”})&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+* Sort 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;// ASC : 1
+db.customers.find().sort({last_name:1);&lt;/p&gt;
+
+&lt;p&gt;// DESC: -1
+db.customers.find().sort({last_name:1);&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;
+* Count document
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;db.customers.find().count();&lt;/p&gt;
+
+&lt;p&gt;// count có điều kiện
+db.customers.find({gender:”male”}).count();&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+* Function:
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;db.customers.find().forEach(function(doc){print(“Customer Name”+ doc.first_name)});
+```&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Customer Name: John
+Customer Name: Mary&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+        <pubDate>Sun, 14 Nov 2021 00:00:00 +0700</pubDate>
+        <link>https://tuyen-nnt.github.io/mongodb/</link>
+        <guid isPermaLink="true">https://tuyen-nnt.github.io/mongodb/</guid>
+        
+        
+        <category>Data</category>
+        
+      </item>
+    
+      <item>
         <title>Tìm hiểu Network</title>
-        <description>&lt;h2 id=&quot;1-mô-hình-mạng-5-tầng&quot;&gt;1. Mô hình mạng 5 tầng&lt;/h2&gt;
+        <description>&lt;h2 id=&quot;i-mô-hình-mạng-5-tầng&quot;&gt;I. Mô hình mạng 5 tầng&lt;/h2&gt;
 &lt;p&gt;&lt;img src=&quot;/assets/images/five-layer-network.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
@@ -89,475 +574,756 @@ Kiểu như ở client (server host) của bạn cùng thao tác nhiều chươn
 https://www.sans.org/reading-room/whitepapers/standards/osi-model-overview-543&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;https://en.wikipedia.org/wiki/OSI_model
-```&lt;/p&gt;
+&lt;p&gt;https://en.wikipedia.org/wiki/OSI_model&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+## II. Tầng 1 - Các thiết bị mạng cơ bản
 
-&lt;h2 id=&quot;2-tầng-1---các-thiết-bị-mạng-cơ-bản&quot;&gt;2. Tầng 1 - Các thiết bị mạng cơ bản&lt;/h2&gt;
+### Cable
+Dùng để kết nối các thiết bị với nhau và cho phép truyền dữ liệu thông qua nó.
 
-&lt;h3 id=&quot;cable&quot;&gt;Cable&lt;/h3&gt;
-&lt;p&gt;Dùng để kết nối các thiết bị với nhau và cho phép truyền dữ liệu thông qua nó.&lt;/p&gt;
+Giúp tạo kết nối mạng đơn giữa 1 điểm với 1 điểm.
 
-&lt;p&gt;Giúp tạo kết nối mạng đơn giữa 1 điểm với 1 điểm.&lt;/p&gt;
+Có 2 loại:
 
-&lt;p&gt;Có 2 loại:&lt;/p&gt;
+* Copper cable: Cat3, Cat5, Cat5e, Cat6,...
+![](cooper-cable.png)
+	* Các cable đời mới hơn như Cat5e, Cat6 tốt hơn trong việc truyền dữ liệu nhiều hơn và chính xác hơn do chúng có thông số kỹ thuật nâng cao và lõi xoắn của chúng được cấu tạo khác đi để giảm sự xuyên âm (crosstalk- khi mà xung điện trên 1 dây được phát hiện trên 1 dây khác) giúp giảm tình trạng đầu nhận dữ liệu không hiểu được dữ liệu gây ra lỗi mạng.
+	* Gửi giao tiếp dữ liệu nhị phân qua dây đồng bằng cách thay đổi điện áp giữa 2 phạm vi. Hệ thống ở đầu nhận dữ liệu sẽ dịch sự thay đổi điện áp này thành dữ liệu nhị phân 0-1. Sau đó từ dữ liệu 0-1 này sẽ được dịch sang các loại dữ liệu khác nhau.
+	* Sử dụng áp điện để biểu diễn dữ liệu dưới dạng 0-1
 
-&lt;ul&gt;
-  &lt;li&gt;Copper cable: Cat3, Cat5, Cat5e, Cat6,…
-&lt;img src=&quot;cooper-cable.png&quot; alt=&quot;&quot; /&gt;
-    &lt;ul&gt;
-      &lt;li&gt;Các cable đời mới hơn như Cat5e, Cat6 tốt hơn trong việc truyền dữ liệu nhiều hơn và chính xác hơn do chúng có thông số kỹ thuật nâng cao và lõi xoắn của chúng được cấu tạo khác đi để giảm sự xuyên âm (crosstalk- khi mà xung điện trên 1 dây được phát hiện trên 1 dây khác) giúp giảm tình trạng đầu nhận dữ liệu không hiểu được dữ liệu gây ra lỗi mạng.&lt;/li&gt;
-      &lt;li&gt;Gửi giao tiếp dữ liệu nhị phân qua dây đồng bằng cách thay đổi điện áp giữa 2 phạm vi. Hệ thống ở đầu nhận dữ liệu sẽ dịch sự thay đổi điện áp này thành dữ liệu nhị phân 0-1. Sau đó từ dữ liệu 0-1 này sẽ được dịch sang các loại dữ liệu khác nhau.&lt;/li&gt;
-      &lt;li&gt;Sử dụng áp điện để biểu diễn dữ liệu dưới dạng 0-1&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Fiber optic
-    &lt;ul&gt;
-      &lt;li&gt;Sử dụng xung ánh sáng để biểu diễn dữ liệu dưới dạng 0-1.&lt;/li&gt;
-      &lt;li&gt;Được dùng ưu tiên cho các môi trường có nhiều nhiễu điện từ.&lt;/li&gt;
-      &lt;li&gt;Vận chuyển dữ liệu nhanh hơn, khoảng cách xa hơn mà khó làm mất dữ liệu tiềm ẩn hơn.&lt;/li&gt;
-      &lt;li&gt;Đắt và dễ vỡ hơn.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+* Fiber optic
+	* Sử dụng xung ánh sáng để biểu diễn dữ liệu dưới dạng 0-1.
+	* Được dùng ưu tiên cho các môi trường có nhiều nhiễu điện từ.
+	* Vận chuyển dữ liệu nhanh hơn, khoảng cách xa hơn mà khó làm mất dữ liệu tiềm ẩn hơn.
+	* Đắt và dễ vỡ hơn.
+	
+	
+### Hub &amp;amp; Switch 
+Là những thiết bị giúp kết nối các máy tính trong cùng 1 mạng, thường gọi là mạng LAN (mạng cục bộ) 
 
-&lt;h3 id=&quot;hub--switch&quot;&gt;Hub &amp;amp; Switch&lt;/h3&gt;
-&lt;p&gt;Là những thiết bị giúp kết nối các máy tính trong cùng 1 mạng, thường gọi là mạng LAN (mạng cục bộ)&lt;/p&gt;
+#### Hub
+1 thiết bị bất kỳ trong mạng lưới của hub khi truyền dữ liệu tới hub sẽ kết nối đến tất cả các máy tính khác mà cùng được kết nối với hub. 
 
-&lt;h4 id=&quot;hub&quot;&gt;Hub&lt;/h4&gt;
-&lt;p&gt;1 thiết bị bất kỳ trong mạng lưới của hub khi truyền dữ liệu tới hub sẽ kết nối đến tất cả các máy tính khác mà cùng được kết nối với hub.&lt;/p&gt;
+![](/assets/images/hub.png) 
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/hub.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+Các máy tính nhận dữ liệu có hệ thống riêng để xác định xem dữ liệu đó có đúng là dữ liệu mà nó có nhiệm vụ nhận hay không. Nếu không thì trả về không, nếu có thì thông báo nhận thành công.
 
-&lt;p&gt;Các máy tính nhận dữ liệu có hệ thống riêng để xác định xem dữ liệu đó có đúng là dữ liệu mà nó có nhiệm vụ nhận hay không. Nếu không thì trả về không, nếu có thì thông báo nhận thành công.&lt;/p&gt;
+Cơ chế này gây ra nhiều tiếng ồn (noise) tạo ra cái gọi là collision domain.
 
-&lt;p&gt;Cơ chế này gây ra nhiều tiếng ồn (noise) tạo ra cái gọi là collision domain.&lt;/p&gt;
+Collision domain:
 
-&lt;p&gt;Collision domain:&lt;/p&gt;
+* Một phân đoạn mạng mà chỉ có 1 thiết bị có thể giao tiếp tại 1 thời điểm.
+![](/assets/images/collision.png) 
 
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Một phân đoạn mạng mà chỉ có 1 thiết bị có thể giao tiếp tại 1 thời điểm.
-&lt;img src=&quot;/assets/images/collision.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Nếu nhiều hệ thống (máy tính) cố gắng gởi dữ liệu cùng 1 lúc, các xung điện được gởi qua cáp (cable) có thể gây nhiễu lẫn nhau.
-Khiến cho các hệ thống phải chờ đợi một khoảng thời gian yên tĩnh trước khi cố gắng gửi dữ liệu lần nữa.&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+* Nếu nhiều hệ thống (máy tính) cố gắng gởi dữ liệu cùng 1 lúc, các xung điện được gởi qua cáp (cable) có thể gây nhiễu lẫn nhau.
+Khiến cho các hệ thống phải chờ đợi một khoảng thời gian yên tĩnh trước khi cố gắng gửi dữ liệu lần nữa.
 
-&lt;blockquote&gt;
-  &lt;p&gt;Điều này làm chậm truyền thông mạng nên hiện nay Hub không còn được dùng phổ biến.&lt;/p&gt;
-&lt;/blockquote&gt;
+&amp;gt; Điều này làm chậm truyền thông mạng nên hiện nay Hub không còn được dùng phổ biến.
 
-&lt;h3 id=&quot;switch&quot;&gt;Switch&lt;/h3&gt;
-&lt;p&gt;Mô hình hoạt động tương đối giống Hub, khác biệt ở chỗ:&lt;/p&gt;
+### Switch
+Mô hình hoạt động tương đối giống Hub, khác biệt ở chỗ:
 
-&lt;ul&gt;
-  &lt;li&gt;Hub ở layer 1, Switch ở layer 2 (Data Link device)&lt;/li&gt;
-  &lt;li&gt;Do đó Switch có thể kiểm tra dữ liệu của giao thức Ethernet được gửi đi xung quanh network. 
-=&amp;gt; Switch có thể xác định hệ thống (máy tính) nào thuộc về dữ liệu đó mà chỉ gửi thẳng đến hệ thống đó thôi.&lt;/li&gt;
-&lt;/ul&gt;
+* Hub ở layer 1, Switch ở layer 2 (Data Link device) 
+* Do đó Switch có thể kiểm tra dữ liệu của giao thức Ethernet được gửi đi xung quanh network. 
+=&amp;gt; Switch có thể xác định hệ thống (máy tính) nào thuộc về dữ liệu đó mà chỉ gửi thẳng đến hệ thống đó thôi.
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/switch.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+![](/assets/images/switch.png)
 
-&lt;blockquote&gt;
-  &lt;p&gt;Điều này giúp loại bỏ hoàn toàn kích thước của collision domain trong network.
-Gíup giảm sự truyền tải lại và tăng thông lượng tổng thể.&lt;/p&gt;
-&lt;/blockquote&gt;
+&amp;gt; Điều này giúp loại bỏ hoàn toàn kích thước của collision domain trong network.
+Gíup giảm sự truyền tải lại và tăng thông lượng tổng thể.
 
-&lt;h3 id=&quot;router&quot;&gt;Router&lt;/h3&gt;
-&lt;p&gt;Là thiết bị biết các forward dữ liệu giữa các mạng độc lập với nhau.&lt;/p&gt;
+### Router
+Là thiết bị biết các forward dữ liệu giữa các mạng độc lập với nhau.
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/router.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+![](/assets/images/router.png)
 
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Hoạt động ở lớp thứ 3 (Network)&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Cũng giống như switch, router có thể kiểm tra dữ liệu IP để xác định địa chỉ cần gửi dữ liệu đến.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Router chứa 1 số bảng nội bộ chứa các thông tin về định tuyến traffic (lưu lượng truy cập) giữa nhiều mạng khác nhau trên thế giới. Phổ biến là các router gia đình hoặc văn phòng nhỏ. Mục đích của các bộ định tuyến nhỏ này chỉ để lấy lưu lượng truy cập có nguồn gốc từ trong nhà hoặc văn phòng nhỏ sử dụng LAN và chuyển tiếp nó đến ISP (nhà cung cấp dịch vụ Internet)&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+* Hoạt động ở lớp thứ 3 (Network)
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/router-isp.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+* Cũng giống như switch, router có thể kiểm tra dữ liệu IP để xác định địa chỉ cần gửi dữ liệu đến.
 
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;ISP là một loại router phức tạp hơn nhiều, nó sẽ tiếp quản traffic từ router nhỏ. Router này gọi là router lõi, tạo thành xương sống của Internet, chịu trách nhiệm về cách gửi và nhận dữ liệu khắp thế giới mỗi ngày.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;ISP tiếp nhận rất nhiều traffic và phải xử lý việc quyết định nơi nào là nơi gửi traffic này đến. Core router này thường có nhiều kết nối đến nhiều core router khác bằng giao thức BGP (Border Gateway Protocol) giúp chúng tìm hiểu xem đường nào là tối ưu nhất để chuyển lưu lượng truy cập đến.&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+* Router chứa 1 số bảng nội bộ chứa các thông tin về định tuyến traffic (lưu lượng truy cập) giữa nhiều mạng khác nhau trên thế giới. Phổ biến là các router gia đình hoặc văn phòng nhỏ. Mục đích của các bộ định tuyến nhỏ này chỉ để lấy lưu lượng truy cập có nguồn gốc từ trong nhà hoặc văn phòng nhỏ sử dụng LAN và chuyển tiếp nó đến ISP (nhà cung cấp dịch vụ Internet)
 
-&lt;blockquote&gt;
-  &lt;p&gt;Khi bạn mở trình duyệt truy cập đến 1 web server bất kỳ, traffic giữa máy tính và web server có thể đã đi qua hàng chục router khác nhau. 
-Các Router là những hướng dẫn viên toàn cầu giúp đưa traffic đến đúng nơi.&lt;/p&gt;
-&lt;/blockquote&gt;
+![](/assets/images/router-isp.png)
 
-&lt;h2 id=&quot;server-và-client&quot;&gt;Server và Client&lt;/h2&gt;
+* ISP là một loại router phức tạp hơn nhiều, nó sẽ tiếp quản traffic từ router nhỏ. Router này gọi là router lõi, tạo thành xương sống của Internet, chịu trách nhiệm về cách gửi và nhận dữ liệu khắp thế giới mỗi ngày.
 
-&lt;p&gt;Nodes: là từ dùng để gọi chung cho các thiết bị trong network ở trên, có thể là máy tính, server, client hay router,…&lt;/p&gt;
+* ISP tiếp nhận rất nhiều traffic và phải xử lý việc quyết định nơi nào là nơi gửi traffic này đến. Core router này thường có nhiều kết nối đến nhiều core router khác bằng giao thức BGP (Border Gateway Protocol) giúp chúng tìm hiểu xem đường nào là tối ưu nhất để chuyển lưu lượng truy cập đến.
 
-&lt;p&gt;Server: là node có nhiệm vụ cung cấp data cho client, còn được dùng để chỉ mục đích chính của node trên mạng.&lt;/p&gt;
+&amp;gt; Khi bạn mở trình duyệt truy cập đến 1 web server bất kỳ, traffic giữa máy tính và web server có thể đã đi qua hàng chục router khác nhau. 
+Các Router là những hướng dẫn viên toàn cầu giúp đưa traffic đến đúng nơi.
 
-&lt;p&gt;Client: là node request data.&lt;/p&gt;
 
-&lt;p&gt;Đôi khi 1 node vừa làm server vừa là client. Ví dụ như Email server, vừa cung cấp data về email cho client, mà vừa là 1 client gửi yêu cầu đến DNS server và được DNS trả data về.&lt;/p&gt;
+## Server và Client
 
-&lt;p&gt;=&amp;gt; Hầu hết các thiết bị không hoàn toàn là 1 server hay 1 client, mà đảm nhận 1 trong 2 vị trí trên ở 1 thời điểm.&lt;/p&gt;
+Nodes: là từ dùng để gọi chung cho các thiết bị trong network ở trên, có thể là máy tính, server, client hay router,...
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/server-client.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+Server: là node có nhiệm vụ cung cấp data cho client, còn được dùng để chỉ mục đích chính của node trên mạng.
 
-&lt;h2 id=&quot;3-tầng-2---data-link-layer&quot;&gt;3. Tầng 2 - Data Link Layer&lt;/h2&gt;
+Client: là node request data.
 
-&lt;h3 id=&quot;ethernet&quot;&gt;Ethernet&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Là protocol mạng phổ biến nhất ở tầng 2 để gửi dữ liệu qua các liên kết riêng lẻ. (còn Wi-Fi thì dạng khác)&lt;/li&gt;
-  &lt;li&gt;Là phương tiện giúp trừu tượng hóa tầng 1 (vật lý hay phần cứng) để các tầng khác có thể dễ tiếp cận sử dụng.&lt;/li&gt;
-  &lt;li&gt;Chịu trách nhiệm về các thông tin kết nối, liên kết thiết bị để các tầng trên dựa vào. Vì vậy, các tầng trên không cần quan tâm thiết bị được kết nối ra sau, mà chỉ quan tâm tầng dưới gửi dữ liệu gì để xử lý mà thôi.&lt;/li&gt;
-  &lt;li&gt;Ethernet có 1 kỹ thuật là CSMA/CD (Carrier-sense multiple access with collision detection) giúp nhận biết “collision domain” sóng mang xung đột.&lt;/li&gt;
-  &lt;li&gt;CSMA/CD được dùng để quyết định khi nào kênh giao tiếp đang rãnh rỗi trên phân đoạn mạng (network segment) và khi nào 1 thiết bị đang rãnh để truyền dữ liệu.
-    &lt;blockquote&gt;
-      &lt;p&gt;Cách hoạt động khá đơn giản, khi có xung đột thì lập tức dừng truyền dữ liệu của các thiết bị gặp xung đột và chờ 1 khoảng thời gian ngẫu nhiên giúp tránh vụ va chạm (random interval trước khi thử gửi lại, và không đồng thời).&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Phân đoạn mạng của tất cả các thiết bị được kết nối sẽ có tất cả thông tin, dữ liệu đang trao đổi. Do đó, ta cần xác định thiết bị nào là nơi dữ liệu cần đến bằng MAC Address.&lt;/li&gt;
-&lt;/ul&gt;
+Đôi khi 1 node vừa làm server vừa là client. Ví dụ như Email server, vừa cung cấp data về email cho client, mà vừa là 1 client gửi yêu cầu đến DNS server và được DNS trả data về.
 
-&lt;h3 id=&quot;mac-addresses-media-access-control-address&quot;&gt;MAC Addresses (Media Access Control Address)&lt;/h3&gt;
+=&amp;gt; Hầu hết các thiết bị không hoàn toàn là 1 server hay 1 client, mà đảm nhận 1 trong 2 vị trí trên ở 1 thời điểm.
 
-&lt;ul&gt;
-  &lt;li&gt;Là địa chỉ để nhận diện toàn cầu được đính kèm với một network interface cá nhân.&lt;/li&gt;
-  &lt;li&gt;Giúp nhận dạng các máy tính khác nhau.&lt;/li&gt;
-  &lt;li&gt;Là một con số &lt;strong&gt;48-bit&lt;/strong&gt; thường được biểu diễn bởi 6 nhóm với 2 con số hệ thập lục phân cho mỗi nhóm.&lt;/li&gt;
-  &lt;li&gt;Nghĩa là sẽ có tối đa 2^48 MAC address.
-    &lt;blockquote&gt;
-      &lt;p&gt;Hệ thập lục phân là cách biểu diễn các số sử dụng 16 ký tự. 
-&lt;img src=&quot;/assets/images/hexa.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Octet: là 1 cách để tham chiếu số MAC. Trong mạng máy tính, bất kỳ số nào có thể biểu diễn bằng 8 bits được gọi là Octet.
-=&amp;gt; 2 chữ số thập lục phân có thể biểu diễn các số tương tự các số được biểu diễn bằng 8 bits.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;03 Octets đầu tiên của địa chỉ MAC được gọi là OUI (Organizationally unique identifier), được gán cho nhà sản xuất phần cứng riêng lẻ.
-=&amp;gt; Từ 3 octets đầu có thể giúp ta xác định được NSX.&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;03 Octets sau được chỉ định theo ý nhà sản xuất mong muốn với điều kiện để mỗi thiết bị sản xuất ra có 1 MAC address duy nhất.
-&lt;img src=&quot;/assets/images/mac-1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Tóm lại, Ethernet protocol dùng MAC address để đảm bảo dữ liệu mà nó gửi có thông tin thiết bị nguồn và thiết bị đích gửi đến. Bằng cách này, dù ở trong một phân đoạn mạng hoạt động như thể có collision domain đơn lẻ, thì các thiết bị luôn biết được khi nào dữ liệu thuộc về nó.&lt;/li&gt;
-&lt;/ul&gt;
+![](/assets/images/server-client.png)
 
-&lt;h3 id=&quot;unicast-multicast--broadcast-frame&quot;&gt;Unicast, Multicast &amp;amp; Broadcast frame&lt;/h3&gt;
-&lt;h4 id=&quot;unicast&quot;&gt;Unicast&lt;/h4&gt;
-&lt;p&gt;Là sự truyền tải data đến 1 địa chỉ đích duy nhất.&lt;/p&gt;
 
-&lt;p&gt;Được nhận diện bằng cách nhìn vào bit ít quan trọng nhất trong octet đầu tiên của địa chỉ MAC đích trong Ethernet frame.&lt;/p&gt;
+## III. Tầng 2 - Data Link Layer
 
-&lt;ul&gt;
-  &lt;li&gt;Nếu là 0 : unicast&lt;/li&gt;
-  &lt;li&gt;Nếu là 1 : multicast&lt;/li&gt;
-&lt;/ul&gt;
+### Ethernet 
+* Là protocol mạng phổ biến nhất ở tầng 2 để gửi dữ liệu qua các liên kết riêng lẻ. (còn Wi-Fi thì dạng khác)
+* Là phương tiện giúp trừu tượng hóa tầng 1 (vật lý hay phần cứng) để các tầng khác có thể dễ tiếp cận sử dụng.
+* Chịu trách nhiệm về các thông tin kết nối, liên kết thiết bị để các tầng trên dựa vào. Vì vậy, các tầng trên không cần quan tâm thiết bị được kết nối ra sau, mà chỉ quan tâm tầng dưới gửi dữ liệu gì để xử lý mà thôi.
+* Ethernet có 1 kỹ thuật là CSMA/CD (Carrier-sense multiple access with collision detection) giúp nhận biết &quot;collision domain&quot; sóng mang xung đột. 
+* CSMA/CD được dùng để quyết định khi nào kênh giao tiếp đang rãnh rỗi trên phân đoạn mạng (network segment) và khi nào 1 thiết bị đang rãnh để truyền dữ liệu.
+&amp;gt; Cách hoạt động khá đơn giản, khi có xung đột thì lập tức dừng truyền dữ liệu của các thiết bị gặp xung đột và chờ 1 khoảng thời gian ngẫu nhiên giúp tránh vụ va chạm (random interval trước khi thử gửi lại, và không đồng thời).
 
-&lt;h4 id=&quot;multicast&quot;&gt;Multicast&lt;/h4&gt;
-&lt;p&gt;Là sự truyền tải data đến nhiều địa chỉ MAC đích.&lt;/p&gt;
+* Phân đoạn mạng của tất cả các thiết bị được kết nối sẽ có tất cả thông tin, dữ liệu đang trao đổi. Do đó, ta cần xác định thiết bị nào là nơi dữ liệu cần đến bằng MAC Address. 
 
-&lt;p&gt;Các thiết bị mạng (network interface) có thể được cấu hình để chấp nhận 1 danh sách địa chỉ MAC được nhận data &amp;amp; giao tiếp trong network cục bộ.&lt;/p&gt;
+### MAC Addresses (Media Access Control Address)
 
-&lt;h4 id=&quot;broadcast&quot;&gt;Broadcast&lt;/h4&gt;
-&lt;p&gt;Ethernet broadcast address : FF:FF:FF:FF:FF:FF&lt;/p&gt;
+* Là địa chỉ để nhận diện toàn cầu được đính kèm với một network interface cá nhân.
+* Giúp nhận dạng các máy tính khác nhau.
+* Là một con số **48-bit** thường được biểu diễn bởi 6 nhóm với 2 con số hệ thập lục phân cho mỗi nhóm.
+* Nghĩa là sẽ có tối đa 2^48 MAC address.
+&amp;gt; Hệ thập lục phân là cách biểu diễn các số sử dụng 16 ký tự. 
+![](/assets/images/hexa.png)
 
-&lt;p&gt;Broadcast được sử dụng để tất cả các thiết bị có thể hiểu lẫn nhau.&lt;/p&gt;
 
-&lt;p&gt;Người gửi sẽ gửi tới tất cả các thiết bị trên mạng LAN.&lt;/p&gt;
+* Octet: là 1 cách để tham chiếu số MAC. Trong mạng máy tính, bất kỳ số nào có thể biểu diễn bằng 8 bits được gọi là Octet.
+=&amp;gt; 2 chữ số thập lục phân có thể biểu diễn các số tương tự các số được biểu diễn bằng 8 bits.
 
-&lt;h3 id=&quot;ethernet-frame&quot;&gt;Ethernet Frame&lt;/h3&gt;
+* 03 Octets đầu tiên của địa chỉ MAC được gọi là OUI (Organizationally unique identifier), được gán cho nhà sản xuất phần cứng riêng lẻ.
+=&amp;gt; Từ 3 octets đầu có thể giúp ta xác định được NSX.
+* 03 Octets sau được chỉ định theo ý nhà sản xuất mong muốn với điều kiện để mỗi thiết bị sản xuất ra có 1 MAC address duy nhất.
+![](/assets/images/mac-1.png)
 
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Data-packet: là 1 concept chung để chỉ 1 tập hợp dữ liệu nhị phân được gửi thông qua network link.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Là 1 tập hợp (data-packet) các thông tin mang tính tổ chức cao, biểu diễn theo 1 thứ tự cụ thể.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Bằng Ethernet frame, network interface có tại tầng 1 có thể chuyển đổi chuỗi bit qua một liên kết (data link) để cho ra 1 data có ý nghĩa (decode).&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+* Tóm lại, Ethernet protocol dùng MAC address để đảm bảo dữ liệu mà nó gửi có thông tin thiết bị nguồn và thiết bị đích gửi đến. Bằng cách này, dù ở trong một phân đoạn mạng hoạt động như thể có collision domain đơn lẻ, thì các thiết bị luôn biết được khi nào dữ liệu thuộc về nó. 
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/line-coding.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+### Unicast, Multicast &amp;amp; Broadcast frame
+#### Unicast
+Là sự truyền tải data đến 1 địa chỉ đích duy nhất.
 
-&lt;ul&gt;
-  &lt;li&gt;Các phần trong frame là bắt buộc và có độ dài cố định.&lt;/li&gt;
-&lt;/ul&gt;
+Được nhận diện bằng cách nhìn vào bit ít quan trọng nhất trong octet đầu tiên của địa chỉ MAC đích trong Ethernet frame.
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/ethernet-frame.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+* Nếu là 0 : unicast
+* Nếu là 1 : multicast
+ 
+#### Multicast
+Là sự truyền tải data đến nhiều địa chỉ MAC đích.
 
-&lt;p&gt;Thứ tự và các thành phần của Ethernet Frame gồm:&lt;/p&gt;
+Các thiết bị mạng (network interface) có thể được cấu hình để chấp nhận 1 danh sách địa chỉ MAC được nhận data &amp;amp; giao tiếp trong network cục bộ.
 
-&lt;ul&gt;
-  &lt;li&gt;Preamble (8 bytes): phần mở đầu, chia làm 7 bytes đệm + 1 byte SDF (dùng để làm dấu giới hạn khung bắt đầu, sau nó là khung dữ liệu thực tế).
-Phần này được các network interface dùng để đồng bộ hóa các đồng hồ nội bộ mà chúng sử dụng nhằm điều chỉnh speed tại nơi mà chúng gởi dữ liệu.&lt;/li&gt;
-  &lt;li&gt;Destination MAC Address (48 bits/6 bytes): địa chỉ phần cứng đích, là bên nhận data.&lt;/li&gt;
-  &lt;li&gt;Source Address (6 bytes):  địa chỉ MAC nguồn.&lt;/li&gt;
-  &lt;li&gt;VLAN header (4 bytes): nếu trong khung có 4 bytes này thì nghĩa là đây là VLAN frame. Nếu có VLAN, thì sau nó phải có EtherType field.
-    &lt;blockquote&gt;
-      &lt;p&gt;VLAN (Virtual LAN) là kỹ thuật cho phép ta có nhiều LAN hoạt động trên cùng 1 thiết bị vật lý (switch,..). VLAN được sử dụng để tách biệt traffic truy cập khác nhau với các thiết bị cùng mạng kết nối.&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+#### Broadcast
+Ethernet broadcast address : FF:FF:FF:FF:FF:FF
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/vlan.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+Broadcast được sử dụng để tất cả các thiết bị có thể hiểu lẫn nhau.
 
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;EtherType field (2 bytes): được dùng để diễn giải protocol (giao thức) của nội dung dữ liệu.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Payload (từ 46-1500 bytes): là data chính cần được vận chuyển, chứa data tầng 3,4,5.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;FCS (4 bytes): viết tắt của Frame Check Sequence, là 1 con số có độ dài 32 bit, biểu diễn checksum value cho toàn bộ ethernet frame.&lt;/p&gt;
+Người gửi sẽ gửi tới tất cả các thiết bị trên mạng LAN.
 
-    &lt;ul&gt;
-      &lt;li&gt;
-        &lt;p&gt;Checksum value: được tính bằng cách biểu diễn chu kỳ kiểm tra dự phòng (CRC) trên frame.&lt;/p&gt;
-      &lt;/li&gt;
-      &lt;li&gt;
-        &lt;p&gt;Cyclical redundancy check (CRC): là một khái niệm quan trọng đối với tính toàn vẹn dữ liệu (data integrity), và được dùng cho toàn bộ các tính toán học, không chỉ riêng truyền tải network. Đây là 1 phép toán học sử dụng phân chia đa thức để tạo ra 1 con số đại diện cho 1 tập dữ liệu lớn hơn và luôn kết thúc bằng 1 số checksum.&lt;/p&gt;
-      &lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+### Ethernet Frame
 
-&lt;p&gt;=&amp;gt; Mục đích của checksum là để kiểm tra xem data bên đầu nhận có bị hỏng không.&lt;/p&gt;
+* Data-packet: là 1 concept chung để chỉ 1 tập hợp dữ liệu nhị phân được gửi thông qua network link.
 
-&lt;p&gt;Quy trình thực hiện:&lt;/p&gt;
+* Là 1 tập hợp (data-packet) các thông tin mang tính tổ chức cao, biểu diễn theo 1 thứ tự cụ thể.
 
-&lt;ul&gt;
-  &lt;li&gt;Thiết bị sẵn sàng lên frame để gửi đi&lt;/li&gt;
-  &lt;li&gt;Thiết bị bắt đầu thu thập đủ các thông tin cần có của 1 frame (trừ checksum)&lt;/li&gt;
-  &lt;li&gt;Thực hiện CRC trên các thông tin đó và gắn số checksum thu được.&lt;/li&gt;
-  &lt;li&gt;Đưa FCS vào frame hoàn chỉnh.&lt;/li&gt;
-  &lt;li&gt;Đưa frame vào một data link dùng protocol Ethernet&lt;/li&gt;
-  &lt;li&gt;Đầu thiết bị bên nhận thu thập các trường dữ liệu nhận được và tính toán lại checksum để so sánh với số checksum của frame gởi.
+* Bằng Ethernet frame, network interface có tại tầng 1 có thể chuyển đổi chuỗi bit qua một liên kết (data link) để cho ra 1 data có ý nghĩa (decode).
+
+![](/assets/images/line-coding.png)
+
+* Các phần trong frame là bắt buộc và có độ dài cố định.
+
+![](/assets/images/ethernet-frame.png)
+
+
+Thứ tự và các thành phần của Ethernet Frame gồm:
+
+* Preamble (8 bytes): phần mở đầu, chia làm 7 bytes đệm + 1 byte SDF (dùng để làm dấu giới hạn khung bắt đầu, sau nó là khung dữ liệu thực tế).
+Phần này được các network interface dùng để đồng bộ hóa các đồng hồ nội bộ mà chúng sử dụng nhằm điều chỉnh speed tại nơi mà chúng gởi dữ liệu.
+* Destination MAC Address (48 bits/6 bytes): địa chỉ phần cứng đích, là bên nhận data.
+* Source Address (6 bytes):  địa chỉ MAC nguồn.
+* VLAN header (4 bytes): nếu trong khung có 4 bytes này thì nghĩa là đây là VLAN frame. Nếu có VLAN, thì sau nó phải có EtherType field. 
+&amp;gt; VLAN (Virtual LAN) là kỹ thuật cho phép ta có nhiều LAN hoạt động trên cùng 1 thiết bị vật lý (switch,..). VLAN được sử dụng để tách biệt traffic truy cập khác nhau với các thiết bị cùng mạng kết nối.
+
+![](/assets/images/vlan.png)
+
+* EtherType field (2 bytes): được dùng để diễn giải protocol (giao thức) của nội dung dữ liệu.
+
+* Payload (từ 46-1500 bytes): là data chính cần được vận chuyển, chứa data tầng 3,4,5.
+
+* FCS (4 bytes): viết tắt của Frame Check Sequence, là 1 con số có độ dài 32 bit, biểu diễn checksum value cho toàn bộ ethernet frame.
+
+	* Checksum value: được tính bằng cách biểu diễn chu kỳ kiểm tra dự phòng (CRC) trên frame.
+
+	* Cyclical redundancy check (CRC): là một khái niệm quan trọng đối với tính toàn vẹn dữ liệu (data integrity), và được dùng cho toàn bộ các tính toán học, không chỉ riêng truyền tải network. Đây là 1 phép toán học sử dụng phân chia đa thức để tạo ra 1 con số đại diện cho 1 tập dữ liệu lớn hơn và luôn kết thúc bằng 1 số checksum.
+
+=&amp;gt; Mục đích của checksum là để kiểm tra xem data bên đầu nhận có bị hỏng không.
+
+Quy trình thực hiện:
+
+* Thiết bị sẵn sàng lên frame để gửi đi
+* Thiết bị bắt đầu thu thập đủ các thông tin cần có của 1 frame (trừ checksum)
+* Thực hiện CRC trên các thông tin đó và gắn số checksum thu được.
+* Đưa FCS vào frame hoàn chỉnh.
+* Đưa frame vào một data link dùng protocol Ethernet
+* Đầu thiết bị bên nhận thu thập các trường dữ liệu nhận được và tính toán lại checksum để so sánh với số checksum của frame gởi.
 Nếu không khớp nhau, nó sẽ vứt ra ngoài vì trong quá trình truyền đã khiến data bị hỏng.
 =&amp;gt; Và nhiệm vụ của tầng trên sẽ quyết định xem data đó có nên được truyền lại hay không. 
-=&amp;gt; Kết luận: bản thân Ethernet chỉ báo cáo cho tầng trên biết về tính toàn vẹn của dữ liệu, chứ không có nhiệm vụ phục hồi dữ liệu.&lt;/li&gt;
-&lt;/ul&gt;
+=&amp;gt; Kết luận: bản thân Ethernet chỉ báo cáo cho tầng trên biết về tính toàn vẹn của dữ liệu, chứ không có nhiệm vụ phục hồi dữ liệu.
 
-&lt;p&gt;Cụ thể hình ảnh cho quy trình:
-&lt;img src=&quot;/assets/images/CRC.png&quot; alt=&quot;&quot; /&gt;
+Cụ thể hình ảnh cho quy trình:
+![](/assets/images/CRC.png)
 Sau đó đưa vào link và bên nhận nhận được, rồi bên nhận sẽ tính toán lại số checksum:
-&lt;img src=&quot;/assets/images/checksum.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+![](/assets/images/checksum.png)
 
-&lt;h2 id=&quot;4-tầng-3---network&quot;&gt;4. Tầng 3 - Network&lt;/h2&gt;
-&lt;h3 id=&quot;ip-address&quot;&gt;IP Address&lt;/h3&gt;
 
-&lt;ul&gt;
-  &lt;li&gt;Là một con số 32-bit được tạo thành từ 4 octet. Mỗi octet có độ dài 8-bit và biểu diễn dưới dạng số thập phân từ 0 đến 255.&lt;/li&gt;
-&lt;/ul&gt;
+## IV. Tầng 3 - Network
+### IP Address
 
-&lt;p&gt;Ví dụ: 12.34.56.78&lt;/p&gt;
+* Là một con số 32-bit được tạo thành từ 4 octet. Mỗi octet có độ dài 8-bit và biểu diễn dưới dạng số thập phân từ 0 đến 255.
 
-&lt;ul&gt;
-  &lt;li&gt;Các tổ chức lớn thường sử dụng IP address để xác định máy nào hơn là sử dụng MAC address để truyền tải dữ liệu trong mạng.
-=&amp;gt; IP có phân cấp rõ ràng và lưu trữ dữ liệu dễ dàng hơn.&lt;/li&gt;
-&lt;/ul&gt;
+Ví dụ: 12.34.56.78
 
-&lt;blockquote&gt;
-  &lt;p&gt;Ví dụ công ty IBM có octet đầu được cấp riêng là 9. Thì khi router từ sender gửi dữ liệu thấy số 9 ở octet đầu của địa chỉ IP nhận (IP là 9.0.0.1 chẳng hạn), nó sẽ biết là cần gửi đến router của IBM, sau đó router của IBM sẽ tự xử lý phân phối dữ liệu đến các máy tính trong network của IBM thông qua các octet còn lại.&lt;/p&gt;
-&lt;/blockquote&gt;
+* Các tổ chức lớn thường sử dụng IP address để xác định máy nào hơn là sử dụng MAC address để truyền tải dữ liệu trong mạng.
+=&amp;gt; IP có phân cấp rõ ràng và lưu trữ dữ liệu dễ dàng hơn.
 
-&lt;ul&gt;
-  &lt;li&gt;Lưu ý: IP address thuộc về networks, chứ không thuộc về thiết bị được kết nối với các network.
-    &lt;blockquote&gt;
-      &lt;p&gt;Nghĩa là network (mạng) khác nhau sẽ có nhiệm vụ cấp phát IP khác nhau cho thiết bị của bạn bằng công nghệ DHCP khi bạn bật mạng của network đó.&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;DHCP hay còn gọi là Dynamic IP Address (địa chỉ IP động) được dùng để cấp phát IP động cho các clients.&lt;/li&gt;
-  &lt;li&gt;Static IP Address thì thường được dùng để cấp phát IP tĩnh cho server và các thiết bị mạng (router,…)&lt;/li&gt;
-&lt;/ul&gt;
+&amp;gt; Ví dụ công ty IBM có octet đầu được cấp riêng là 9. Thì khi router từ sender gửi dữ liệu thấy số 9 ở octet đầu của địa chỉ IP nhận (IP là 9.0.0.1 chẳng hạn), nó sẽ biết là cần gửi đến router của IBM, sau đó router của IBM sẽ tự xử lý phân phối dữ liệu đến các máy tính trong network của IBM thông qua các octet còn lại.
 
-&lt;h3 id=&quot;ip-datagrams--encapsulation&quot;&gt;IP Datagrams &amp;amp; Encapsulation&lt;/h3&gt;
-&lt;h4 id=&quot;ip-datagram&quot;&gt;IP Datagram&lt;/h4&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Là data-packet (gói tin) ở tầng network theo giao thức IP.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;2 phần chính của IP datagram là header và payload.
-&lt;img src=&quot;/assets/images/ip-datagram.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+* Lưu ý: IP address thuộc về networks, chứ không thuộc về thiết bị được kết nối với các network.
+&amp;gt; Nghĩa là network (mạng) khác nhau sẽ có nhiệm vụ cấp phát IP khác nhau cho thiết bị của bạn bằng công nghệ DHCP khi bạn bật mạng của network đó.
 
-&lt;p&gt;Ý nghĩa các trường trong datagram header:&lt;/p&gt;
 
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Version (4-bit): version của Internet protocol.
-Ví dụ: IP version 4 thì Internet protocol là IPv4.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Header Length (4-bit): ghi số độ dài của header, thường là 20 bytes đối với IPv4. 20 byte cũng là độ dài tối thiểu của IP header.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Service Type (8-bit): chi tiết về chất lượng dịch vụ, hoặc QoS, các công nghệ áp dụng.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Total Length (16-bit): tổng chiều dài của IP datagram.
+* DHCP hay còn gọi là Dynamic IP Address (địa chỉ IP động) được dùng để cấp phát IP động cho các clients. 
+* Static IP Address thì thường được dùng để cấp phát IP tĩnh cho server và các thiết bị mạng (router,...)
+
+### IP Datagrams &amp;amp; Encapsulation
+#### IP Datagram
+* Là data-packet (gói tin) ở tầng network theo giao thức IP.
+
+* 2 phần chính của IP datagram là header và payload.
+![](/assets/images/ip-datagram.png)
+
+Ý nghĩa các trường trong datagram header:
+
+* Version (4-bit): version của Internet protocol.
+Ví dụ: IP version 4 thì Internet protocol là IPv4.
+
+*  Header Length (4-bit): ghi số độ dài của header, thường là 20 bytes đối với IPv4. 20 byte cũng là độ dài tối thiểu của IP header.
+
+* Service Type (8-bit): chi tiết về chất lượng dịch vụ, hoặc QoS, các công nghệ áp dụng.
+
+* Total Length (16-bit): tổng chiều dài của IP datagram.
 =&amp;gt; Kích thước tối đa là con số lớn nhất có thể biểu diễn bằng 16 bits là 65,535.
-=&amp;gt; Nếu kích thước lớn hơn con số tối đa mà network hiện tại cho phép, IP layer sẽ chia làm các data-packet (gói tin/datagram) nhỏ hơn.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Identification (16-bit): là số 16 bit được dùng để group các messages lại với nhau.
-=&amp;gt; Trường này giúp nhóm các gói tin bị tách ra lại với nhau thành 1 phần của đường truyền.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Flags (4-bit): chỉ ra rằng datagram này có được phép phân mảng hay không, hoặc đã được phân mảnh chưa.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Fragment Offset (12-bit): là quá trình phân mảnh datagram ra các datagram nhỏ hơn (nếu vượt quá giới hạn của network nó đang được truyền đến).&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Time to Live - TTL (8-bit): là trường chỉ ra bao nhiêu bước nhảy để 1 datagram có thể đi đến IP đích trước khi bị vứt đi. Đến số 0 thì router biết được là nó ko cần forward data nữa.
-&lt;img src=&quot;/assets/images/TTL.png&quot; alt=&quot;&quot; /&gt;
+=&amp;gt; Nếu kích thước lớn hơn con số tối đa mà network hiện tại cho phép, IP layer sẽ chia làm các data-packet (gói tin/datagram) nhỏ hơn.
+
+* Identification (16-bit): là số 16 bit được dùng để group các messages lại với nhau.
+=&amp;gt; Trường này giúp nhóm các gói tin bị tách ra lại với nhau thành 1 phần của đường truyền.
+
+*  Flags (4-bit): chỉ ra rằng datagram này có được phép phân mảng hay không, hoặc đã được phân mảnh chưa. 
+
+* Fragment Offset (12-bit): là quá trình phân mảnh datagram ra các datagram nhỏ hơn (nếu vượt quá giới hạn của network nó đang được truyền đến).
+
+* Time to Live - TTL (8-bit): là trường chỉ ra bao nhiêu bước nhảy để 1 datagram có thể đi đến IP đích trước khi bị vứt đi. Đến số 0 thì router biết được là nó ko cần forward data nữa.
+![](/assets/images/TTL.png)
 Mục đích của bước này là để đảm bảo khi có cấu hình sai trong router gây ra vòng lặp vô tận như hình:
-&lt;img src=&quot;/assets/images/TTL-loop.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Protocol (8-bit): thông tin về transport layer protocol được sử dụng ở gói tin này. (TCP, UDP,…)&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Header checksum (16-bit): số checksum nội dung của toàn bộ IP datagram header.
-=&amp;gt; Checksum phải được tính toán lại mỗi lần TTL chạm 1 bộ định tuyến (vì có IP thay đổi)&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Source &amp;amp; Destination IP Address (32-bit) : địa chỉ IP nguồn và IP đích.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Options: trường tùy chọn được dùng để thiết lặp các đặc tính đặc biệt cho datagram được dùng chủ yếu cho các mục đích testing. Trường này có độ dài biến đổi.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Padding: thường dùng khi có trường Option. Là chuỗi số 0 để đảm bảo kích thước của header đúng kích thước tổng.&lt;/p&gt;
-  &lt;/li&gt;
+![](/assets/images/TTL-loop.png)
+
+* Protocol (8-bit): thông tin về transport layer protocol được sử dụng ở gói tin này. (TCP, UDP,...)
+
+* Header checksum (16-bit): số checksum nội dung của toàn bộ IP datagram header.
+=&amp;gt; Checksum phải được tính toán lại mỗi lần TTL chạm 1 bộ định tuyến (vì có IP thay đổi)
+
+* Source &amp;amp; Destination IP Address (32-bit) : địa chỉ IP nguồn và IP đích.
+
+* Options: trường tùy chọn được dùng để thiết lặp các đặc tính đặc biệt cho datagram được dùng chủ yếu cho các mục đích testing. Trường này có độ dài biến đổi.
+
+* Padding: thường dùng khi có trường Option. Là chuỗi số 0 để đảm bảo kích thước của header đúng kích thước tổng.
+
+
+#### Encapsulation
+Phần data payload section của Ethernet frame sẽ là toàn bộ IP datagram.
+
+Quá trình gôm các data trong IP datagram lại với nhau thành frame gọi là encapsulation (tương tự payload của Ethernet frame).
+
+* Toàn bộ data của IP datagram được đóng gói lại làm payload cho tầng ngay dưới nó (tầng 2), đó gọi là quá trình encapsulation. Các tầng khác cũng hoạt động như thế.
+
+* Tầng sau đó sẽ dùng toàn bộ payload của tầng trước đó.
+
+![](/assets/images/encapsulation.png)
+
+### IP Address Classes
+
+Là cách xác định cách địa chỉ global IP phân chia không gian.
+
+* Class A: octet đầu là network ID, 3 octet sau là host ID.
+
+* Class B: 2 octet đầu là network ID, 2 octet sau là host ID.
+
+* Class C: 3 octet đầu là network ID, octet cuối là host ID.
+
+![](/assets/images/ip-class.png)
+
+### Address Resolution Protocol (ARP)
+
+Là giao thức được dùng để khám phá địa chỉ MAC của một node với địa chỉ IP tương ứng.
+
+Các thiết bị mạng sẽ lưu giữ 1 bảng ARP local chứa thông tin địa chỉ MAC ứng với IP của các thiết bị mạng đã từng kết nối (trong 1 khoảng thời gian nhất định).
+
+Thiết bị truyền sẽ tìm đến địa chỉ đích bằng cách phát tín hiệu ``broadcast`` FF:FF:FF:FF:FF:FF cho tất cả các máy tính trong mạng local rằng tôi muốn tìm địa chỉ MAC của máy có địa chỉ IP này.
+
+Máy có địa chỉ IP đó sẽ lên tiếng và gửi ARP response chứa địa chỉ MAC lại cho sender (thiết bị truyền).
+
+Giờ thì thiết bị truyền có thể đưa MAC address vào Ethernet frame để truyền tải dữ liệu.
+
+### Subnetting 
+
+Là quá trình tách network lớn thành nhiều network nhỏ hơn gọi là các subnetworks hoặc subnets.
+
+![](/assets/images/subnetting.png)
+
+#### Subnet Mask
+
+* IP: 9.100.100.100
+
+* Subnet mask: 255.255.255.224
+
+* Subnet mask in binary: 11111111 11111111 11111111 11100000
+
+=&amp;gt; 9.100.100.100/27
+&amp;gt; Có 27 số 1 (các số 1 này là subnet ID).
+
+
+![](/assets/images/subnet-id.png)
+Hình trên là ví dụ của subnet mask: 255.255.255.0
+
+
+Subnet mask là cách để máy tính sử dụng toán tử AND để xác định địa chỉ IP đó có tồn tại trên cùng network hay không.
+
+
+#### CIDR (/ notation)
+Là một cách tiếp cận linh hoạt để cung cấp số lượng địa chỉ IP phù hợp với nhu cầu. CIDR cho phép network tự phân chia kích thước.
+![](/assets/images/subnet-2.png)
+
+Nó dựa vào subnet để Demarcate (phân định).
+
+Demarcation point là cách để mô tả nơi 1 network hay system kết thúc và cái khác bắt đầu.
+
+Một IP thường có Network ID, Subnet ID, Host ID.
+Tuy nhiên với CIDR, Network ID và Subnet ID thường được kết hợp làm một. 
+
+&amp;gt; Nếu công ty cần nhiều hơn 1 class C số lượng địa chỉ IP max mà class C có thể cung cấp (254). Thay vì tạo 2 class C để gấp đôi thì giờ đây với CIDR, nó chỉ cần kết tnoosi không gian địa chỉ liên tục với nhau với mask /23 hay có thể nói là 255.255.254.0.
+
+Giờ đây router chỉ cần biết 1 entry trong routing table để vận chuyển lưu lượng đến các địa chỉ đích thay vì 2.
+
+&amp;gt; Trước đây network ID là tĩnh và chỉ có class A,B,C để phân định kích thước cố định và chỉ có subnet mới có thể thay đổi. Với CIDR thì mọi chuyện đã khác.
+
+![](/assets/images/CIDR-23.png)
+
+Phân tích hình trên 1 chút:
+
+* Hãy nhớ là ta sẽ luôn mất 2 host ID trên mỗi mạng. (giá trị đầu và cuối trong range) 
+
+* Nếu không dùng CIDR, ta cần 2 network class C nên = 254+254
+IDR
+* /23 nghĩa là thêm được 1 bit cho Host ID = 2^9
+
+
+### Routing (lộ trình) 
+#### Concept
+
+* Định nghĩa Router: Là thiết bị mạng chuyển tiếp traffic phụ thuộc vào địa chỉ đích của traffic đó.
+Router thường có 2 network interface giúp nó có thể vận chuyển traffic giữa 2 network với nhau.
+
+![](/assets/images/routing.png)
+
+Lộ trình ở hình trên sẽ được lặp lại cho đến khi traffic đến được địa chỉ đích.
+
+![](/assets/images/routing-2.png)
+
+Diễn giải hình trên như sau:
+
+* Máy tính có IP 192.168.1.100 (máy A) muốn gửi gói tin đến máy có IP 10.0.0.10 (máy B)
+* Máy A nằm trong Network A và biết rằng máy B không nằm trong local Network A.
+* Máy A gửi gói tin này đến địa chỉ MAC của gateway của nó là Router A có IP gateway là 192.168.1.1.
+* Router interface trên Network A nhận được gói tin vì nó thấy địa chỉ MAC đích trên Ethernet frame thuộc về nó. Sau đó, nó bỏ đi phần header của tầng Data-link để đưa đến tầng 3 phân tích tiếp.
+* Router sẽ trực tiếp kiểm tra header của IP datagram ở tầng 3. Nó tìm thấy IP đích chính là 10.0.0.10 thuộc về mạng B (10.0.0.0/24) trong Routing Table.
+Mạng B có interface kết nối với router này.
+* Tiếp theo Router sẽ tạo 1 gói tin mới để gửi cho Network B bằng cách sao chép dữ liệu IP datagram nhưng giảm trường TTL xuống 1 đơn vị + tính toán giá trị checksum mới.
+* Sau đó đóng gói IP datagram mới này bên trong 1 Ethernet frame mới với địa chỉ MAC đích là địa chỉ MAC của IP 10.0.0.10 của network B mà nó lưu sẵn trong ARP table.
+* Và cuối cùng gói tin sẽ được gửi ra khỏi interface của router trên Network B để đến với máy B.
+
+![](/assets/images/routing-3.png)
+
+* Máy A muốn gửi đến máy C phải thông qua router interface của máy A trên Network B và router interface của máy C trên Network B.
+* Cụ thể là máy A sau khi thấy IP đích không thuộc local network thì sẽ gửi đến gateway của nó là Router A thì router A này kiểm tra trong routing table thấy cách nhanh nhất là gửi gói tin đến router B để đến với máy C.
+* Sau đó router A sẽ -1 bước nhảy cho trường TTL và gửi cho router B thông qua router interface của router A trên network B và router interface của router B trên network B.
+* Do network của máy C được kết nối trực tiếp với router B thông qua router interface thuứ 2 của router B. Nên router B sẽ gửi thẳng gói tin đến máy C trên Network C và kết thúc lộ trình. 
+
+#### Routing table
+* Cơ bản nhất sẽ có 4 cột. Trong đó có cột Network. Các cột còn lại có thể là IP, Subnet Mask hay CIDR. 
+* Sẽ có từng hàng cho từng Network mà router này biết.
+* Khi nhận được gói tin, router sẽ biết IP đích đó thuộc network nào dựa vào routing table của nó.
+* Routing table sẽ luôn có 1 mục chung (catchall entry) cho bất kỳ địa chỉ IP nào không có network rõ ràng.
+
+* Next hop: là địa chỉ IP của router tiếp theo sẽ nhận dữ liệu
+* Total hops: tổng số bước nhảy còn lại được tính toán đường đi ngắn nhất (sử dụng thuật toán) để đưa gói tin đến đích.
+
+* Các routing table sẽ luôn được update thông tin mới về đường dẫn nhanh nhất đến mạng đích. 
+
+#### Gateway Protocol 
+Router sử dụng Routing Protocol để nói chuyện với các Router khác để chia sẻ thông tin với nhau, tìm ra con đường ngắn nhất để chia sẻ gói tin,...
+
+Routing protocol có 2 loại : 
+* Interior Gateway Protocol
+* Exterior Gateway Protocol
+
+##### Interior Gateway Protocol
+Được router sử dụng để chia sẻ thông tin trong 1 hệ thống autonomous đơn (1 tổ chức điều hành mạng).
+
+Autonomous system là tập hợp các Network dưới sự quản lý của 1 nhà điều hành mạng duy nhất. 
+&amp;gt; Ví dụ như 1 tập đoàn cần routing traffic mạng của họ giữa các office của họ và mỗi office có thể có 1 local network. Hoặc ví dụ khác là 1 tổ chức nhà mạng lớn của quốc gia quản lý các router thuộc nhà mạng đó.
+
+![](/assets/images/interior-protocol.png)
+
+Interior Gateway Protocol bao gồm 2 loại:
+
+* Distance-vector protocol (tiêu chuẩn cũ)
+Router dựa vào danh sách khoảng cách giữa các network trong routing table của router dưới dạng bao nhiêu hops, sau đó gửi danh sách này cho các router lân cận bằng Distance-vector protocol. Do đó các router lân cận có thể đoán được đường đi nào nhanh hơn.
+=&amp;gt; Router sẽ được cập nhật routing table thường xuyên.
+![](/assets/images/distance-protocol.png)
+
+* Link state routing protocol
+![](/assets/images/link-state.png)
+Giao thức này có cách tiếp cận tinh vi hơn. Từng router trong autonomous system sẽ broadcast thông tin của nó đến tất cả các router còn lại, và chúng sẽ có hết thông tin của nhau.
+Các router sẽ chạy các thuật toán phức tạp để tìm đường đi ngắn nhất đến địa chỉ đích.
+Do vậy cần bộ nhớ nhiều hơn và bộ xử lý tốn kém hơn. 
+
+&amp;gt; Khi phần cứng trở nên mạnh mẽ hơn đã khiến giao thức vector trước đó trở nên cũ và lạc hậu.
+
+##### Exterior Gateway Protocol
+Được sử dụng bởi các Edge router của tổ chức cần chia sẻ thông tin với các tổ chức điều hành mạng khác.
+&amp;gt; Đây là chìa khóa chính của Internet vì Internet là mạng lưới khổng lồ của các autonomous system.
+
+Ở mức cao nhất sẽ có một Core internet router nắm giữ thông tin của các autonomous system. Nhiệm vụ chính của nó là đưa dữ liệu vào Edge Router của các autonomous system.
+
+![](/assets/images/core-router.png)
+
+
+* Internet Assigned Numbers Authority (IANA) : Là 1 tổ chức giúp quản lý những thứ như phân bổ IP address, ASN,...
+
+* ASN (Autonomous System Number): Là con số thập phân 32-bit định danh cho mỗi autonomous system. ASN không cần phải thay đổi để đại diện cho mỗi autonomous system. 
+ASN chỉ thường được dùng bởi các core Internet router và được cập nhật thường xuyên trong routing table để biết mà điều phối traffic.
+
+* Người ta thường nhìn vào ASN để biết autonomous system thuộc về nhà quản trị mạng nào. Ví dụ AS19604 = IBM.
+
+##### Non-routable Address Space 
+Cho phép các thiết bị mạng giao tiếp với nhau mà không cần thông qua gateway router. 
+
+* Network address translation (NAT): là loại công nghệ cho phép các không gian địa chỉ mạng không được định tuyến giao tiếp với các thiết bị khác trên internet.
+
+RFC 1918 (Request for comments) đã định nghĩa 3 dải IP không bao giờ được định tuyến trên Internet bên ngoài, mà chỉ có thể được định tuyến bởi các giao thức interior gateway protocol trong local network. Do vậy bất cứ ai cũng có thể sử dụng những IP này cho mạng nội bộ của họ.
+
+![](/assets/images/rfc-1918.png)
+
+## V. Tầng 4 - Transport Layer
+
+Socket number hay còn gọi là Socket port: 10.1.1.23:80
+
+* Nếu muốn request HTTP web page trên con server đang listen IP 10.1.1.23 thì traffic sẽ được direct đến port 80 của con server với IP đó.
+
+* FTP (File transfer protocol) là giao thức cũ dùng để transfer file từ máy này sang máy khác, dùng port 21.
+
+
+![](/assets/images/layer4.png)
+
+### TCP Segment
+
+Là gói tin bao gồm phần TCP header và payload (data section). Và gói tin này là payload của IP datagram.
+
+![](/assets/images/tcp-header.png)
+
+TCP header gồm 1 số phần quan trọng:
+* Sequence number (32-bit): số dùng để xác định vị trí của gói tin trong sequence gồm các TCP segment.
+&amp;gt; Do tầng 3 có giới hạn size là 1,518 bytes nên cần phải tách các gói tin ra, TCP chia data thành nhiều segment để gửi cho tầng 3. Vậy nên số này dùng để xác định segment hiện tại là segment nào trong sequence của 1 gói tin lớn đã được tách ra.
+* Acknowledgment number (32-bit): là số tiếp theo sau sequence number.
+* Checksum: Khi gói tin đã nhận được ở đầu nhận, nó sẽ được tính toán checksum lại để so sánh với checksum ở header này.
+* Urgent pointer field: gắn liền với TCP control flag để chỉ ra segment nào quan trọng hơn các segment còn lại trong sequence.
+
+### Control Flags
+Là 1 số 6 bit, mặc định 000000 theo thứ tự như bên dưới:
+
+* URG (Urgent): nếu bit này là 1, chỉ rằng segment này là khẩn cấp và trường Urgent pointer field sẽ có nhiều thông tin hơn để lý giải cho flag này.
+* ACK (acknowledge): nếu là 1 nghĩa là cần kiểm tra trường acknowledge number trong TCP header
+* PSH (push): thiết bị gửi mong muốn thiết bị nhận push các data trong bộ nhớ đệm đến ứng dụng ở phía đầu cuối (vd web browser) càng sớm càng tốt. 
+* RST (reset): 1 phía kết nối TCP chưa thể khôi phục lại hoàn toàn sau khi trải qua các segment bị mất thông tin hoặc gặp sự cố.
+&amp;gt; Đây là cách mà các TCP khác trong sequence thông báo là &quot;Từ từ tôi chưa thể tổng hợp thông tin từ bạn được&quot;
+* SYN (synchronize): gửi tín hiệu yêu cầu động bộ, được sử dụng cho lần đầu thiết lập TCP connection và đảm bảo đầu cuối biết để kiểm tra sequence number field.
+* FIN (finish): khi được set là 1 nghĩa là bên máy tính gửi không còn data nào để gửi và kết nối có thể được đóng lại.
+
+### TCP connection
+#### The three-way handshake 
+Sau khi three-way handshake hoàn tất, TCP connection sẽ được thiết lập.
+&amp;gt; Handshake là cách để 2 thiết bị đảm bảo là nó đang nói chuyện trên cùng 1 protocol và có thể hiểu nhau.
+
+![](/assets/images/3way-handshake.png)
+
+Giải thích:
+* Máy A gửi gói tin TCP segment gắn cờ SYN cho máy B.
+* Máy B phản hồi &quot; Hãy thiết lập kết nối, tôi biết sequence num của bạn rồi&quot;.
+* Máy A phản hồi &quot;Tôi nhận tin, hãy bắt đầu gửi data thôi&quot;.
+
+
+![](/assets/images/2side-tcp.png)
+
+* Cả 2 máy đã được thiết lập TCP connection sẽ vận hành 2 chiều với nhau vì đã pair cùng nhau. Gói tin gửi theo chiều nào cũng được phản hồi =&amp;gt; phía còn lại luôn biết đã nhận được gì.
+
+#### The four-way handshake 
+Khi mà 1 trong các máy tính sẵn sàng ngắt kết nối thì nó sẽ gửi cờ FIN, máy tính nhận được sẽ gửi ACK. Nếu máy gửi ACK sẵn sàng ngắt thì cũng gửi nốt cờ FIN. Sau đó máy đòi ngắt sẽ gửi lại cờ ACK &quot;ok tôi ngắt đây&quot;.
+
+![](/assets/images/4way-handshake.png)
+
+### TCP Socket
+
+#### Định nghĩa:
+* Socket là khởi tạo (instantiation) của 1 end-point trong kết nối TCP tiềm năng.
+* Instantiation là việc triển khai thực tế ở 1 thứ gì đó được định nghĩa ở đâu đó.
+
+=&amp;gt; TCP Socket cần có các chương trình thực để khởi tạo nó. 
+=&amp;gt; Bạn có thể gửi dữ liệu đến bất cứ port nào, nhưng bạn chỉ nhận được phản hồi từ server nếu chương trình mở socket ở port đó. 
+
+Các trạng thái của TCP:
+
+* LISTEN : TCP socket đã sẵn sàng và chờ đợi các kết nối vào. (chỉ thấy trạng thái này ở server-side)
+
+* SYN_SENT: có 1 request đồng bộ đã được gửi đi nhưng kết nối chưa được tạo. (chỉ thấy trạng thái này ở client-side)
+
+* SYN-RECEIVED: 1 socket trước đó trong trạng thái LISTEN đã nhận được yêu cầu đồng bộ và đã gửi lại tín hiệu SYN/ACK cho client.
+
+* ESTABLISHED: kết nối TCP đang hoạt động và cả 2 phía đều thoải mái gửi dữ liệu cho nhau. (trạng thái đều có ở cả client và server).
+
+* FIN_WAIT: 1 tín hiệu FIN đã được gửi đi nhưng chưa nhận được ACK từ phía còn lại.
+
+* CLOSE_WAIT: kết nối đã được đóng tại tầng TCP nhưng ứng dụng dùng để mở socket này chưa release socket này.
+
+* CLOSED: kết nối đã chấm dứt và không còn giao tiếp với nhau được nữa.
+
+Ngoài ra còn có các trạng thái TCP khác. Thực tế trạng thái TCP còn phụ thuộc vào hệ điều hành vì nằm ngoài phạm vi của TCP. 
+
+### Connection-oriented protocol (vd TCP)
+
+Là giao thức thiết lập kết nối, sử dụng nó để đảm bảo tất cả các data được gửi đúng. Đảm bảo tất cả segment đều được ACK.
+
+TCP là loại này. TCP sẽ mong đợi từng ACK cho mỗi bit dữ liệu để đảm bảo data truyền tải chính xác và dựa vào sequence number để đưa các gói tin vào đúng thứ tự.
+
+Tầng Transport có protocol này là tầng sẽ quyết định data có cần phải gửi lại không. Còn các tầng 1,2 thì chỉ kiểm tra và vứt gói tin nếu không thỏa checksum.
+
+![](/assets/images/tcp-flow.png)
+
+Do vậy, giao thức này sẽ tốn nhiều chi phí cho việc:
+* Tạo connection
+* Gửi liên tục các luồng ACK
+* Phá vỡ kết nối
+=&amp;gt; Chỉ hữu ích khi bạn hoàn toàn muốn dữ liệu được truyền tải chính xác.
+
+### Connectionless protocol (vd UDP - User Datagram protocol)
+
+UDP không phụ thuộc vào connection và cũng không hỗ trợ khái niệm ACK.
+
+Với UDP bạn chỉ cần thiết lập 1 cổng port rồi gửi gói tin đi là được. Điều này hữu ích với các message không quá quan trọng như streaming video.
+=&amp;gt; Bằng việc loại bỏ chi phí khi sử dụng TCP, ta có thể tối ưu bằng cách tăng chất lượng video với UDP (giúp tiết kiệm băng thông để dành cho việc truyền data chất lượng cao thay vì dành cho việc thiết lập các kết nối TCP).
+
+
+### Firewall 
+
+Là thiết bị giúp ngăn chặn traffic truy cập thỏa tiêu chí nhất định để đảm bảo security.
+
+Firewall có thể hoạt động ở nhiều tầng lớp khác nhau, nhưng phổ biến nhất là ở tầng 4 - Transport.
+Ví dụ như chặn truy cập đến 1 số port nhất định trong khi cho phép traffic đến các port khác. 
+
+![](/assets/images/firewall.png)
+
+Như hình trên, firewall được đặt trước server để chặn truy cập bên ngoài vào port 445 (phục vụ service quản trị file nội bộ), và cho phép port 80 mở (phục vụ website của công ty) để bên ngoài mạng LAN có thể truy cập vào.
+
+Firewall đôi khi là thiết bị mạng độc lập, hoặc có thể xem nó là 1 chương trình có thể chạy ở bất cứ đâu, nó có thể tích hợp chung với router. Ngoài ra nó có thể chạy trên server cá nhân thay vì là 1 network device, các hệ điều hành lớn hiện nay đều được tích hợp sẵn firewall.  
+
+
+
+## VI. Tầng 5 - Application layer 
+
+### Mô hình OSI (Open Systems Intersection) 
+
+![](/assets/images/OSI.png)
+
+* Session Layer: Tạo điều kiện giao tiếp giữa các actual application với tầng transport. Nó là 1 phần của hệ điều hành OS đã được un-encapsulation để lấy &quot;payload&quot; của application từ các tầng dưới và chuyển lên tầng Presention.
+
+* Presentation layer: có nhiệm vụ đảm bảo việc unencapsulation dữ liệu của tầng application layer có thể được hiểu bởi ứng dụng đang yêu cầu nhận dữ liệu.
+Đây là 1 phần của OS giúp xử lý mã hóa encryption hoặc nén dữ liệu. 
+
+=&amp;gt; Nhận thấy 3 tầng cuối không còn cơ chế encapsulate dữ liệu nữa nên được gộp lại thành mô hình 5 tầng và được xem là hiệu quả nhất. Tuy nhiên, việc hiểu rõ cơ chế hoạt động và mô hình nguyên thủy sẽ giúp ta có kiến thức cơ bản để hiểu về network tốt nhất.
+
+
+Dưới đây là mô phỏng quy trình network truyền tải dữ liệu từ máy 1 đến máy 2:
+
+![](/assets/images/all-layers.png)
+
+Máy 1 sẽ truyền data payload kèm sign SYN/ACK và máy 2 trả về SYN/ACK cứ thế cho đến khi cả 2 hoàn thành nhiệm vụ gửi nhận dữ liệu. 
+
+
+-------------------------------
+#### DNS
+Địa chỉ IP là 1 số binary 32-bit nhưng được viết dưới dạng thập phân để dễ đọc hơn.
+
+Vì não người nhớ số không tốt nên DNS ra đời để giúp giải quyết vấn đề truy cập địa chỉ IP dễ dàng hơn, con người chỉ cần nhớ domain bằng chữ.
+
+* DNS là dịch vụ mạng toàn cầu giúp giải mã chữ thành địa chỉ IP cho bạn.
+
+* Domain name là thuật ngữ ta dùng để chỉ những gì DNS có thể xử lý.
+
+Địa chỉ IP ứng với tên miền có thể thay đổi vì nhiều lý do như thay đổi hợp đồng, trụ sở data center. Bằng cách sử dụng DNS, quản trị viên có thể thay đổi IP ứng với tên miền, lúc này end user thậm chí sẽ không bao giờ biết là IP đã thay đổi.
+
+=&amp;gt; Lợi ích của DNS:
+
+* Giúp dễ nhớ đường dẫn trang web thông qua Domain name hơn
+* Cho phép thay đổi quản trị ngầm mà không cần end user thay đổi hành vi.
+* DNS cho phép đối ứng domain name theo vùng. Ở vùng A thì có địa chỉ IP x ở vùng B thì địa chỉ y. Giúp lưu lượng truy cập máy chủ ở gần khu vực khi mà công ty bạn muốn đặt data center ở vùng nào đó để truyền dữ liệu gần nhau nhanh hơn.
+
+![](/assets/images/dns.png)
+  
+
+Để cấu hình 1 mạng tiêu chuẩn, có 4 thứ cần cấu hình để host vận hành trong mạng như mong muốn:
+* IP address
+* Subnet mask
+* Gateway for a host
+* DNS server
+
+Có 5 loại DNS server:
+![](/assets/images/dns-server.png)
+
+* Caching and recursive name servers:
+Mục đích để lưu các tra cứu domain name trong 1 khoảng thời gian nhất định. Loại này thường được ISP hoặc local network cấp phát.
+Hầu hết các caching name server thường là recursive name server.
+
+* Recursive name servers: thực thi đầy đủ yêu cầu đối ứng tra cứu toàn bộ (full resolution) DNS.
+
+Hầu hết các local name server sẽ thực hiện nghĩa vụ của cả 2 loại, nhưng hoàn toàn có thể có trường hợp name server làm 1 trong 2 nhiệm vụ caching hoặc recursive thôi. 
+
+
+![](/assets/images/name-server.png)
+
+Khi Friend yêu cầu local name server cung cấp IP của fb.com thì recursive server sẽ thực thi full resolution tra cứu toàn bộ trên máy chủ dịch vụ DNS để trả về IP. Sau đó IP này sẽ được lưu trữ trong cache với trong khoảng thời gian TTL nhất định.
+
+Vài phút sau nếu You truy cập cùng fb.com thì local name server sẽ trả về máy tính của You địa chỉ IP tương tự mà không cần tra cứu toàn bộ.
+
+* TTL (Time to live): là giá trị bằng giây có thể được cấu hình bởi chủ của tên miền, là thời gian mà name server cho phép cache trước khi nó bị hủy và thực thi tra cứu lại DNS (full resolution).
+
+
+##### Full recursive resolution:
+
+![](/assets/images/full-resolution.png)
+
+Name server đã cấu hình sẽ thực hiện tra cứu toàn bộ DNS theo quy trình sau:
+
+* B1: liên hệ với root name server. Chúng chịu trách nhiệm điều hướng truy vấn tên miền đến TLD server thích hợp.
+
+Ngày nay chúng thường phân bố trên toàn thế giới thông qua ``anycast``. Đây là 1 kỹ thuật được sử dụng để điều hướng truy cập đến các destination khác nhau dựa trên yếu tố địa lý, tắc nghẽn (congestion) hoặc link health.  13 root name servers được xem như 13 object được cấp quyền để cung cấp dịch vụ tra cứu tên router.
+
+Root server sẽ trả về địa chỉ của TLD name server (Top Level Domain), trong ví dụ là ``.com``. 
+![](/assets/images/TLD.png)
+
+* B2: TLD name server sẽ tra cứu máy chủ nào được cấp quyền cho trang web ví dụ domain ``weather.com``, đó là 1 tổ chức chạy trang web này. 
+
+* B3: Sau đó tra cứu DNS sẽ tiếp tục được điều hướng đến máy chủ được cấp quyền domain name ``weather.com``, nơi sẽ cho ra IP thật của server cần truy vấn/cần request data. 
+
+
+#### DNS over Protocol (TCP, UDP)
+##### TCP
+Thường không dùng TCP, chỉ dùng khi gói tin lớn. Khi gói tin quá lớn UDP không chứa được hết thì DNS server sẽ phản hồi quá lớn. Lúc này DNS Client sẽ thiết lập TCP connection để tra cứu.
+
+![](/assets/images/tcp-dns.png)
+
+
+##### UDP
+Không cần tạo các kết nối như TCP. 
+![](/assets/images/udp-dns.png)
+
+UDP không có cơ chế khôi phục lỗi. Nhưng đơn giản nếu khi phát sinh lỗi, DNS chỉ cần request lại nếu không nhận được phản hồi, không cần phải khôi phục.
+
+
+##### Resource Record Type 
+
+DNS hoạt động dựa trên 1 tập hợp các record. Có nhiều loại record phục vụ các mục đích khác nhau:
+
+* ``A record``: được dùng để trỏ 1 tên miền đến 1 địa chỉ IPv4 nhất định.
+Cơ bản thì 1 domain name sẽ trỏ đến 1 bản ghi chứa địa chỉ IPv4, nhưng thực ra 1 domain cũng có thể trỏ đến nhiều bản ghi A.
+=&amp;gt; Kỹ thuật ``DNS Round Robin``được sử dụng để cân bằng lưu lượng truy cập trên nhiều IP. 
+
+Ví dụ www.microsoft.com có thể cấu hình 4 A records ứng với 4 name servers có thẩm quyền cho tên miền này. Sau đó từng lượt truy cập sẽ được điều hướng đến IP của name server lần lượt theo cơ chế round robin (thay đổi thứ tự đầu tiên) giúp giảm traffic. Máy tính phân giải DNS biết cả 4 record nhưng nó chỉ dùng record thứ tự đầu tiên, trường hợp kết nối thất bại nó sẽ kết nối tới record tiếp theo.
+
+* ``AAAA-Quad A``: tương tự A record nhưng trả về địa chỉ IPv6 thay vì IPv4.
+
+* ``CNAME record``: được sử dụng để chuyển hướng traffic từ 1 domain sang 1 domain khác.
+Vd: nếu bấm microsoft.com thì CNAME được cấu hình trước đó sẽ phân giải thành www.microsoft.com và DNS server sẽ phân giải tiếp ra IP của www.microsoft.com
+
+CNAME còn giúp thay đổi địa chỉ IP của 1 máy chủ ở 1 nơi thôi.
+
+=&amp;gt; Có 2 cách để khi bấm microsoft.com và www.microsoft.com đều đến cùng 1 nơi:
+
+	* C1: Thiết lập record tương tự nhau cho cả 2 domain. Nếu thay đổi IP thì phải thay đổi cho cả 2 nơi của record.
+	* C2: Setup CNAME trỏ microsoft.com đến www.microsoft.com, khi cần thay đổi IP chỉ cần thay đổi domain chính www.microsoft.com.
+
+* ``MX record - mail exchange``: đảm bảo traffic thư từ sẽ được gửi đến mail server của công ty.
+
+* ``SRV record``: giống MX nhưng khác chỗ là nó có thể trả về các record dịch vụ khác nhau như calendar.
+
+* ``TXT record``: giúp ta có thể chèn các note vào trong message gửi đi hoặc cấu hình network. TXT record thường được sử dụng để truyền tải thông tin bổ sung đến email dưới dạng NCC dịch vụ ví dụ &quot;Mail Delivery Failure&quot;,...
+
+* Ngoài ra còn các bản ghi NS hoặc SOA được sử dụng để xác định thông tin thẩm quyền về các DNS Zone.
+
+
+#### Anatomy of a Domain name
+
+* ICANN là tổ chức tiền thân của IANA, cả hai cùng phối hợp để quản lý việc cấp phát và điều phối IP + DNS + TLD của Internet toàn cầu.
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;www.google.com
+```
+Trong đó chia làm các vùng sau:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;.com&lt;/code&gt;: phần TLD&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;google&lt;/code&gt;: phần Domain&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;www&lt;/code&gt;: phần sub-domain 
+=&amp;gt; Tất cả là Fully qulified Domain name (FQDN)&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h4 id=&quot;encapsulation&quot;&gt;Encapsulation&lt;/h4&gt;
-&lt;p&gt;Phần data payload section của Ethernet frame sẽ là toàn bộ IP datagram.&lt;/p&gt;
-
-&lt;p&gt;Quá trình gôm các data trong IP datagram lại với nhau thành frame gọi là encapsulation (tương tự payload của Ethernet frame).&lt;/p&gt;
+&lt;p&gt;Registrar là các công ty có thỏa thuận với ICANN để cấp phát/bán domain name chưa đăng ký cho bất kỳ ai.&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Toàn bộ data của IP datagram được đóng gói lại làm payload cho tầng ngay dưới nó (tầng 2), đó gọi là quá trình encapsulation. Các tầng khác cũng hoạt động như thế.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Tầng sau đó sẽ dùng toàn bộ payload của tầng trước đó.&lt;/p&gt;
-  &lt;/li&gt;
+  &lt;li&gt;Mỗi vùng domain phải &amp;lt;=63 ký tự.&lt;/li&gt;
+  &lt;li&gt;FQDN thì tối đa 255 ký tự.&lt;/li&gt;
+  &lt;li&gt;DNS support tối đa 127 level domain trong 1 FQDN.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/encapsulation.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h5 id=&quot;dns-zones&quot;&gt;DNS Zones&lt;/h5&gt;
+&lt;p&gt;Ra đời để cho phép kiểm sóat nhiều level của domain name một cách dễ dàng hơn.&lt;/p&gt;
 
-&lt;h3 id=&quot;ip-address-classes&quot;&gt;IP Address Classes&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/dns-zone.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Là cách xác định cách địa chỉ global IP phân chia không gian.&lt;/p&gt;
+&lt;p&gt;Như hình ta sẽ có 4 cấu hình DNS server sẽ được thiết lập. 1 cho domain chính và 3 cái còn lại cho subdomains.&lt;/p&gt;
+
+&lt;p&gt;Chúng sẽ được cấu hình thông qua &lt;code&gt;Zone files&lt;/code&gt;.&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Class A: octet đầu là network ID, 3 octet sau là host ID.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Class B: 2 octet đầu là network ID, 2 octet sau là host ID.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Class C: 3 octet đầu là network ID, octet cuối là host ID.&lt;/p&gt;
-  &lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;Zone files&lt;/code&gt; là những tệp tin cấu hình đơn giản khai báo tất cả các record của 1 zone nào đó.
+Zone file phải bao gồm SOA (Start of Authority).&lt;/li&gt;
+  &lt;li&gt;SOA sẽ khai báo zone và tên của name server được cấp quyền để khai báo zone.&lt;/li&gt;
+  &lt;li&gt;NS record cũng có thể xuất hiện trong file để khai báo những name server khác có thể chịu trách nhiệm cho zone này.&lt;/li&gt;
+  &lt;li&gt;Ngoài ra cũng có thể xuất hiện các record A, AAAA, CNAME trong zone file.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/ip-class.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;address-resolution-protocol-arp&quot;&gt;Address Resolution Protocol (ARP)&lt;/h3&gt;
-
-&lt;p&gt;Là giao thức được dùng để khám phá địa chỉ MAC của một node với địa chỉ IP tương ứng.&lt;/p&gt;
-
-&lt;p&gt;Các thiết bị mạng sẽ lưu giữ 1 bảng ARP local chứa thông tin địa chỉ MAC ứng với IP của các thiết bị mạng đã từng kết nối (trong 1 khoảng thời gian nhất định).&lt;/p&gt;
-
-&lt;p&gt;Thiết bị truyền sẽ tìm đến địa chỉ đích bằng cách phát tín hiệu &lt;code&gt;broadcast&lt;/code&gt; FF:FF:FF:FF:FF:FF cho tất cả các máy tính trong mạng local rằng tôi muốn tìm địa chỉ MAC của máy có địa chỉ IP này.&lt;/p&gt;
-
-&lt;p&gt;Máy có địa chỉ IP đó sẽ lên tiếng và gửi ARP response chứa địa chỉ MAC lại cho sender (thiết bị truyền).&lt;/p&gt;
-
-&lt;p&gt;Giờ thì thiết bị truyền có thể đưa MAC address vào Ethernet frame để truyền tải dữ liệu.&lt;/p&gt;
-
-&lt;h3 id=&quot;subnetting&quot;&gt;Subnetting&lt;/h3&gt;
-
-&lt;p&gt;Là quá trình tách network lớn thành nhiều network nhỏ hơn gọi là các subnetworks hoặc subnets.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/subnetting.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h4 id=&quot;subnet-mask&quot;&gt;Subnet Mask&lt;/h4&gt;
+&lt;p&gt;Ngoài việc tra cứu từ domain sang IP trong record. Ta còn sẽ bắt gặp kỹ thuật Resolve lookup zone file cho phép DNS server yêu cầu IP và trả về FQDN cùng với nó, dùng PTR record.&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;IP: 9.100.100.100&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Subnet mask: 255.255.255.224&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Subnet mask in binary: 11111111 11111111 11111111 11100000&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;=&amp;gt; 9.100.100.100/27&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;Có 27 số 1 (các số 1 này là subnet ID).&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/subnet-id.png&quot; alt=&quot;&quot; /&gt;
-Hình trên là ví dụ của subnet mask: 255.255.255.0&lt;/p&gt;
-
-&lt;p&gt;Subnet mask là cách để máy tính sử dụng toán tử AND để xác định địa chỉ IP đó có tồn tại trên cùng network hay không.&lt;/p&gt;
-
-&lt;h4 id=&quot;cidr--notation&quot;&gt;CIDR (/ notation)&lt;/h4&gt;
-&lt;p&gt;Là một cách tiếp cận linh hoạt để cung cấp số lượng địa chỉ IP phù hợp với nhu cầu. CIDR cho phép network tự phân chia kích thước.
-&lt;img src=&quot;/assets/images/subnet-2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Nó dựa vào subnet để Demarcate (phân định).&lt;/p&gt;
-
-&lt;p&gt;Demarcation point là cách để mô tả nơi 1 network hay system kết thúc và cái khác bắt đầu.&lt;/p&gt;
-
-&lt;p&gt;Một IP thường có Network ID, Subnet ID, Host ID.
-Tuy nhiên với CIDR, Network ID và Subnet ID thường được kết hợp làm một.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Nếu công ty cần nhiều hơn 1 class C số lượng địa chỉ IP max mà class C có thể cung cấp (254). Thay vì tạo 2 class C để gấp đôi thì giờ đây với CIDR, nó chỉ cần kết tnoosi không gian địa chỉ liên tục với nhau với mask /23 hay có thể nói là 255.255.254.0.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Giờ đây router chỉ cần biết 1 entry trong routing table để vận chuyển lưu lượng đến các địa chỉ đích thay vì 2.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Trước đây network ID là tĩnh và chỉ có class A,B,C để phân định kích thước cố định và chỉ có subnet mới có thể thay đổi. Với CIDR thì mọi chuyện đã khác.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/CIDR-23.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Phân tích hình trên 1 chút:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Hãy nhớ là ta sẽ luôn mất 2 host ID trên mỗi mạng. (giá trị đầu và cuối trong range)&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Nếu không dùng CIDR, ta cần 2 network class C nên = 254+254&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;/23 nghĩa là thêm được 1 bit cho Host ID = 2^9&lt;/p&gt;
-  &lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;PTR&lt;/code&gt; (Pointer resource record) : phân giải IP thành name&lt;/li&gt;
 &lt;/ul&gt;
 
 </description>
@@ -567,6 +1333,71 @@ Tuy nhiên với CIDR, Network ID và Subnet ID thường được kết hợp l
         
         
         <category>Network</category>
+        
+      </item>
+    
+      <item>
+        <title>Setup Airflow cơ bản cần biết</title>
+        <description>&lt;p&gt;Các bước set-up:
+https://airflow.apache.org/docs/apache-airflow/stable/start/docker.html&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Lỗi khi run database migrations and create the first user account:
+&lt;code&gt;docker-compose up airflow-init&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;https://github.com/Mailu/Mailu/issues/853&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Do docker-compose chưa update&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Kết quả:&lt;/p&gt;
+
+&lt;p&gt;DB_HOST=postgres
+DB_PORT=5432
+DB: postgresql+psycopg2://airflow:***@postgres/airflow&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Sau khi &lt;code&gt;docker-compose up&lt;/code&gt;:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Success. You can now start the database server using:
+&lt;code&gt;pg_ctl -D /var/lib/postgresql/data -l logfile start&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Build custom image tại :
+https://airflow.apache.org/docs/docker-stack/build.html&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Cách tạo và import package trong Python:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Ví dụ trong link là import package &lt;code&gt;airflow_operators&lt;/code&gt;. 
+https://airflow.apache.org/docs/apache-airflow/stable/modules_management.html&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Thêm thư mục đường dẫn vào &lt;code&gt;sys.path&lt;/code&gt;:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;VD: PYTHONPATH=/home/arch/projects/airflow_operators python&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Dùng Macros nhưng phải cài Jinja Templating trước:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;https://airflow.apache.org/docs/apache-airflow/stable/macros-ref.html&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;*Args và **kwargs:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;https://realpython.com/python-kwargs-and-args/&lt;/p&gt;
+</description>
+        <pubDate>Sat, 11 Sep 2021 00:00:00 +0700</pubDate>
+        <link>https://tuyen-nnt.github.io/airflow/</link>
+        <guid isPermaLink="true">https://tuyen-nnt.github.io/airflow/</guid>
+        
+        
+        <category>Data</category>
         
       </item>
     
@@ -1766,916 +2597,6 @@ plt.show()
         
         
         <category>Data</category>
-        
-      </item>
-    
-      <item>
-        <title>Python - Part 1</title>
-        <description>&lt;h4 id=&quot;i-list&quot;&gt;I. LIST&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Thêm phần tử cho list:&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Chỉ cần + [list]&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;x = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]
-y = x + [&quot;e&quot;, &quot;f&quot;]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;ul&gt;
-  &lt;li&gt;Xóa phần tử list:&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Dùng del(phần tử). Lưu ý là khi xóa thì các phần tử ở sau bị đẩy index lên.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;x = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]
-del(x[1])
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Dấu [index:index] trong list
-    &lt;ul&gt;
-      &lt;li&gt;x[start:end]
-  Với start là chỉ số lấy
-  end chỉ số không lấy
-Ví dụ:&lt;/li&gt;
-      &lt;li&gt;x[2:5] : lấy giá trị của index từ 2 đến 4&lt;/li&gt;
-      &lt;li&gt;x[:3] : từ đầu đến index 2&lt;/li&gt;
-      &lt;li&gt;x[3:] : từ index 3 đến hết&lt;/li&gt;
-      &lt;li&gt;x[:] : lấy hết phần tử&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Dấu &lt;code&gt;;&lt;/code&gt;:
-Dùng để tách command code trên cùng 1 dòng, nếu khác dòng thì không cần.
-```
-    &lt;h1 id=&quot;same-line&quot;&gt;Same line&lt;/h1&gt;
-    &lt;p&gt;command1; command2&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;separate-lines&quot;&gt;Separate lines&lt;/h1&gt;
-&lt;p&gt;command1
-command2&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-* Copy list:
-Khi copy kiểu ``x=y`` thì thực tế ta đang copy địa chỉ list của y cho x. Nghĩa là khi ta thay đổi phần tử trong x thì y cũng thay đổi theo.
-
-Để xử lý tình huống này, nếu chỉ muốn copy giá trị list thì ta dùng: ``x = list(y)`` hoặc ``x = y[:]``
-
-
-* Convert datatype
-x = str(y)
-x = int(y)
-x = float(y)
-&amp;gt; Check datatype bằng function ``type()``
-
-* Xem cấu trúc của 1 function có sẵn:
-``help(max)`` hoặc ``?max``
-
-#### II. METHOD
-* Cũng là function nhưng dành cho từng type
-* Tất cả mọi thứ trong Python đều là object.
-* Object có các method riêng, phụ thuộc vào data type 
-
-#### III. Numpy
-Tại sao dùng Numpy?
-*  Rất quyền lực, có thể sử dụng cho nhiều data type khác nhau. Tuy nhiên mỗi tập hợp (array) chỉ được chứa 1 loại data type.
-* Có thể thêm, xóa, sửa
-* Quan trọng trong Data Science
-	* Làm các phép toán cho các tập hợp
-	* Tốc độ nhanh
-* Ta thấy nếu áp dụng phép toán như -*/ trên kiểu dữ liệu list thì sẽ throw Error ``không hỗ trợ``. Nếu + thì sẽ ghép 2 list lại thành 1 list.
-&amp;gt; Tuy nhiên, ta đang cần +-*/ trên 2 list theo index tương ứng. Thì Numpy sẽ giúp ta giải quyết khó khăn này.
-
-Giải pháp Numpy có gì?
-* Python kiểu số. Có hàm ``np.mean()`` và ``np.median()`` rất phổ biến trong data science.
-* Thay thế cho Python List : kiểu dữ liệu ``Numpy Array``
-* Giúp tính toán trên toàn bộ array
-* Nhanh và dễ dàng
-* Cài đặt trong terminal: 
-``pip3 install numpy``
-
-Như vậy, để thực hiện các phép toán trên list, ta phải chuyển nó sang kiểu dữ liệu Numpy Array như sau:
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;import numpy as np
-np_height = np.array(height)
-np_weight = np.array(weight)
-bmi = np_weight / np_height ** 2&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-**Lưu ý quan trọng:**
-
-* Mỗi array chỉ được chứa 1 loại data type.
-* Type khác nhau thì hành vi của nó sẽ khác nhau. VD: 
-
-	* Phép + 2 list thì là ghép 2 list thành 1. 
-	* Phép + 2 array thì là cộng theo giá trị index tương ứng của 2 array với nhau.
-
-##### 1. Numpy Subsetting 
-* Ta có array ``bmi``.
-* Để truy cập vào array ta dùng cú pháp: ``bmi[index]``
-* Để xét các giá trị trong array có thỏa điều kiện không, ta dùng: ``bmi &amp;gt; 23``
-&amp;gt; Trả về array có kiểu Boolean (True/False)
-* Để trả về array chứa các giá trị thỏa điều kiện, ta dùng: ``bmi[bmi &amp;gt; 23]`` 
-
-##### 2. Type của Numpy array
-Nếu ``print(type(np_height))``
-&amp;gt; numpy.ndarray
-
-Với numpy là package, n là layer của array. ndarray là kiểu dữ liệu chỉ sử dụng trong Numpy.
-
-##### 3. 2D Numpy Arrays 
-Cách tạo 2D array bằng 2 array:
-* array1
-* array2
-* meas = np.array([array1, array2])
-
-
-Có thể xem 2D numpy array như phiên bản nâng cấp của &quot;list của list&quot; vì ta có thể thực hiện các phép toán với nó.
-
-Để tạo array 2D, ta chỉ cần input các giá trị vào như dưới đây, input 1 list có 2 sub-list vào argument của method ``np.array`` theo cấu trúc hình chữ nhật:
-![](/assets/images/2d-array.png)
-
-Mỗi sub-list là một row của array.  
-Nếu ta thay đổi kiểu dữ liệu của bất kỳ giá trị nào trong array sang kiểu khác như từ float sang string, thì mặc nhiên numpy sẽ chuyển tất cả các giá trị còn lại sang string (in ra sẽ thấy).
-&amp;gt; Vì mỗi numpy array chỉ chứa 1 kiểu dữ liệu.
-
-Để biết cấu trúc data của array như thế nào, ta dùng attribute ``shape`` của array:
-![](/assets/images/array-shape.png)
- *Vì là attribute nên nó không có ``()`` như method~*
-
-Có 2 cú pháp để truy cập giá trị:
-![](/assets/images/2d-subset.png)
-
-* Cách 1: np_2d[row][column]
-* Cách 2: np_2d[row,column]
-* Dấu ``:`` vẫn sẽ được sử dụng giống như 1D array ở trên nếu muốn chọn cụ thể vùng giá trị muốn lấy.
-
-*Với row, column là index, chú ý ở đây vẫn sử dụng zero-index cho 2D array.*
-
-
-##### 4. Toán tử Boolean trong Numpy
-Với Numpy array ta có thể sử dụng phép so sánh như các ví dụ trên, nhưng nếu sử dụng kết hợp and, or, not thì sẽ throw Error.
-Do vậy, ta phải sử dụng:
-
-* np.logical_and()
-* np.logical_or() 
-* np.logical_not()
-
-Ex:
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;np.logical_and(my_house &amp;gt; 13, 
-               your_house &amp;lt; 15)&lt;/p&gt;
-
-&lt;h1 id=&quot;kết-quả-trả-về-1-boolean-series-thích-hợp-dùng-để-filter-dataframe&quot;&gt;Kết quả trả về 1 Boolean Series, thích hợp dùng để filter dataframe&lt;/h1&gt;
-&lt;p&gt;```
-Với my_house và your_house là 2 Numpy array.&lt;/p&gt;
-</description>
-        <pubDate>Sun, 11 Jul 2021 00:00:00 +0700</pubDate>
-        <link>https://tuyen-nnt.github.io/python-basic/</link>
-        <guid isPermaLink="true">https://tuyen-nnt.github.io/python-basic/</guid>
-        
-        
-        <category>Data</category>
-        
-        <category>Programing</category>
-        
-        <category>Python</category>
-        
-      </item>
-    
-      <item>
-        <title>(ENG) The basics of Spark</title>
-        <description>&lt;p&gt;Đầu tiên phải kết nối với &lt;code&gt;Cluster&lt;/code&gt;. &lt;code&gt;Cluster&lt;/code&gt; được host trên remote machine mà được connect với tất cả các node khác. Sẽ có 1 máy tính gọi là &lt;code&gt;master&lt;/code&gt; phụ trách việc bóc tách dữ liệu và tính toán. &lt;code&gt;master&lt;/code&gt; được kết nối với tất cả những máy tính còn lại trong cluster, các máy tính còn lại gọi là &lt;code&gt;worker&lt;/code&gt;. &lt;code&gt;master&lt;/code&gt; gửi cho &lt;code&gt;workers&lt;/code&gt; data và các phép toán để chạy và chúng sẽ trả về cho &lt;code&gt;master&lt;/code&gt; kết quả.&lt;br /&gt;
-The first step in using Spark is connecting to a cluster.&lt;/p&gt;
-
-&lt;p&gt;In practice, the cluster will be hosted on a remote machine that’s connected to all other nodes. There will be one computer, called the master that manages splitting up the data and the computations. The master is connected to the rest of the computers in the cluster, which are called worker. The master sends the workers data and calculations to run, and they send their results back to the master.&lt;/p&gt;
-
-&lt;p&gt;Deciding whether or not Spark is the best solution for your problem takes some experience, but you can consider questions like:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;Is my data too big to work with on a single machine?
-Can my calculations be easily parallelized?
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Bước 1: Create an instance of the SparkContext class to connect to a Spark cluster from PySpark.The class constructor takes a few optional arguments that allow you to specify the attributes of the cluster you’re connecting to.&lt;/p&gt;
-
-&lt;p&gt;An object holding all these attributes can be created with the SparkConf() constructor. Take a look at the documentation for all the details! You can think of the SparkContext as your connection to the cluster and the SparkSession as your interface with that connection.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;from pyspark.sql import SparkSession, SQLContext
-
-# Create SparkSession. Creating multiple SparkSessions and SparkContexts can cause issues, so it's best practice to use the SparkSession.builder.getOrCreate() method. This returns an existing SparkSession if there's already one in the environment, or creates a new one if necessary!
-spark = SparkSession.builder.appName(&quot;CAR DAILY&quot;).getOrCreate()
-
-# Create sparkContext
-sc = spark.sparkContext
-
-sqlContext = SQLContext(sc)
-
-# Verify SparkContext
-print(sc)
-
-# Print Spark version
-print(sc.version)
-
-&amp;lt;SparkContext master=local[*] appName=pyspark-shell&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;You may also find that running simpler computations might take longer than expected. That’s because all the optimizations that Spark has under its hood are designed for complicated operations with big data sets. That means that for simple or small problems Spark may actually perform worse than some other solutions!&lt;/p&gt;
-
-&lt;h4 id=&quot;using-dataframes&quot;&gt;Using DataFrames&lt;/h4&gt;
-
-&lt;p&gt;Spark’s core data structure is the Resilient Distributed Dataset (RDD). This is a low level object that lets Spark work its magic by splitting data across multiple nodes in the cluster. However, RDDs are hard to work with directly, so in this course you’ll be using the Spark DataFrame abstraction built on top of RDDs.&lt;/p&gt;
-
-&lt;p&gt;The Spark DataFrame was designed to behave a lot like a SQL table (a table with variables in the columns and observations in the rows). Not only are they easier to understand, DataFrames are also more optimized for complicated operations than RDDs.&lt;/p&gt;
-
-&lt;p&gt;When you start modifying and combining columns and rows of data, there are many ways to arrive at the same result, but some often take much longer than others. When using RDDs, it’s up to the data scientist to figure out the right way to optimize the query, but the DataFrame implementation has much of this optimization built in!&lt;/p&gt;
-
-&lt;p&gt;To start working with Spark DataFrames, you first have to create a SparkSession object from your SparkContext. You can think of the SparkContext as your connection to the cluster and the SparkSession as your interface with that connection.&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;h5 id=&quot;i-select&quot;&gt;I. SELECT&lt;/h5&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;flights.select(flights.air_time/60)&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;returns a column of flight durations in hours instead of minutes.&lt;/p&gt;
-
-&lt;p&gt;if you wanted to .select() the column duration_hrs (which isn’t in your DataFrame) you could do&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;flights.select((flights.air_time/60).alias(“duration_hrs”))&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;The equivalent Spark DataFrame method .selectExpr() takes SQL expressions as a string:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;flights.selectExpr(“air_time/60 as duration_hrs”)
-with the SQL as keyword being equivalent to the .alias() method. To select multiple columns, you can pass multiple strings.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;View tables:
-Once you’ve created a SparkSession, you can start poking around to see what data is in your cluster!&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Your SparkSession has an attribute called catalog which lists all the data inside the cluster. This attribute has a few methods for extracting different pieces of information.&lt;/p&gt;
-
-&lt;p&gt;One of the most useful is the .listTables() method, which returns the names of all the tables in your cluster as a list.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;spark.catalog.listTables()
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Querying:
-Running a query on this table is as easy as using the .sql() method on your SparkSession. This method takes a string containing the query and returns a DataFrame with the results!&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;If you look closely, you’ll notice that the table flights dataframe is only mentioned in the query, not as an argument to any of the methods. This is because there isn’t a local object in your environment that holds that data, so it wouldn’t make sense to pass the table as an argument.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Convert Spark DF to Pandas DF - Pandafy a Spark DataFrame&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Suppose you’ve run a query on your huge dataset and aggregated it down to something a little more manageable.&lt;/p&gt;
-
-&lt;p&gt;Sometimes it makes sense to then take that table and work with it locally using a tool like pandas. Spark DataFrames make that easy with the .toPandas() method. Calling this method on a Spark DataFrame returns the corresponding pandas DataFrame. It’s as simple as that!&lt;/p&gt;
-
-&lt;p&gt;This time the query counts the number of flights to each airport from SEA and PDX.&lt;/p&gt;
-
-&lt;p&gt;Remember, there’s already a SparkSession called spark in your workspace!&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# Don't change this query
-query = &quot;SELECT origin, dest, COUNT(*) as N FROM flights GROUP BY origin, dest&quot;
-
-# Run the query
-flight_counts = spark.sql(query)
-
-# Convert the results to a pandas DataFrame
-pd_counts = flight_counts.toPandas()
-
-# Print the head of pd_counts
-print(pd_counts.head())
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h5 id=&quot;convert-from-pandas-df-to-spark-df---put-some-spark-in-your-data&quot;&gt;Convert from Pandas DF to Spark DF - Put some Spark in your data&lt;/h5&gt;
-
-&lt;p&gt;In the last exercise, you saw how to move data from Spark to pandas. However, maybe you want to go the other direction, and put a pandas DataFrame into a Spark cluster! The SparkSession class has a method for this as well.&lt;/p&gt;
-
-&lt;p&gt;The &lt;code&gt;.createDataFrame()&lt;/code&gt; method takes a pandas DataFrame and returns a Spark DataFrame.&lt;/p&gt;
-
-&lt;p&gt;The output of this method is stored locally, not in the SparkSession catalog. This means that you can use all the Spark DataFrame methods on it, but you can’t access the data in other contexts.&lt;/p&gt;
-
-&lt;p&gt;For example, a SQL query (using the .sql() method) that references your DataFrame will throw an error. To access the data in this way, you have to save it as a temporary table.&lt;/p&gt;
-
-&lt;p&gt;You can do this using the &lt;code&gt;.createTempView()&lt;/code&gt; Spark DataFrame method, which takes as its only argument the name of the temporary table you’d like to register. This method registers the DataFrame as a table in the catalog, but as this table is temporary, it can only be accessed from the specific SparkSession used to create the Spark DataFrame.&lt;/p&gt;
-
-&lt;p&gt;There is also the method .createOrReplaceTempView(). This safely creates a new temporary table if nothing was there before, or updates an existing table if one was already defined. You’ll use this method to avoid running into problems with duplicate tables.&lt;/p&gt;
-
-&lt;p&gt;Giải thích thêm: Trong 1 SparkSession có nhiều SparkContext như sql(),… Trong SparkSession nó có method giúp chuyển đổi từ Pandas DF thành Spark DF.
-Spark Dataframe tạo ra từ .createDataFrame() cho kết quả về được lưu locally nhưng không được lưu vào SparkSession catalog. Khi đó ta không thể truy cập từ các context khác nhau trong cùng SparkSession như không thể query .sql(). 
-Do vậy sau khi dùng method trên, ta dùng .createTempView() là method dành cho Spark DF để đăng ký Spark DF này thành 1 temporary table trong catalog và có thể sử dụng chung cho các context khác nhau. Tuy nhiên, vì là temporary nên Spark DF này không dùng chung được cho các SparkSession khác nhau mà chỉ dùng cho Session mà tạo ra nó. Ngoài ra, .createOrReplaceTempView() tương tự method tạo temp table nhưng nó giúp tránh duplicate table nếu như nó đã có tạo rồi thì update.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt; # Create pd_temp
-pd_temp = pd.DataFrame(np.random.random(10))
-
-# Create spark_temp from pd_temp
-spark_temp = spark.createDataFrame(pd_temp)
-
-# Examine the tables in the catalog
-spark.catalog.listTables()
-
-# Add spark_temp to the catalog
-spark_temp.createOrReplaceTempView(&quot;temp&quot;)
-
-# Examine the tables in the catalog again
-print(spark.catalog.listTables())
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Xem cách các Spark data structure tương tác với nhau bằng nhiều cách trong biểu đồ dưới đây:
-&lt;img src=&quot;/assets/images/spark-structure.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h5 id=&quot;convert-thành-spark-df-trực-tiếp-từ-file-csv-mà-không-cần-thông-qua-pandas-df&quot;&gt;Convert thành Spark DF trực tiếp từ file .csv mà không cần thông qua pandas DF:&lt;/h5&gt;
-&lt;p&gt;Now you know how to put data into Spark via pandas, but you’re probably wondering why deal with pandas at all? Wouldn’t it be easier to just read a text file straight into Spark? Of course it would!&lt;/p&gt;
-
-&lt;p&gt;Luckily, your SparkSession has a .read attribute which has several methods for reading different data sources into Spark DataFrames. Using these you can create a DataFrame from a .csv file just like with regular pandas DataFrames!&lt;/p&gt;
-
-&lt;p&gt;The variable file_path is a string with the path to the file airports.csv. This file contains information about different airports all over the world.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# Don't change this file path
-file_path = &quot;/usr/local/share/datasets/airports.csv&quot;
-
-# Read in the airports data
-airports = spark.read.csv(file_path, header=True)
-
-# Show the data
-airport.head()
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h5 id=&quot;creating-columns&quot;&gt;Creating columns&lt;/h5&gt;
-
-&lt;p&gt;In this chapter, you’ll learn how to use the methods defined by Spark’s DataFrame class to perform common data operations.&lt;/p&gt;
-
-&lt;p&gt;Let’s look at performing column-wise operations. In Spark you can do this using the &lt;code&gt;.withColumn()&lt;/code&gt; method, which takes two arguments. First, a string with the name of your new column, and second the new column itself.&lt;/p&gt;
-
-&lt;p&gt;The new column must be an object of class Column. Creating one of these is as easy as extracting a column from your DataFrame using &lt;code&gt;df.colName&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;Updating a Spark DataFrame is somewhat different than working in pandas because the Spark DataFrame is immutable. This means that it can’t be changed, and so columns can’t be updated in place.&lt;/p&gt;
-
-&lt;p&gt;Thus, all these methods return a new DataFrame. To overwrite the original DataFrame you must reassign the returned DataFrame using the method like so:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;df = df.withColumn(&quot;newCol&quot;, df.oldCol + 1)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The above code creates a DataFrame with the same columns as df plus a new column, newCol, where every entry is equal to the corresponding entry from oldCol, plus one.&lt;/p&gt;
-
-&lt;p&gt;To overwrite an existing column, just pass the name of the column as the first argument!&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# Create the DataFrame flights
-flights = spark.table(&quot;flights&quot;)
-
-# Show the head
-flights.show()
-
-# Add duration_hrs
-flights = flights.withColumn(&quot;duration_hrs&quot;, flights.air_time/60)
-
-flights.show()
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code&gt;Use the spark.table() method with the argument &quot;flights&quot; to create a DataFrame containing the values of the flights table in the .catalog. Save it as flights.
-Show the head of flights using flights.show(). Check the output: the column air_time contains the duration of the flight in minutes.
-Update flights to include a new column called duration_hrs, that contains the duration of each flight in hours (you'll need to divide duration_hrs by the number of minutes in an hour).
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h5 id=&quot;filtering-data&quot;&gt;Filtering Data&lt;/h5&gt;
-
-&lt;p&gt;Now that you have a bit of SQL know-how under your belt, it’s easier to talk about the analogous operations using Spark DataFrames.&lt;/p&gt;
-
-&lt;p&gt;Let’s take a look at the .filter() method. As you might suspect, this is the Spark counterpart of SQL’s WHERE clause. The .filter() method takes either an expression that would follow the WHERE clause of a SQL expression as a string, or a Spark Column of boolean (True/False) values.&lt;/p&gt;
-
-&lt;p&gt;For example, the following two expressions will produce the same output:&lt;/p&gt;
-
-&lt;p&gt;flights.filter(“air_time &amp;gt; 120”).show()
-flights.filter(flights.air_time &amp;gt; 120).show()&lt;/p&gt;
-
-&lt;p&gt;Notice that in the first case, we pass a string to .filter(). In SQL, we would write this filtering task as SELECT * FROM flights WHERE air_time &amp;gt; 120. Spark’s .filter() can accept any expression that could go in the WHEREclause of a SQL query (in this case, “air_time &amp;gt; 120”), as long as it is passed as a string. Notice that in this case, we do not reference the name of the table in the string – as we wouldn’t in the SQL request.&lt;/p&gt;
-
-&lt;p&gt;In the second case, we actually pass a column of boolean values to .filter(). Remember that flights.air_time &amp;gt; 120 returns a column of boolean values that has True in place of those records in flights.air_time that are over 120, and False otherwise.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# Filter flights by passing a string
-long_flights1 = flights.filter(&quot;distance &amp;gt; 1000&quot;)
-
-# Filter flights by passing a column of boolean values
-long_flights2 = flights.filter(flights.distance &amp;gt; 1000)
-
-# Print the data to check they're equal
-long_flights1.show()
-long_flights2.show()
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;=&amp;gt; Kết quả như nhau&lt;/p&gt;
-
-&lt;h5 id=&quot;selecting&quot;&gt;Selecting&lt;/h5&gt;
-
-&lt;p&gt;The Spark variant of SQL’s SELECT is the .select() method. This method takes multiple arguments - one for each column you want to select. These arguments can either be the column name as a string (one for each column) or a column object (using the df.colName syntax). When you pass a column object, you can perform operations like addition or subtraction on the column to change the data contained in it, much like inside .withColumn().&lt;/p&gt;
-
-&lt;p&gt;The difference between .select() and .withColumn() methods is that .select() returns only the columns you specify, while .withColumn() returns all the columns of the DataFrame in addition to the one you defined. It’s often a good idea to drop columns you don’t need at the beginning of an operation so that you’re not dragging around extra data as you’re wrangling. In this case, you would use .select() and not .withColumn().&lt;/p&gt;
-
-&lt;p&gt;Remember, a SparkSession called spark is already in your workspace, along with the Spark DataFrame flights.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# Select the first set of columns
-selected1 = flights.select(&quot;tailnum&quot;, &quot;origin&quot;,&quot;dest&quot;)
-
-# Select the second set of columns
-temp = flights.select(flights.origin, flights.dest, flights.carrier)
-
-# Define first filter
-filterA = flights.origin == &quot;SEA&quot;
-
-# Define second filter
-filterB = flights.dest == &quot;PDX&quot;
-
-# Filter the data, first by filterA then by filterB
-selected2 = temp.filter(filterA).filter(filterB)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Select the columns “tailnum”, “origin”, and “dest” from flights by passing the column names as strings. Save this as selected1.&lt;/p&gt;
-
-&lt;p&gt;Select the columns “origin”, “dest”, and “carrier” using the df.colName syntax and then filter the result using both of the filters already defined for you (filterA and filterB) to only keep flights from SEA to PDX. Save this as selected2.&lt;/p&gt;
-
-&lt;h5 id=&quot;selecting-ii&quot;&gt;Selecting II&lt;/h5&gt;
-
-&lt;p&gt;Similar to SQL, you can also use the .select() method to perform column-wise operations. When you’re selecting a column using the df.colName notation, you can perform any column operation and the .select() method will return the transformed column. For example,&lt;/p&gt;
-
-&lt;p&gt;flights.select(flights.air_time/60)&lt;/p&gt;
-
-&lt;p&gt;returns a column of flight durations in hours instead of minutes. You can also use the .alias() method to rename a column you’re selecting. So if you wanted to .select() the column duration_hrs (which isn’t in your DataFrame) you could do&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;flights.select((flights.air_time/60).alias(&quot;duration_hrs&quot;))&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;The equivalent Spark DataFrame method .selectExpr() takes SQL expressions as a string:&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;flights.selectExpr(&quot;air_time/60 as duration_hrs&quot;)&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;with the SQL as keyword being equivalent to the .alias() method. To select multiple columns, you can pass multiple strings.&lt;/p&gt;
-
-&lt;p&gt;Remember, a SparkSession called spark is already in your workspace, along with the Spark DataFrame flights.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# Define avg_speed
-avg_speed = (flights.distance/(flights.air_time/60)).alias(&quot;avg_speed&quot;)
-
-# Select the correct columns
-speed1 = flights.select(&quot;origin&quot;, &quot;dest&quot;, &quot;tailnum&quot;, avg_speed)
-
-# Create the same table using a SQL expression
-speed2 = flights.selectExpr(&quot;origin&quot;, &quot;dest&quot;, &quot;tailnum&quot;, &quot;distance/(air_time/60) as avg_speed&quot;)
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h5 id=&quot;aggregating&quot;&gt;Aggregating&lt;/h5&gt;
-
-&lt;p&gt;All of the common aggregation methods, like .min(), .max(), and .count() are GroupedData methods. These are created by calling the .groupBy() DataFrame method. You’ll learn exactly what that means in a few exercises. For now, all you have to do to use these functions is call that method on your DataFrame. For example, to find the minimum value of a column, col, in a DataFrame, df, you could do&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;df.groupBy().min(&quot;col&quot;).show()&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;This creates a GroupedData object (so you can use the .min() method), then finds the minimum value in col, and returns it as a DataFrame.&lt;/p&gt;
-
-&lt;p&gt;Now you’re ready to do some aggregating of your own!&lt;/p&gt;
-
-&lt;p&gt;A SparkSession called spark is already in your workspace, along with the Spark DataFrame flights.&lt;/p&gt;
-
-&lt;p&gt;Ex:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;flights.show()
-
-# Find the shortest flight from PDX in terms of distance
-flights.filter(flights.origin == &quot;PDX&quot;).groupBy().min(&quot;distance&quot;).show()
-
-# Find the longest flight from SEA in terms of air time
-flights.filter(flights.origin == &quot;SEA&quot;).groupBy().max(&quot;air_time&quot;).show()
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h5 id=&quot;grouping-and-aggregating-i&quot;&gt;Grouping and Aggregating I&lt;/h5&gt;
-
-&lt;p&gt;Part of what makes aggregating so powerful is the addition of groups. PySpark has a whole class devoted to grouped data frames: pyspark.sql.GroupedData, which you saw in the last two exercises.&lt;/p&gt;
-
-&lt;p&gt;You’ve learned how to create a grouped DataFrame by calling the .groupBy() method on a DataFrame with no arguments.&lt;/p&gt;
-
-&lt;p&gt;Now you’ll see that when you pass the name of one or more columns in your DataFrame to the .groupBy() method, the aggregation methods behave like when you use a GROUP BY statement in a SQL query!&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# Group by tailnum
-by_plane = flights.groupBy(&quot;tailnum&quot;)
-
-# Number of flights each plane made
-by_plane.count().show()
-
-# Group by origin
-by_origin = flights.groupBy(&quot;origin&quot;)
-
-# Average duration of flights from PDX and SEA
-by_origin.avg(&quot;air_time&quot;).show()
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code&gt;Create a DataFrame called by_plane that is grouped by the column tailnum.
-Use the .count() method with no arguments to count the number of flights each plane made.
-Create a DataFrame called by_origin that is grouped by the column origin.
-Find the .avg() of the air_time column to find average duration of flights from PDX and SEA.
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h5 id=&quot;grouping-and-aggregating-ii&quot;&gt;Grouping and Aggregating II&lt;/h5&gt;
-
-&lt;p&gt;In addition to the GroupedData methods you’ve already seen, there is also the .agg() method. This method lets you pass an aggregate column expression that uses any of the aggregate functions from the pyspark.sql.functions submodule.&lt;/p&gt;
-
-&lt;p&gt;This submodule contains many useful functions for computing things like standard deviations. All the aggregation functions in this submodule take the name of a column in a GroupedData table.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# Import pyspark.sql.functions as F
-import pyspark.sql.functions as F
-
-# Group by month and dest
-by_month_dest = flights.groupBy(&quot;month&quot;, &quot;dest&quot;)
-
-# Average departure delay by month and destination
-by_month_dest.avg(&quot;dep_delay&quot;).show()
-
-# Standard deviation of departure delay
-by_month_dest.agg(F.stddev(&quot;dep_delay&quot;)).show()
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code&gt;Import the submodule pyspark.sql.functions as F.
-Create a GroupedData table called by_month_dest that's grouped by both the month and dest columns. Refer to the two columns by passing both strings as separate arguments.
-Use the .avg() method on the by_month_dest DataFrame to get the average dep_delay in each month for each destination.
-Find the standard deviation of dep_delay by using the .agg() method with the function F.stddev().
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h5 id=&quot;joining&quot;&gt;Joining&lt;/h5&gt;
-
-&lt;p&gt;In PySpark, joins are performed using the DataFrame method .join(). This method takes three arguments. The first is the second DataFrame that you want to join with the first one. The second argument, on, is the name of the key column(s) as a string. The names of the key column(s) must be the same in each table. The third argument, how, specifies the kind of join to perform. In this course we’ll always use the value how=”leftouter”.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# Examine the data
-print(airports.show())
-print(flights.show())
-
-# Rename the faa column
-airports = airports.withColumnRenamed(&quot;faa&quot;, &quot;dest&quot;)
-
-# Join the DataFrames
-flights_with_airports = flights.join(airports,&quot;dest&quot;,how=&quot;leftouter&quot;)
-
-# Examine the new DataFrame
-print(flights_with_airports.show())
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Examine the airports DataFrame by calling .show(). Note which key column will let you join airports to the flights table.
-    Rename the faa column in airports to dest by re-assigning the result of airports.withColumnRenamed(“faa”, “dest”) to airports.
-    Join the flights with the airports DataFrame on the dest column by calling the .join() method on flights. Save the result as flights_with_airports.
-        The first argument should be the other DataFrame, airports.
-        The argument on should be the key column.
-        The argument how should be “leftouter”.
-    Call .show() on flights_with_airports to examine the data again. Note the new information that has been added.&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;h3 id=&quot;machine-learning-pipeline&quot;&gt;Machine Learning Pipeline&lt;/h3&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;Learn more at: http://spark.apache.org/docs/2.1.0/api/python/pyspark.html&lt;/p&gt;
-
-</description>
-        <pubDate>Sun, 27 Jun 2021 00:00:00 +0700</pubDate>
-        <link>https://tuyen-nnt.github.io/spark/</link>
-        <guid isPermaLink="true">https://tuyen-nnt.github.io/spark/</guid>
-        
-        
-        <category>Data</category>
-        
-      </item>
-    
-      <item>
-        <title>Data Visualization</title>
-        <description>&lt;h4 id=&quot;1-các-loại-chart-cơ-bản&quot;&gt;1. Các loại chart cơ bản&lt;/h4&gt;
-
-&lt;p&gt;BAR CHART &amp;amp; COLUMN CHART&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Giúp ta nhìn vào giá trị cụ thể cho mỗi loại&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Có 4 loại:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Stacked bar và column chart
-    &lt;blockquote&gt;
-      &lt;p&gt;Biểu đồ chồng nhau theo giá trị,&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Clustered bar và column chart
-    &lt;blockquote&gt;
-      &lt;p&gt;Biểu đồ nhiều cột trong 1 phân loại&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;100% stacked bar và column chart
-    &lt;blockquote&gt;
-      &lt;p&gt;Biểu đồ chồng theo %&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Combo chart
-    &lt;blockquote&gt;
-      &lt;p&gt;Biểu đồ kết hợp cột và biểu đồ đường&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;LINE CHART&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;Giúp biểu diễn chuỗi giá trị theo dạng có hình, thường là thông qua diễn tiến thay đổi của thời gian&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;AREA CHART&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;Dựa trên Line chart nhưng được fill màu&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;PIE CHART &amp;amp; DONUT CHART&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;Biểu diễn mỗi quan hệ giữa các thành phần và tổng thể&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;TREE MAP&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;Biểu diễn mỗi quan hệ giữa các thành phần và tổng thể, với các hình vuông có màu có kích cỡ riêng biểu thị phần mà các giá trị chiếm.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;CARD &amp;amp; MULTI-ROW CARD&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Card
-    &lt;blockquote&gt;
-      &lt;p&gt;biểu diễn 1 giá trị&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;*Multi-row card&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;dùng để biểu diễn nhiều giá trị&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;GAUGE CHART &amp;amp; KPI&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;được thiết kế để hiển thị dữ liệu thực tế so sánh với dữ liệu ngân sách/doanh thu hoặc mục tiêu đã lên kế hoạch.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;TABLE &amp;amp; MATRIX&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;biểu diễn chi tiết dữ liệu văn bản bằng định dạng Bảng&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Table:
-    &lt;blockquote&gt;
-      &lt;p&gt;chứa dữ liệu liên quan trong chuỗi logical của dòng và cột, có thể bao gồm header &amp;amp; footer của bảng&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Matrix:
-    &lt;blockquote&gt;
-      &lt;p&gt;giống như bảng nhưng matrix có thể thu lại hoặc mở rộng ra bằng dòng hoặc cột&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;HIERARCHIES:&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;Level data từ cao đến thấp&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Ví dụ:
-Year =&amp;gt; Quarter =&amp;gt; Month =&amp;gt; Day
-Company =&amp;gt; Region =&amp;gt; Country =&amp;gt; DIvision =&amp;gt; Unit&lt;/p&gt;
-
-&lt;p&gt;HÀM:&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;Là các công thức được định nghĩa trước sẵn để biểu diễn các phép tính trên các giá trị gọi là tham trị &lt;code&gt;arguments&lt;/code&gt;.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;2-kiến-thức-nền-tảng-để-visualize-data&quot;&gt;2. Kiến thức nền tảng để visualize data&lt;/h4&gt;
-
-&lt;p&gt;Có 3 cách để lấy được insight của data:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Cách 1: Tính toán thống kê
-mean (trung bình), median(trung vị), standard deviation (phương sai)&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Cách 2: Run model/Chạy mô hình
-Linear (Tuyến tính) hoặc hồi quy logistic&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Cách 3: Vẽ plot
-scatter, bar, histogram (biểu đồ tần suất),…
-Scatter plot:
-&lt;img src=&quot;/assets/images/plot.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;the-datasaurus-dozen&quot;&gt;The Datasaurus Dozen&lt;/h5&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/datasaurus-dozen.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Có 13 datasets, mỗi Dataset có 2 trục x và y được gọi là variable&lt;/li&gt;
-  &lt;li&gt;Variable đơn giản chỉ là biệt ngữ thống kê để chỉ cột dữ liệu&lt;/li&gt;
-  &lt;li&gt;Khi tính phương sai của mỗi dataset, ta sẽ tính ra 2 phương sai cho x và y trên tất cả các record. Vì dataset trên có 2 giá trị x và y.&lt;/li&gt;
-  &lt;li&gt;Phương sai dùng để tính toán sự biến thiên của dữ liệu.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;chọn-biểu-đồ-chấm-plot-loại-gì-thì-phù-hợp&quot;&gt;Chọn biểu đồ chấm plot loại gì thì phù hợp?&lt;/h5&gt;
-
-&lt;p&gt;Trước tiên phải xác định variable x và y của data thuộc loại nào. Có 3 loại:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Continuous : thường là số và có thể làm các phép toán cho nó.
-Ví dụ như nhiệt độ, chiều cao, doanh thu,…&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Categorical : thường là dạng văn bản text, những thứ được phân loại hay mô tả.
-Ví dụ như màu mắt, quốc gia,…&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Cả hai loại trên
-Ví dụ như tuổi thì dạng continuous, còn nhóm tuổi từ 25-30 thì lại là categorical.
-Thời gian thì continuous còn tháng thì categorical.&lt;/p&gt;
-    &lt;blockquote&gt;
-      &lt;p&gt;Ở đây tùy vào mục đích visualization mà bạn sẽ quyết định nó thuộc loại nào cho phù hợp.&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;khi-nào-nên-dùng-biểu-đồ-tần-suất-histogram&quot;&gt;Khi nào nên dùng biểu đồ tần suất Histogram?&lt;/h5&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Nếu bạn có biến continuous như trên&lt;/li&gt;
-  &lt;li&gt;Khi bạn muốn biết hình dạng của sự phân tán data, ví dụ như bạn muốn biểu đồ thể hiện rõ giá trị cao nhất và thấp nhất.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Một số thuật ngữ:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Bin (interval) : khoảng cách các ô trục trên biểu đồ, ví dụ 0-5, 5-10,… Nếu muốn rõ data hơn thì ta co bin lại 0-1, 1-2,…
-Như hình, bin 10-15 tuổi có giá trị trục y là 4, nghĩa là có 4 người từ 10-15 tuổi.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/histogram.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Sự lựa chọn binwidth sẽ ảnh hưởng lớn đến hình ảnh biểu đồ. Dưới đây cho thấy nếu thu nhỏ bin lại còn 1 năm tuổi thì nhìn rất lộn xộn.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/binwidth1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Các tiêu chí trải nghiệm qua để chọn binwidth phù hợp:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Modality : có bao nhiêu đỉnh trong biểu đồ?
-Unimodal, bimodal hay trimodal?
-&lt;img src=&quot;/assets/images/modality.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Skewness: lệch lạc hay cân xứng?
-lệch trái, phải hay cân đối ở giữa?
-&lt;img src=&quot;/assets/images/skewness.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Kurtosis: có bao nhiêu điểm có giá trị = 0? (extreme value) 
-&lt;img src=&quot;/assets/images/kurtosis.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;khi-nào-nên-vẽ-box-plots&quot;&gt;Khi nào nên vẽ Box Plots?&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;Khi chúng ta có 1 variable là continuous, được tách ra phân loại bởi 1 variable categorical.&lt;/li&gt;
-  &lt;li&gt;Khi chúng ta muốn so sánh sự phân tán dữ liệu của variable continuous cho mỗi category (phân loại).&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/box-plot.png&quot; alt=&quot;&quot; /&gt;
-Các chỉ số trên box plots:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;lower quartile: 1/4 có giá trị dưới số này&lt;/li&gt;
-  &lt;li&gt;median : trung vị&lt;/li&gt;
-  &lt;li&gt;upper quartile: 1/4 có giá trị trên số này&lt;/li&gt;
-  &lt;li&gt;inter-quartile range: khoảng cách từ lower đến upper&lt;/li&gt;
-  &lt;li&gt;whiskers: đường thẳng ngang hai bên, đường kẻ ra gấp 1-1,5 lần inter-quarter, dài đến mức độ đủ để biết rằng ngoài đường kẻ thì không có giá trị nào cả (extreme value).&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/box-plot-2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Phân loại nào chỉ có đường thẳng nghĩa là chỉ có 1 giá trị.&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Wed, 23 Jun 2021 00:00:00 +0700</pubDate>
-        <link>https://tuyen-nnt.github.io/data-visualization/</link>
-        <guid isPermaLink="true">https://tuyen-nnt.github.io/data-visualization/</guid>
-        
-        
-        <category>Data</category>
-        
-      </item>
-    
-      <item>
-        <title>Set-up phpMyAdmin</title>
-        <description>&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Initial setup with Ubuntu 20.4: 
-https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-20-04&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Install Mysql on Ubuntu 20.4:
-https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Install LAMP (Linux, Apache, MySQL, PHP)
-https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu-20-04&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Install and Secure phpMyAdmin:
-https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-phpmyadmin-on-ubuntu-20-04&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Secure Apache with Let’s Encrypt on Ubuntu 20.04 (free TLS/SSL certificate)
-https://www.digitalocean.com/community/tutorials/how-to-secure-apache-with-let-s-encrypt-on-ubuntu-20-04&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;DOCKER COMPOSE &amp;amp; NETWORK
-https://vsudo.net/blog/docker-toan-tap.html&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3&gt; CÓ 2 CÁCH ĐỂ SỬ DỤNG phpMyAdmin:
-C1: cài đặt thủ công và sử dụng trên localhost hoặc domain trên server mình host (xem link trên)
-https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-phpmyadmin-on-ubuntu-20-04 =&amp;gt; đã thử và ok
-
-C2:dùng Docker network chứa 2 container là MySQL và phpMyAdmin để truy cập MySQL server trên phpMyAdmin host
-https://vsudo.net/blog/docker-toan-tap.html =&amp;gt; đã thử và ok
-
-&lt;h3&gt; Cách để đưa db của mình chạy trên container có sẵn của phpMyAdmin
-B1: tạo image chạy trên base php cho file .php chứa truy vấn bảng của db (như 1 ứng dụng) và phải cài đặt biến môi trường trong này cho giống với config của container.
-B2: compose với container của phpMyAdmin có sẵn (có thể chọn các image phù hợp nhu cầu) và bổ sung image ở trên vào file docker-compose.yml 
-
-
---------------------------------------------------
-
-
-WORKDIR /var/www/tuyen.tech
-
-COPY /etc/apache2/sites-available/tuyen.tech.conf /etc/apache2/sites-available/
-COPY /etc/apache2/conf-available/phpmyadmin.conf /etc/apache2/conf-available/
-COPY /usr/share/phpmyadmin/.htaccess /usr/share/phpmyadmin/
-
-COPY . /var/www/tuyen.tech/
-
-RUN sudo apt update &amp;amp;&amp;amp; apt install -y \
-&amp;amp;&amp;amp; apache2 \
-&amp;amp;&amp;amp; php libapache2-mod-php php-mysql \
-&amp;amp;&amp;amp; mysql-server \
-&amp;amp;&amp;amp; phpmyadmin php-mbstring php-zip php-gd php-json php-curl \
-&amp;amp;&amp;amp; phpmyadmin 
-
-RUN sudo mysql_secure_installation \
-&amp;amp;&amp;amp; sudo mysql \
-&amp;amp;&amp;amp; sudo phpenmod mbstring \
-&amp;amp;&amp;amp; sudo htpasswd -c /etc/phpmyadmin/.htpasswd tuyen \
-&amp;amp;&amp;amp; sudo systemctl restart apache2 
-
-EXPOSE 9090
-
-
---------------------------
-FROM ubuntu:latest
-
-MAINTAINER tuyennnt &amp;lt;tuyendev96@gmail.com&amp;gt;
-WORKDIR /var/www/tuyen.tech
-
-COPY /etc/apache2/sites-available/tuyen.tech.conf /etc/apache2/sites-available/
-COPY /etc/apache2/conf-available/phpmyadmin.conf /etc/apache2/conf-available/
-COPY /usr/share/phpmyadmin/.htaccess /usr/share/phpmyadmin/
-
-COPY . /var/www/tuyen.tech/
-
-RUN sudo apt update &amp;amp;&amp;amp; apt install -y \
-&amp;amp;&amp;amp; apache2 \
-&amp;amp;&amp;amp; php libapache2-mod-php php-mysql \
-&amp;amp;&amp;amp; mysql-server \
-&amp;amp;&amp;amp; phpmyadmin php-mbstring php-zip php-gd php-json php-curl \
-&amp;amp;&amp;amp; phpmyadmin 
-
-RUN sudo mysql_secure_installation \
-&amp;amp;&amp;amp; sudo mysql \
-&amp;amp;&amp;amp; sudo phpenmod mbstring \
-&amp;amp;&amp;amp; sudo htpasswd -c /etc/phpmyadmin/.htpasswd tuyen \
-&amp;amp;&amp;amp; sudo systemctl restart apache2 
-
-EXPOSE 9090
-
-&lt;/h3&gt;&lt;/h3&gt;
-</description>
-        <pubDate>Tue, 15 Jun 2021 00:00:00 +0700</pubDate>
-        <link>https://tuyen-nnt.github.io/phpmyadmin/</link>
-        <guid isPermaLink="true">https://tuyen-nnt.github.io/phpmyadmin/</guid>
-        
-        
-        <category>Data</category>
-        
-        <category>Docker</category>
         
       </item>
     

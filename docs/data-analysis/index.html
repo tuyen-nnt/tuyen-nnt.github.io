@@ -451,6 +451,103 @@ print(p)
   <p>Dưới 300000$ thì income hầu như không thay đổi trước và sau 1995. Đường màu cam lệch sang phải ở mốc income 100000-150000$ nghĩa là income sau 1995 của những người có thu nhập cao có xu hướng tăng lên.</p>
 </blockquote>
 
+<h3 id="changelog">Changelog</h3>
+<p>Changelogs take you down the last mile</p>
+
+<p>A changelog can build on your automated version history by giving you an even more detailed record of your work. This is where data analysts record all the changes they make to the data. Here is another way of looking at it. Version histories record what was done in a data change for a project, but don’t tell us why. Changelogs are super useful for helping us understand the reasons changes have been made. Changelogs have no set format and you can even make your entries in a blank document. But if you are using a shared changelog, it is best to agree with other data analysts on the format of all your log entries.</p>
+
+<p>Typically, a changelog records this type of information:</p>
+
+<pre><code>Data, file, formula, query, or any other component that changed
+
+Description of what changed
+
+Date of the change
+
+Person who made the change
+
+Person who approved the change 
+
+Version number 
+
+Reason for the change
+</code></pre>
+
+<p>Let’s say you made a change to a formula in a spreadsheet because you observed it in another report and you wanted your data to match and be consistent. If you found out later that the report was actually using the wrong formula, an automated version history would help you undo the change. But if you also recorded the reason for the change in a changelog, you could go back to the creators of the report and let them know about the incorrect formula. If the change happened a while ago, you might not remember who to follow up with. Fortunately, your changelog would have that information ready for you! By following up, you would ensure data integrity outside your project. You would also be showing personal integrity as someone who can be trusted with data. That is the power of a changelog!</p>
+
+<p>Finally, a changelog is important for when lots of changes to a spreadsheet or query have been made. Imagine an analyst made four changes and the change they want to revert to is change #2. Instead of clicking the undo feature three times to undo change #2 (and losing changes #3 and #4), the analyst can undo just change #2 and keep all the other changes. Now, our example was for just 4 changes, but try to think about how important that changelog would be if there were hundreds of changes to keep track of.</p>
+
+<h3 id="version-control-system">Version control system</h3>
+<p>What also happens IRL (in real life)
+Image of a woman writing something down. There are two speech bubbles floating near her</p>
+
+<p>A junior analyst probably only needs to know the above with one exception. If an analyst is making changes to an existing SQL query that is shared across the company, the company most likely uses what is called a version control system. An example might be a query that pulls daily revenue to build a dashboard for senior management.</p>
+
+<p>Here is how a version control system affects a change to a query:</p>
+
+<pre><code>A company has official versions of important queries in their version control system.
+
+An analyst makes sure the most up-to-date version of the query is the one they will change. This is called syncing 
+
+The analyst makes a change to the query.
+
+The analyst might ask someone to review this change. This is called a code review and can be informally or formally done. An informal review could be as simple as asking a senior analyst to take a look at the change.
+
+After a reviewer approves the change, the analyst submits the updated version of the query to a repository in the company's version control system. This is called a code commit. A best practice is to document exactly what the change was and why it was made in a comments area. Going back to our example of a query that pulls daily revenue, a comment might be: Updated revenue to include revenue coming from the new product, Calypso.
+</code></pre>
+
+<h2 id="data-cleaning">Data cleaning</h2>
+
+<p>Data-cleaning verification: A checklist</p>
+
+<p>This reading will give you a checklist of common problems you can refer to when doing your data cleaning verification, no matter what tool you are using. When it comes to data cleaning verification, there is no one-size-fits-all approach or a single checklist that can be universally applied to all projects. Each project has its own organization and data requirements that lead to a unique list of things to run through for verification. 
+Image of a clipboard, pencil and post-it notes</p>
+
+<p>Keep in mind, as you receive more data or a better understanding of the project goal(s), you might want to revisit some or all of these steps. 
+Correct the most common problems</p>
+
+<p>Make sure you identified the most common problems and corrected them, including:</p>
+
+<pre><code>Sources of errors: Did you use the right tools and functions to find the source of the errors in your dataset?
+
+Null data: Did you search for NULLs using conditional formatting and filters?
+
+Misspelled words: Did you locate all misspellings?
+
+Mistyped numbers: Did you double-check that your numeric data has been entered correctly?
+
+Extra spaces and characters: Did you remove any extra spaces or characters using the TRIM function?
+
+Duplicates: Did you remove duplicates in spreadsheets using the Remove Duplicates function or DISTINCT in SQL?
+
+Mismatched data types: Did you check that numeric, date, and string data are typecast correctly?
+
+Messy (inconsistent) strings: Did you make sure that all of your strings are consistent and meaningful?
+
+Messy (inconsistent) date formats: Did you format the dates consistently throughout your dataset?
+
+Misleading variable labels (columns): Did you name your columns meaningfully?
+
+Truncated data: Did you check for truncated or missing data that needs correction?
+
+Business Logic: Did you check that the data makes sense given your knowledge of the business? 
+</code></pre>
+
+<p>Review the goal of your project</p>
+
+<p>Once you have finished these data cleaning tasks, it is a good idea to review the goal of your project and confirm that your data is still aligned with that goal. This is a continuous process that you will do throughout your project– but here are three steps you can keep in mind while thinking about this:</p>
+
+<pre><code>Confirm the business problem 
+
+Confirm the goal of the project
+
+Verify that data can solve the problem and is aligned to the goal 
+After the change is submitted, everyone else in the company will be able to access and use this new query when they sync to the most up-to-date queries stored in the version control system.
+
+If the query has a problem or business needs change, the analyst can undo the change to the query using the version control system. The analyst can look at a chronological list of all changes made to the query and who made each change. Then, after finding their own change, the analyst can revert to the previous version.
+
+The query is back to what it was before the analyst made the change. And everyone at the company sees this reverted, original query, too.
+</code></pre>
 
 </div>
 

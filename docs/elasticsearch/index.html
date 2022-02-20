@@ -208,6 +208,78 @@ Cre: https://stackoverflow.com/questions/28768277/elasticsearch-difference-betwe
 
 <p>=&gt; Vì must và should nằm trong bool nên nếu chỉ có should mà không có must hay must_not thì truy vấn trong should (nếu chỉ có 1 filter) bắt buộc xuất hiện trong kết quả.</p>
 
+<hr />
+<p>Cách hoạt động của query clause phụ thuộc vào nó là Query context hay Filter context.</p>
+
+<ul>
+  <li><code>Query context?</code>
+Trả lời câu hỏi ““document này phù hợp với mệnh đề truy vấn nhiều như thế nào?”</li>
+</ul>
+
+<p>Query context sẽ có _score để đo mức độ phù hợp với truy vấn của document, tối đa là 1.0.</p>
+<blockquote>
+  <p>_score được tính bởi thuật toán đặc biệt chúng ta sẽ chưa tìm hiểu ở đây.</p>
+</blockquote>
+
+<p>Query context là khi mệnh đề truy vấn được truyền vào tham số “query” trong search API.</p>
+
+<ul>
+  <li><code>Filter context?</code>
+Trả lời câu hỏi “document này có phù hợp với mệnh đề truy vấn không?”, CÓ hoặc KHÔNG.</li>
+</ul>
+
+<p>Filter context là khi truyền mệnh đề truy vấn vào tham số “filter” hay “must_not”.</p>
+
+<ul>
+  <li>
+    <p><code>match_all{}</code>:
+Không cần query bên trong. Nó trả về tất cả document, tất cả đều có _score là 1.0</p>
+  </li>
+  <li>
+    <p><code>match{"&lt;field_name&gt;" : {"query" : "&lt;giá trị&gt;"}}</code>: trả về các document thỏa giá trị mà ta cung cấp.
+Đối với giá trị text, text sẽ được analyze khi tìm kiếm, kết quả sau analyze sẽ được xây dựng thành 1 boolean query. Ta có thể cấu hình thêm tham số <code>operand</code> (mặc định là or).</p>
+  </li>
+</ul>
+
+<p>Ngoài ra còn rất nhiều các tham số khác sử dụng trong các trường hợp phức tạp, bạn có thể đọc thêm ở https://www.elastic.co/guide/en/elasticsearch/reference/7.6/query-dsl-match-query.html</p>
+
+<ul>
+  <li><code>multi-match {"query":&lt;giá trị&gt; , "fields" : ["&lt;field_name1&gt;" , "&lt;field_name2&gt;"]}</code>
+Trả về các document mà các field thỏa giá trị query. Ở đây có thể dùng wildcards trong trường field để chỉ nhiều field.</li>
+</ul>
+
+<p>Ví dụ: <code>*_name</code> thì các field được tìm kiếm sẽ là first_name, last_name,…</p>
+
+<ul>
+  <li>
+    <p><code>must</code>
+Mệnh đề trong must phải có trong kết quả, các mệnh đề con có mối quan hệ AND.</p>
+  </li>
+  <li>
+    <p><code>must-not</code>
+Mệnh đề trong must không được có trong kết quả, các query bên trong có mối quan hệ NOT và AND.</p>
+  </li>
+  <li>
+    <p><code>should</code>
+Kết quả trả về phải thỏa 1 trong các query của should, các query bên trong có mối quan hệ OR với nhau.</p>
+  </li>
+  <li>
+    <p><code>bool</code>: là 1 compound query clause.
+Boolean query được dùng để kết hợp nhiều mệnh đề query khác nhau gồm must, must-not, should, filter.</p>
+  </li>
+  <li>
+    <p><code>filter</code>: document trả về phải thỏa tất cả query bên trong filter, vì là filter context nên _score được bỏ qua và mệnh đề được xem xét để cache.</p>
+  </li>
+  <li>
+    <p><code>range {"&lt;field_name&gt;" : { "gte" : &lt;giá trị&gt; , "lt" : &lt;giá trị&gt; }}</code>:
+Trả về các document có giá trị nằm trong range đề cập trong range query.</p>
+  </li>
+  <li>
+    <p><code>term {"&lt;field_name&gt;" : {"value" : &lt;giá trị chính xác&gt; }}</code>
+Trả về các document có giá trị chính xác được đề cập trong term query.
+Lưu ý khi dùng term query đối với giá trị text, vì text sẽ được analyze và case sensitive.</p>
+  </li>
+</ul>
 
 </div>
 
