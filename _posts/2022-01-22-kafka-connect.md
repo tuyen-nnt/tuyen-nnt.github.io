@@ -20,7 +20,7 @@ Ok, mục đích sử dụng của WAL có thể hiểu được qua ví dụ sa
 
 * Lúc này nếu sử dụng WAL, thì chương trình có thể xem log để so sánh với những gì đã thực hiện và chưa thực hiện lúc chương trình bị crash và quyết định xem sẽ undo lại operation hay hoàn tất nốt operation hoặc giữ nguyên mọi thứ.
 
-Các hệ quản trị cơ sở dữ liệu khác nhau sẽ có tên gọi cho WAL log khác nhau. Trong MySQL sẽ là ``binlosg``.
+Các hệ quản trị cơ sở dữ liệu khác nhau sẽ có tên gọi cho WAL log khác nhau. Trong MySQL sẽ là ``binlog``.
 
 Ngoài ra 1 transaction được xem là thành công thì các statements của nó phải toàn bộ thành công, ngược lại nếu 1 trong các statement cấu thành 1 transaction thất bại thì là thất bại. Điều này đảm bảo tính ``automicity`` trong ACID để được gọi là 1 database transaction.
 
@@ -117,8 +117,69 @@ OK, vậy việc của chúng ta bây giờ là:
 > Làm thế nào để phân chia input thành các phần có thể thực hiện đồng thời. Làm thế nào để tương tác với các external system.
 
 
+### Debezium
+
+Mysql có binlog dùng cho việc replication và recovery. File này chứa các thay đổi của database (trước khi ghi vào database) bao gồm cả thay đổi về dữ liệu table và cả schema của table.
+
+Sau đó các thay đổi này mới được ghi vào database rồi sẽ được commit.
+
+**Debezium Mysql connector** là một plugin trong Kafka giúp kết nối Mysql với Kafka.
+
+Connector này sẽ đọc sự thay đổi trong binlog và tạo ra các event INSERT/UPDATE/DELETE để đẩy lên Kafka.
+
+Mysql được cài đặt sẽ xóa data trong binlog sau 1 thời gian ngắn nên Debezium Mysql connector sẽ chụp nhanh snapshot của hiện trạng dữ liệu và đọc nó ngay tại thời điểm được chụp.
+
+#### Cách hoạt động của Debezium
+
+* Schema history topic:
+Binlog sẽ vừa lưu thay đổi về row-level data vừa lưu DDL statement để biết được schema tại 1 thời điểm có thay đổi không và thay đổi ra sao để produce event lên kafka chính xác.
+
+Còn trên database của kafka topic, connector sẽ vừa lưu DDL statements vừa lưu vị trí có DDL statement trong binlog.
+
+Khi có sự cố crash phải restart lại connector, nó sẽ đọc trong binlog tại 1 thời điểm cụ thể x. Connector sẽ rebuild lại schema từ ``database history topic Kafka`` cho đến thời điểm x mà nó được start lại trong binlog.
+
+* Schema change topic:
+Bạn có thể cấu hình để Debezium Mysql connector produce các "schema change event" mô tả sự thay đổi của database. 
+
+Message được connector gửi đến cho Kafka topic name <serverName> được cấu hình trong connector với property ``database.server.name``  (https://debezium.io/documentation/reference/1.8/connectors/mysql.html#mysql-property-database-server-name).
+
+Message này chứa payload và có thể tùy chọn để chứa luôn schema của change event message. Phần payload gồm:
+
+
+ddl
+
+    Provides the SQL CREATE, ALTER, or DROP statement that results in the schema change.
+
+databaseName
+
+    The name of the database to which the DDL statements are applied. The value of databaseName serves as the message key.
+
+pos
+
+    The position in the binlog where the statements appear.
+
+tableChanges
+
+    A structured representation of the entire table schema after the schema change. The tableChanges field contains an array that includes entries for each column of the table. Because the structured representation presents data in JSON or Avro format, consumers can easily read messages without first processing them through a DDL parser.
+
+
+### Thực hành 
+
+* Debezium: https://debezium.io/documentation/reference/1.8/tutorial.html#viewing-create-event
+
+* Streaming from Mysql to Postgres và Elasticsearch
+https://debezium.io/blog/2018/01/17/streaming-to-elasticsearch/
+
+
+
+
 ------------------------------
 Ref: 
+https://debezium.io/documentation/reference/1.8/connectors/mysql.html
+https://docs.confluent.io/kafka-connect-elasticsearch/current/configuration_options.html
+https://docs.confluent.io/kafka-connect-elasticsearch/current/overview.html
+https://baonq5.notion.site/Sample-connector-config-55b33df3898346fc93c94c7a697d44a6
+
 https://en.wikipedia.org/wiki/Write-ahead_logging
 https://viblo.asia/p/010-apache-kafka-connect-concept-gAm5ymNL5db
 https://en.wikipedia.org/wiki/ACID
