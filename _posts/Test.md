@@ -129,3 +129,52 @@ workflows:
 * jobs: phần này cấu hình cho từng bước 
 * workflow: thứ tự các jobs thực hiện từ trên xuống dưới.
 * requires: nếu bước này fail thì hệ thống sẽ từ chối thực hiện bước tiếp theo, đây là tùy chọn.
+
+
+-------------
+##### Các hình thức test theo scale:
+
+Black-box testing: test dựa theo requirement của hệ thống
+White-box testing: test bằng cách nhìn vào source code xem những phần nào mà dev thường mắc sai lầm.
+
+Unit test: test vào các class/functions thường là trong Java, dùng cách này theo hướng chia nhỏ để test strictly.
+
+Integration test: test packages / subsystem, test những phần lớn hơn của function xem các subsystem nó hoạt động tốt ntn.
+
+System test : test toàn bộ hệ thống, đặt mọi thứ lại với nhau và đưa cho chúng các bài test để đảm bảo hoạt động những gì khách hàng mong đợi. 
+
+
+##### Quy trình:
+
+* Test first : test-drive development (TDD)
+* 	Viết test trước khi code
+*  	Viết code để pass bài test
+* Test after
+* 	Kiểm tra code hiện tại có pass bài test không
+*  	TDD cũng có thể là test after (refactoring)
+* Iteration
+* 	Test rồi update code để fix rồi sửa lại test code và lặp lại.
+=> Càng test nhiều thì phần mềm trưởng thành và ít lỗi hơn.
+
+##### Purpose
+
+* Functional testing
+* Performance testing
+* Security testing
+* Usability testing
+* Availibility testing
+
+
+##### Các phần của test
+
+* Setup
+Thiết lập trước khi test. Ví dụ bỏ sẵn hàng vào kho, đăng nhập sẵn.
+
+* Invocation
+Đơn giản chỉ là thực hiện 1 trường hợp testcase duy nhất. Đưa vào 1 vài giá trị và thực hiện kiểm tra.
+* Assessment
+Đánh giá hành vi của phần mềm đang được kiểm tra, có thể ghi lại các hành động đã thực hiện và so sánh với expected result.
+* Teardown
+Dọn dẹp lại những gì đã tạo ra nếu muốn. Ví dụ đóng kết nối database. đóng các tệp đang mở, xóa những cái đã thêm hoặc thêm những cái đã xóa,...
+
+=> JUnit và PyUnit là 2 package tích hợp vào Java và Python để hỗ trọ automation test.
