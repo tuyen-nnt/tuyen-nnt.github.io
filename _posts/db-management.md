@@ -1,4 +1,5 @@
 #### Key database metrics:
+Dưới đây là 1 số chỉ số thường dùng để quản trị database. Còn nhiều chỉ số khác chúng ta không kể hết ở đây.
 
 * Database throughput:
 Là một trong các chỉ số quan trọng nhất.
@@ -33,4 +34,34 @@ Giúp track những câu query mà database server nhận được nhiều nhấ
 => từ đó DBAs sẽ tìm cách optimize câu query.
 
 * Locked objects:
-Cho thông tin chi tiết về locked process và process nào 
+Cho thông tin chi tiết về locked process và process nào đang làm dừng các trans đang truy cập object cùng 1 thời điểm.
+
+* Stored procedure:
+Thể hiện các metrics thực thi tính toán cho procedures, external procedures, compiled hoặc external functions, compiled trigger và các block ẩn danh invoked kể từ khi database kích hoạt.
+
+* Buffer pools:
+Track sử dụng của buffer pools và table spaces.
+Thư mục server sử dụng buffer pools để lưu cached data và cải thiện perfomance của database.
+
+* Top consumers:
+Show top consumers của system resources và giúp DBAs plan và sắp xếp resource hiệu quả hơn.
+
+
+Các tool 3rd party để monitor:
+* pganalyze (PostgreSQL)
+* PRTG Network Monitor (PostgreSQL, MySQL, SQL, Server, Oracle)
+* SolarWinds DB Performance Analyzer
+* Quest Foglight for DBs.
+* Datadog (db, system, and app monitoring)
+
+-------------------
+#### Database Optimization
+RDBMSs có các command optimize:
+
+* Mysql có ``OPTIMIZE TABLE`` với cú pháp OPTIMIZE TABLE table1, table2, table3;
+=> tổ chức lại storage vật lý của table data và gắn kết index để giảm storage space và cải thiện efficiency.
+=> cần có quyền privilege SELECT và INSERT để thực thi command này.
+=> Có thể optimize được 3 table cùng 1 operation.
+=> Hoặc bạn có thể sử dụng graphical tool ``phpMyAdmin`` để làm việc này.
+
+* PostgreSQL có ``VACUUM`` và ``REINDEX``

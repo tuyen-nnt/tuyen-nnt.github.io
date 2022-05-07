@@ -1,4 +1,10 @@
 
+Quy trình truy cập server:
+- Liên hệ system add public key
+- Truy cập VPN
+- ssh user@ip 
+
+* Generate ssh key mới : ssh-keygen
 * Lấy private key: ``cat ~/.ssh/id_rsa``
 
 * Lấy public key: ``cat ~/.ssh/id_rsa.pub``
