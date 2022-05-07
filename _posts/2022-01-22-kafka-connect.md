@@ -36,7 +36,8 @@ Bây giờ đi từ use case, bạn cần kết nối data giữa Order database
 Phụ thuộc vào Order service chạy hay không chạy (nếu service có multi-replicas thì không sao).
 
 * Cách 2: Tạo Kafka producer độc lập đọc data từ Order database và produce đến Kafka broker.
-> Nhược điểm: cần maintain thêm service này cho Kafka producer
+
+> Nhược điểm: cần maintain thêm service này cho Kafka producer.
 Cần thiết kế để scalable, fault tolerance,...
 
 
@@ -99,6 +100,7 @@ SMTs bao gồm 1 số thao tác phổ biến:
 Gồm các keyword chính:
 
 * 1) Worker : là công nhân thực thi các task để gửi msgs đến Kafka cluster. (còn việc read/write từ/đến source thì là của Source/SinkTask theo config của ta xong rồi mới chuyển cho worker thực thi nhé)
+
 ```
 Worker có 2 khả năng đặc biệt:
 
@@ -160,7 +162,9 @@ pos
 
 tableChanges
 
-    A structured representation of the entire table schema after the schema change. The tableChanges field contains an array that includes entries for each column of the table. Because the structured representation presents data in JSON or Avro format, consumers can easily read messages without first processing them through a DDL parser.
+```
+A structured representation of the entire table schema after the schema change. The tableChanges field contains an array that includes entries for each column of the table. Because the structured representation presents data in JSON or Avro format, consumers can easily read messages without first processing them through a DDL parser.
+```
 
 
 ### Thực hành 
