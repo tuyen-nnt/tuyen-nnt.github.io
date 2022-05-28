@@ -63,9 +63,9 @@ Có thể coi đây giống như là một immutable Scala collection tuần t�
 * Transform một RDD.
 Ví dụ như dùng hàm map trên 1 RDD và trả về 1 RDD. Hoặc các high-order functions khác được define trên RDD và trả về kết quả là 1 RDD mới.
 
-* Từ 1 Spark Context (hoặc gọi là Spark Session) object.
-Spark Session sẽ handle Spark cluster, giúp chương trình bạn nói chuyện với Spark và đây là việc đầu tiên bạn cần làm - khởi tạo Spark Context. Nó đại diện cho connection giữa Spark cluster và chương trình của bạn. Nó có các method hữu dụng được sử dụng để tạo và phân bổ RDD mới như :
-	* ``parallelize``: convert một local Scala collection thành một RDD, thường thì không dùng hàm này vì các Scala collection thường nằm trong memory rồi.
+* Từ 1 Spark Context (hoặc Spark Session) object.
+Spark Session sẽ handle Spark cluster, giúp chương trình bạn nói chuyện với Spark và việc đầu tiên bạn cần làm sẽ là khởi tạo Spark Context, Spark Session. Nó đại diện cho connection giữa Spark cluster và chương trình của bạn. Nó có các method hữu dụng được sử dụng để tạo và phân bổ RDD mới như :
+	* ``parallelize``: convert một local Scala collection thành một RDD, thường thì không dùng hàm này vì các Scala collection thường nằm trong memory rồi, nên thường không cần chuyển thành RDD để tính toán nhanh hơn.
 	* ``textFile``: đọc file từ HDFS hoặc local file system và chuyển nó thành RDD[String]
 ![](/assets/images/create-rdd.png)
 
@@ -142,8 +142,67 @@ Spark sẽ phân tích và tối ưu các operations trước khi thực hiện.
 ##### Transformation trên 2 RDDs
 ![](/assets/images/2-rdd-transform.png)
 
+##### Some useful Actions
+![](/assets/images/rdd-action.png)
 
 
+##### Caching & Persistence
+
+Mặc định thì các RDDs sẽ tính toán lại các method transform mỗi lần bạn gọi method kiểu action. Như vậy sẽ tốn rất nhiều chi phí khi bạn sử dụng lại RDDs đó nhiều lần đặc biệt là trong các vòng lặp,..
+
+Spark cho phép control những gì bạn cache ở memory, đưa RDDs vào memory và sử dụng lại mà không cần thực hiện transform lại giúp truy cập nhanh hơn. 
+=> Dùng persist() hoặc cache()
 
 
+Có nhiều cách cấu hình để data của bạn persisted:
+* in memory dưới dạng regular Java object
+* on disk dưới dạng regular Java object
+* in memory dưới dạng serialized Java object (compact hơn)
+* on disk dưới dạng serialized Java object (compact hơn)
+* dàn trải ra in memory và on disk để tránh việc re-computation.
+![](/assets/images/persist-spark-storage-level.png)
 
+*cache()* : là 1 shorthand để sử dụng storage level mặc định, đó là nằm trong in memory chỉ dưới dạng regular Java objects.
+*persist()* : có thể customize được method. Điền vào parameter loại storage level mà bạn muốn để persist data của bạn.
+
+> Tóm lại, laziness trong Spark rất hữu ích khi làm việc với các tính toán large-scale distributed. Spark có thể đưa ra các phương án tối ưu trên *chain of operations* trước khi thực hiện tính toán.
+> Ví dụ ``val numErrors = lastYearLogs.map(_.lowercase).filter(_.contains("ERROR")).count()``. Sau khi gọi map() và filter(), Spark biết là nó cần phải tránh duyệt data từ đầu đến cuối nhiều lần. Do đó, nó chỉ đi qua RDD một lần, tính toán kết quả của map() và filter() trong 1 lần duyệt qua data đó thôi, trước khi trả về kết quả count() cho chương trình.
+
+
+#### How Spark jobs are executed?
+Driver program (Master 	Node) là nơi chứa Spark Context dùng để tạo RDDs, phân bổ RDDs. Khi viết chương trình Spark là ta đang viết chương trình tương tác với Master Node để ra lệnh cho các worker.
+Worker Nodes là nơi chứa executors để chạy các process (jobs) tính toán của chương trình.
+=> Để Master 	Node giao tiếp với Worker Node thì cần có ``Cluster Manager`` có nhiệm vụ allocate các resources trên cluster, quản lý scheduling. Ví dụ như YARN/Mesos.
+
+
+* driver program : là chương trình điều phối các process.
+* driver : 
+	* là nơi process hàm main() của chương trình thực thi
+	* là nơi chạy các code như tạo SparkContext, tạo RDDs, stage up hoặc gửi đi các transformation và action.
+* executor: 
+	* chạy các task đại diện cho application
+	* trả về kết quả tính toán cho driver
+	* cung cấp bộ nhớ in-memory cho cached RDDs (store data).
+Một Spark application là tập hợp các processes chạy trên 1 cluster.
+Những process đó chạy computations và lưu data của chương trình, được gọi là ``executors``.
+
+![](/assets/images/spark-execute-node.png)
+
+Thứ tự thực thi của 1 Spark program như sau:
+* Driver program chạy ứng dụng Spark lên và ứng dụng này sẽ tạo SparkContext ngay khi vừa bắt đầu chạy.
+* SparkContext kết nối tới cluster manager - để phân bổ resources trên cluster.
+* Spark lấy ra các excecutors trên các node trong cluster.
+* Driver program gửi code ứng dụng (ví dụ các function) của bạn đến từng executors để mà các worker dùng code đó thực hiện trên data mà nó lưu giữ.
+* Cuối cùng SparkContext đã "suy nghĩ xong" và gửi các task đến các executors để chạy. Sau đó trả kết quả về lại cho Driver program.
+
+
+> Việc hiểu cách hoạt động của Spark sẽ giúp bạn hiểu được chương trình. Các function đang ở đâu, kết quả được trả về đâu. Hãy xem ví dụ sau đây:
+
+
+![](/assets/images/ex-spark-action.png)
+
+foreach() là một action vì nó trả về kiểu Unit. Do vậy nó sẽ eagerly được thực thi trên executor chứ không phải driver. Bất kỳ lần gọi ``println`` bên trong hàm này chỉ sẽ xảy ra trên stdout của worker nodes và do đó nó sẽ không hiển thị trên driver node - nơi mà bạn đang chạy chương trình. 
+
+
+![](/assets/images/ex2-spark-note.png)
+Kết quả ``first10`` được trả về và nằm ở driver program. Các action kết nối kết quả từ worker node và node trên driver program.
