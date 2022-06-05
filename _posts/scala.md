@@ -6,6 +6,7 @@ Hôm nay mình cùng tìm hiểu về việc setting data parallelism trong Data
 Data parallelism hoạt động trên single multicore machine.
 
 Lần này thì ta sẽ đào sâu trên distributed system (nhiều machines), nghĩa là nhiều machine hoạt động song song để hoàn thành một data-parallel job. Đối với shared-memory case, mô hình distribution sẽ có các concern như sau:
+
 * Partial failure: một hoặc tập hợp machines (node) bị crash khi làm các tác vụ distributed computation => ảnh hưởng đến việc job có hoàn thành hay không?
 * Latency: một vài operations có độ trễ cao hơn các operations khác do network communication. => ảnh hưởng đến thời gian hoàn thành job.
 
@@ -189,6 +190,7 @@ Những process đó chạy computations và lưu data của chương trình, đ
 ![](/assets/images/spark-execute-node.png)
 
 Thứ tự thực thi của 1 Spark program như sau:
+
 * Driver program chạy ứng dụng Spark lên và ứng dụng này sẽ tạo SparkContext ngay khi vừa bắt đầu chạy.
 * SparkContext kết nối tới cluster manager - để phân bổ resources trên cluster.
 * Spark lấy ra các excecutors trên các node trong cluster.
@@ -201,8 +203,67 @@ Thứ tự thực thi của 1 Spark program như sau:
 
 ![](/assets/images/ex-spark-action.png)
 
-foreach() là một action vì nó trả về kiểu Unit. Do vậy nó sẽ eagerly được thực thi trên executor chứ không phải driver. Bất kỳ lần gọi ``println`` bên trong hàm này chỉ sẽ xảy ra trên stdout của worker nodes và do đó nó sẽ không hiển thị trên driver node - nơi mà bạn đang chạy chương trình. 
+``foreach()`` là một action vì nó trả về kiểu Unit. Do vậy nó sẽ eagerly được thực thi trên executor chứ không phải driver. Bất kỳ lần gọi ``println`` bên trong hàm này chỉ sẽ xảy ra trên stdout của worker nodes và do đó nó sẽ không hiển thị trên driver node - nơi mà bạn đang chạy chương trình. 
 
 
 ![](/assets/images/ex2-spark-note.png)
 Kết quả ``first10`` được trả về và nằm ở driver program. Các action kết nối kết quả từ worker node và node trên driver program.
+
+=> chỉ bạn mới biết code của bạn đang được thực thi ở đâu: ở driver program hay executors
+
+
+##### Reduction Operations
+Một số method actions được phân loại là reduction operations.
+
+Cơ chế hoạt động: đi qua collection và kết nối các element của collection lại để cho ra kết quả duy nhất.
+
+Ví dụ :
+```
+val sum = list.fold(0)((x, y) => x + y)
+
+// It then steps through the list, recursively applying the function to two operands: an accumulated value and the next element in the list.
+
+
+//In the first step, the start value, 0,  acts as the first operand. The first element of the list acts as the second operand. The result of this computation becomes the first operand of the next step and the second element in the list, the second operand.
+```
+
+* ``foldLeft``: không parallelizable, vì apply binary operator cho start value và các element của collection hoặc iterator từ trái sang phải. Khi trả về kết quả sẽ bị lỗi TypeError nếu xử lý tính toán parallel (xem hình dưới).
+
+![](/assets/images/foldleft.png)
+
+* ``fold``: cho phép parallel nhưng giới hạn kết quả trả về và parameter trong function phải giống nhau.
+
+
+Và ta sẽ tìm hiểu về **Aggregate**, đây là method chung cho cả Scala collection và Spark, nó có khả năng parallelizable và có thể thay đổi được kiểu trả về (foldLeft/foldRight thì riêng Spark không hỗ trợ vì nó không có khả năng parallel).
+> Cú pháp: aggregate[B](z: => B)(seqop: (B,A) => B, combop: (B,B) => B) : B
+
+=> Trong Spark, khi cần dùng đến foldLeft hay cho kết quả return type khác thì ta phải dùng method ``aggregate`` thay cho foldLeft/foldRight.
+
+Có thể nói, hầu hết khi làm việc với large scale dataset, mục tiêu của chúng ta là xé nhỏ các dữ liệu phức tạp và lớn ra để tính toán và làm việc với dữ liệu. Method ``aggregate`` sẽ giúp chúng ta đi qua các element trong dữ liệu mà chúng ta quan tâm hoặc cần dùng tới mà không cần phải xử lý toàn bộ các element => tiết kiệm thời gian, bộ nhớ.
+Do đó, ``aggregate`` được dùng nhiều trong Spark hơn Scala collection.
+
+
+#### Pair RDDs
+
+Khi làm việc với distributed data, rất hữu ích khi tổ chức dữ liệu thành các cặp key-value. Lí do vì pair RDDs cho phép chúng ta làm việc song song trên mỗi key hoặc regroup data bằng key trên network.
+> Trong Spark, các cặp distributed key-value chính là "Pair RDDs".
+
+``Pair RDDs`` sẽ đặc biệt có các method để làm việc với data thông qua key. Cách nhận biết pair RDDs bằng cú pháp thông qua parameter của nó phải là 1 cặp.
+> RDD[(K,V)]
+
+Một số method đặc biệt dành riêng cho pair RDDs như sau:
+
+* def groupByKey(): RDD[(K, Iterable[V])]
+* def reduceByKey(func: (V, V) => V): RDD[(K, V)]
+* def join[W](other: RDD[(K, W)]: RDD[(K, (V, W))]
+
+##### Tạo Pair RDDs:
+
+```
+val rdd: RDD[WikipediaPage] = ...
+
+//Has type: org.apache.spark.rdd.RDD[(String, String)]
+val pairRdd = rdd.map(page => (page.title, page.text))
+```
+
+input là 1 rdd và output là rdd gồm các cặp key-value gọi là pair RDD.
