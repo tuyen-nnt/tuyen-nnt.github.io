@@ -267,3 +267,119 @@ val pairRdd = rdd.map(page => (page.title, page.text))
 ```
 
 input là 1 rdd và output là rdd gồm các cặp key-value gọi là pair RDD.
+
+
+##### Shuffle
+Vậy ta sẽ xem cách groupByKey và reduceByKey hoạt động như thế nào trên cluster để hiểu về shuffle nhé.
+
+![](/assets/images/shuffle-groupByKey.png)
+
+Quá trình shuffle là quá trình di chuyển các value vào cùng 1 key trên network và quy 1 cặp key-value về 1 node duy nhất.
+Từ đây ta cần phải tìm cách để giảm việc giao tiếp qua network của shuffle lại.
+
+=> Dùng reduceByKey thay cho groupByKey
+![](/assets/images/shuffle-reduceByKey.png)
+
+
+Đây là kết quả so sánh khi chạy 2 kiểu code trên 6 node dùng Databrick:
+![](/assets/images/benchmark-shuffle.png)
+
+
+##### Partitioning
+Vậy cluster chia các cặp key-value trên các node theo tiêu chí gì?
+
+
+--------------------------
+##### Tìm hiểu về cách lập trình với Scala.
+
+Scala có các quy tắc và các kiểu hình thức coding với function, variable. Chuyên đề này sẽ tìm hiểu về một số định nghĩa.
+
+* function literal: là function ẩn danh, mặc định không có tên và có thể được gán tên bằng cách binding nó với một variable. Đây là dạng function được dùng thường xuyên trong Scala.
+
+```
+scala> (a:Int, b:Int) => a + b
+res0: (Int, Int) => Int = <function1>
+scala> (i: Int) => { i * 2 }
+res1: Int => Int =<function2>
+
+scala> val x = List.range(1, 10)
+x: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8, 9)
+scala> val evens = x.filter((i: Int) => i % 2 == 0)
+evens: List[Int] = List(2, 4, 6, 8)
+```
+
+* function value: hàm là một biến được gán công thức trước đó.
+
+```
+khởi tạo 1 function value :
+
+scala> val x = List.range(1, 10)
+x: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+khởi tạo function value tên ft
+
+scala> val ft = (i: Int) => i % 2 == 0
+ft: Int => Boolean =<function6>
+
+truyền ft như 1 argument vào filter và sử dụng placeholder( “_” )
+
+scala> val evens = x.filter(ft(_))
+evens: List[Int] = List(2, 4, 6, 8)
+```
+
+* closure: là function mà giá trị trả về thay đổi phụ thuộc bởi 1 hoặc nhiều variable được định nghĩa bên ngoài function.
+
+```
+đây đơn thuần là 1 function literal
+
+val multiplier = (i:Int) => i * 10
+
+ta thay 10 bằng 1 biến được khai báo trước đó,bên ngoài function :
+
+val multiplier = (i:Int) => i * factor
+```
+
+
+##### Some Scala code syntax:
+
+* Function:
+	* c1: 
+	val f2: (Int, Int) => Int = f
+	
+	* c2:
+	val f: Function1[Int,String] = myInt => "my int: "+myInt.toString
+	
+	* c3:
+	val f2: Int => String = myInt => "my int v2: "+myInt.toString
+
+=> the type Int => String, is equivalent to the type Function1[Int,String] i.e. a function that takes an argument of type Int and returns a String.
+
+* Higher-order function:
+
+```
+// sum takes a function that takes an integer and returns an integer then
+// returns a function that takes two integers and returns an integer
+def sum(f: Int => Int): (Int, Int) => Int =
+  def sumf(a: Int, b: Int): Int = f(a) + f(b)
+  sumf
+
+// same as above. Its type is (Int => Int) => (Int, Int) => Int
+def sum(f: Int => Int)(a: Int, b: Int): Int =  ...
+
+// Called like this
+sum((x: Int) => x * x * x)          // Anonymous function, i.e. does not have a name
+sum(x => x * x * x)                 // Same anonymous function with type inferred
+
+def cube(x: Int) = x * x * x
+sum(x => x * x * x)(1, 10) // sum of 1 cubed and 10 cubed
+sum(cube)(1, 10)           // same as above  
+```
+
+* Dấu underscore : thường được dùng để chỉ 1 giá trị nào đó tại ví trí _ đó.
+Chi tiết đọc tại: https://www.baeldung.com/scala/underscore
+
+----------------------------
+##### Cài đặt Scala REPL, Spark.
+https://www.freecodecamp.org/news/installing-scala-and-apache-spark-on-mac-os-837ae57d283f/
+
+Trường hợp tải đi mạng quốc tế chậm ví dụ tốc độ đo bằng kB thì thêm ``proxychains4`` ví dụ proxychains4 brew install apache-spark sẽ giúp tăng tốc do proxy qua server quốc tế.
