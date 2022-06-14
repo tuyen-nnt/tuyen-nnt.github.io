@@ -274,7 +274,7 @@ Vậy ta sẽ xem cách groupByKey và reduceByKey hoạt động như thế nà
 
 ![](/assets/images/shuffle-groupByKey.png)
 
-Quá trình shuffle là quá trình di chuyển các value vào cùng 1 key trên network và quy 1 cặp key-value về 1 node duy nhất.
+Quá trình shuffle là quá trình di chuyển các value vào cùng 1 key trên network và quy 1 cặp key-value về 1 node duy nhất quản trị key đó.
 Từ đây ta cần phải tìm cách để giảm việc giao tiếp qua network của shuffle lại.
 
 => Dùng reduceByKey thay cho groupByKey
@@ -287,6 +287,93 @@ Từ đây ta cần phải tìm cách để giảm việc giao tiếp qua networ
 
 ##### Partitioning
 Vậy cluster chia các cặp key-value trên các node theo tiêu chí gì?
+
+Data trong RDD được chia thành các partition. Đặc tính của partition:
+
+* 1 partition không bao giờ trải ra các node khác nhau. Ví dụ các tuple trong cùng 1 partition sẽ được đảm bảo nằm trong cùng machine với nhau.
+* Mỗi node chứa ít nhất 1 partition.
+* Mặc định số lượng partition = số core của executor node. Nếu bạn có 6 worker node và mỗi node 4 core thì có thể bạn có 24 partition. Chúng ta có thể cấu hình được số lượng partition này.
+* Partition chỉ hoạt động trên pair RDD vì nó phụ thuộc vào key để phân chia.
+* Có 2 cách chia partition trong Spark:
+	* Hash partitioning:
+	Đầu tiên cần groupbyKey() cho pair RDD. Sau đó Spark sẽ phân chia partition theo công thức:
+	```p = k.hashCode() % numPartitions```.
+	Sau khi hashCode() key từ string ra int thì ta sẽ chia cho số partition mặc định là n để lấy số dư.
+	Các key có số dư giống nhau thì sẽ nằm cùng partition p và được chuyển đến machine mà host partition p đó. 
+	
+	p/s: đây là kết quả test hashCode() trên Scala REPL để hiểu kết quả khi dùng trên int thì sẽ ra số tương tự, còn dùng trên string hay char thì sẽ ra số int.
+	![](/assets/images/test-hashcode.png)
+
+	
+	* Range partitioning:
+	Các loại key có thể thường được định nghĩa có thể sắp xếp theo thứ tự ví dụ như kiểu Int, Char, String. Do vậy trong nhiều trường hợp thì range partitioning hiệu quả trong việc phân chia partition đồng đều hơn. Các key sẽ được chia dựa theo:
+	- Thứ tự của keys
+	- Tập hợp range của các key sau khi được sắp xếp.
+	Ghi nhớ đặc tính: Các tuples của các key trong cùng range sẽ được nằm trên cùng machine.
+=> Cách này giúp data được balance trên các partition hơn.
+
+Bây giờ ta sẽ tìm hiểu cách cài đặt partition trong chương trình nhé.
+Có 2 cách để tạo RDDs với partition:
+* C1: Gọi method ``partitionBy`` trên RDD, cung cấp module Partitioner.
+
+```
+val pairs = purchasesRdd.map(p => (p.customerId, p.price))
+
+//khởi tạo object RangePartition theo cấu hình và RDD mong muốn apply
+val tunedPartitioner = new RangePartitioner(8, pairs)
+val partitioned = pairs.partitionBy(tunedPartitioner).persist()
+```
+CHÚ Ý: Nên ``persisted`` kết quả của partitionBy vì mỗi lần dùng tới RDD đó thì quá trình partitioning sẽ được thực hiện lại bao gồm cả shuffling.
+
+Khi tạo 1 Partitioner ta cần input 2 thông tin:
+1) Số lượng partition mong muốn.
+2) Cung cấp 1 RDD có key có thể sắp xếp thứ tự.
+
+* C2: Sử dụng các method transformation trả về RDD với các partitions của nó.
+Những pair RDDs là kết quả của quá trình transformation trên một pair RDD được partition thì mặc định sẽ được cấu hình để dùng hash partitioner hoặc range partitioner tùy loại method transform.
+
+Ví dụ: khi sử dụng sortByKey() thì RangePartitioner được sử dụng. Khi dùng groupByKey() thì HashPartitioner.
+
+Dưới đây là các method sẽ tạo ra partitioned RDDs. Ngoài các method này thì sẽ cho kết quả không được partitioned.
+![](/assets/images/partition-transform.png)
+
+Ví dụ: map() hay flatMap() sẽ không đảm bảo giữ được giá trị của key. Mà key trong pair RDD chính là cái điều kiện để ta partition. Do đó ta sẽ dùng mapValue() để thực hiện transformation và bảo tồn được partitioner trong RDD.
+
+
+Dùng join => mặc định Hash key trong cả 2 dataset => send element với cùng key to cùng machine => join element trên cùng machine => shuffling through network to right node.
+> Cách này không hiệu quả bởi ``join`` operation không biết được các key đã được partition trong dataset như thế nào, dẫn đến quá trình shuffling diễn ra lộn xộn và mất time mặc dù data không thay đổi.
+
+=> Cách xử lý vấn đề này là gì?
+> Dùng partitionBy(new HashPartitioner(n)) trên tập data RDD lớn ngay khi bắt đầu chương trình để partitioning trước khi gọi "join" operation.
+Lúc này, Spark sẽ biết là RDD này đã được hash-partitioned. Sau đó, khi gọi ``RDD.join(events)`` thì Spark chỉ shuffle cái ``events``gửi các data đến machine chứa hash partition key của RDD.
+
+###### Khi nào thì ta biết shuffle xảy ra?
+
+Shuffle trên network xảy ra khi result RDD phụ thuộc vào các element khác trong cùng RDD hoặc RDD khác.
+
+Ngoài ra, chúng ta có thể biết được shuffle có được thực thi chưa hay được kế hoạch để thực thi thông qua:
+
+* Kết quả trả về của 1 số transformation:
+```
+org.apache.spark.rdd.RDD[(String, Int)] = ShuffledRDD[366]
+```
+> 366
+
+* Sử dụng hàm ``toDebugString`` để thấy execution plan:
+```
+partitioned.reduceByKey(XXX).toDebugString
+```
+
+Dưới đây là các method có khả năng tạo ra shuffle:
+![](/assets/images/ops-shuffle.png)
+
+Làm sao để giảm shuffle? Có 2 cách cũng như ví dụ:
+
+* ``reduceByKey`` được chạy trên 1 RDD đã được partitioned trước đó sẽ giúp cho giá trị được tính toán trên local. Do đó chỉ cần shuffle khi gửi final result từ worker node đến driver node.
+* ``join`` được gọi trên 2 RDDs đã được partitioned cùng kiểu partitioner và cache trên cùng machine sẽ giúp join được tính toán trên local, không cần shuffling thông qua network.
+
+
+=> Bài toán Shuffles này sẽ phụ thuộc vào các bạn tổ chức data trên cluster và operations mà bạn dùng để xử lý data. Với cách partition hay tối ưu hóa việc shuffling tốt sẽ giúp bạn giảm thời gian xử lý data xuống rất nhiều lần.
 
 
 --------------------------
