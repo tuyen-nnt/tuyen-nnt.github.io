@@ -376,6 +376,94 @@ Làm sao để giảm shuffle? Có 2 cách cũng như ví dụ:
 => Bài toán Shuffles này sẽ phụ thuộc vào các bạn tổ chức data trên cluster và operations mà bạn dùng để xử lý data. Với cách partition hay tối ưu hóa việc shuffling tốt sẽ giúp bạn giảm thời gian xử lý data xuống rất nhiều lần.
 
 
+#### Wide & Narrow Dependency
+
+##### RDD được tạo thành từ những gì?
+
+RDD được thể hiện bằng:
+
+* Partitions: các "mảnh" của tập dữ liệu được đặt ở 1 hoặc nhiều node trên cluster.
+* Dependencies: Model mối quan hệ giữa RDD child và RDD parent. Ví dụ partition của rdd con có mối liên hệ với partition nào của rdd cha.
+* A function: rdd con nào cũng đều được tính toán từ rdd cha thông qua function.
+* Metadata: thông tin về scheme của partition và vị trí đặt các partition đó.
+
+
+##### RDD dependencies và shuffles
+
+Shuffle xảy ra khi resulting RDD phụ thuộc vào các phần tử của RDD đang gọi method hoặc RDD khác.
+Trong thực tế, RDD dependencies sẽ mã hóa (encode) khi phải di chuyển data trên network.
+
+Các method transformation có thể gây ra shuffle, có 2 loại dependencies:
+1) Narrow dependencies:
+Mỗi partition của parent RDD sẽ được sử dụng bởi nhiều nhất 1 partition của child RDD. Nói cách khác, mỗi child partition sẽ chỉ có 1 parent partition.
+=> Nhanh, không cần shuffle và có thể áp dụng tối ưu như pipelining.
+
+2) Wide dependencies:
+Mỗi partition của parent RDD có thể được phụ thuộc bởi nhiều child partition. 1 parent partition có thể tạo ra nhiều child partition.
+=> Chậm, cần tất cả hoặc một số data shuffle trên network.
+
+
+Các method transform sau đây được phân loại narrow hay wide dependencies:
+![](/assets/images/kindofdependencies.png)
+
+Các cách "truy tìm" xem model liên hệ giữa các RDD:
+
+* Sử dụng method ``dependencies``
+=> Trả về chuỗi Dependency objects được dùng bởi Spark's scheduler để biết mối quan hệ giữa các RDD, trả về các giá trị object được phân loại như sau:
+	* Narrow dependency objects:
+		* OneToOneDependency
+		* PruneDependency
+		* RangeDependency
+		
+	* Wide dependency objects
+		* ShuffleDependency
+
+* Sử dụng ``toDebugString``:
+=> In ra mô hình lineage của RDD và các thông tin liên quan đến scheduling.
+![](/assets/images/todebugstring.png)
+
+##### Lineage (dag scheduling) & Fault tolerance
+
+Lineage là chìa khóa cho fault tolerance trong Spark! Lineage được biểu diễn theo dạng các bước (stages).
+
+Vì Spark sử dụng functional programming:
+* RDD bất biến
+* Sử dụng higher-order function như map, flatMap, filter để thực hiện các functional transformation trên data bất biến.
+* Sử dụng function để tính toán ra child RDDs dựa trên parent RDDs chứ không thay đổi RDD.  
+
+=> Giúp khôi phục failures bằng cách recomputing các partitions bị mất từ lineage graphs.
+![](/assets/images/lineage-fault-tolerance.png)
+
+
+
+#### Dataframe
+
+Spark sẽ không biết chi tiết về cấu tạo của RDDs cũng như kiểu dữ liệu các attributes mà chỉ tương tác theo objects.
+Trong khi đó Database/Hive sẽ rõ ràng với cấu trúc row/column với schema của table.
+=> Spark sẽ dễ dàng tối ưu trên database hơn so với RDD. 
+
+Dataframe được xem như là table trong database, là RDDs nhưng có schema được biết trước. Dataframe là core abstraction của Spark SQL và đặc biệt, chúng ``untype``.
+> Trình biên dịch Scala không check được kiểu dữ liệu của DF, DF có thể có các record ở bất cứ kiểu dữ liệu nào, trong khi RDD thì có kiểu dữ liệu ví dụ như RDD[String].
+=> Spark kết hợp SQL queries với Scala để ứng dụng những optimizations vào Spark jobs.
+=> Spark SQL : Đây là Spark module cho structured data processing được implement như 1 thư viện trên Spark.
+
+Spark SQL có 3 APIs:
+
+* SQL literal syntax
+* Dataframes
+* Datasets
+
+2 backend component đặc biệt giúp code chạy nhanh hơn:
+
+* Catalyst: query optimizer
+* Tungsten: off-heap serializer
+
+![](/assets/images/spark-ecosystem.png)
+
+
+
+
+
 --------------------------
 ##### Tìm hiểu về cách lập trình với Scala.
 
@@ -442,6 +530,8 @@ val multiplier = (i:Int) => i * factor
 => the type Int => String, is equivalent to the type Function1[Int,String] i.e. a function that takes an argument of type Int and returns a String.
 
 * Higher-order function:
+
+Là một hàm thỏa ít nhất một trong các điều kiện sau: lấy một hoặc nhiều hàm làm đối số, hoặc/và trả về kết quả là một hàm.
 
 ```
 // sum takes a function that takes an integer and returns an integer then
