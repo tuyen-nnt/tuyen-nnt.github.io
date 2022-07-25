@@ -461,7 +461,21 @@ Spark SQL có 3 APIs:
 ![](/assets/images/spark-ecosystem.png)
 
 
+Để bắt đầu sử dụng Spark SQL, ta cần ``SparkSession``:
 
+```
+import org.apache.spark.sql.SparkSession
+
+val spark = SparkSession.builder().appName("My App")
+//.config("spark.some.config.option","some-value")
+.getOrCreate()
+```
+
+Để tạo Dataframe ta có 2 cách:
+
+* Từ RDD đã tạo:
+Cả với schema tự suy ra hoặc với schema tự tạo.
+* Đọc từ data source cụ thể từ file với structured hoặc semi-structured format, định dạng cho phép: CSV, JSON, parquet, JDBC.  
 
 
 --------------------------

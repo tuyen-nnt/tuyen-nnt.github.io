@@ -61,7 +61,7 @@ Druid index vào toàn bộ data và có thể làm lớp đứng giữa Spark v
 Ứng dụng cơ bản nhất người ta setup đó là dùng Spark để xử lý data và load data đã được xử lý vào Druid để có thể truy cập query nhanh chóng.
 
 
-cre: https://druid.apache.org/lập đẻdocs/latest/comparisons/druid-vs-spark.html
+cre: https://druid.apache.org/docs/latest/comparisons/druid-vs-spark.html
 
 Đọc thêm: https://www.linkedin.com/pulse/combining-druid-spark-interactive-flexible-analytics-scale-butani
 
@@ -127,3 +127,4 @@ Là framework để xử lý data.
 
 - Batch: Data at rest -> analysis on historical data
 - Realtime: processing the event as and when it happens
+
