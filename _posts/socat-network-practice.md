@@ -1,9 +1,9 @@
- ![](/assets/images/diagram-network.jpg)
+![](/assets/images/diagram-network.jpg)
  
 Từ 1 link, để tra xem ta có thể truy cập được nó hay không, ta dựa trên mô hình network OSI (mô hình chuẩn) hoặc 5-layer (thường dùng trong phần mềm):
  
  
-  ![](/assets/images/five-layer-network.png)
+![](/assets/images/five-layer-network.png)
  
  
  Ví dụ: https://tuyennnt-tuyen-postgres-pg.ep-eng.io
