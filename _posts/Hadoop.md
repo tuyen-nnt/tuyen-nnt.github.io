@@ -1,5 +1,10 @@
 ##Hadoop
 
+Là open-source framework được sử dụng để xử lý dataset lớn.
+
+![](/assets/images/hadoop-common.png)
+
+
 Gồm các thành phần chính: HDFS, MapReduce, YARN (yet another resource negotiator)
 
 Các stage xử lý big data trong Hadoop ecosystem:
@@ -7,6 +12,14 @@ Các stage xử lý big data trong Hadoop ecosystem:
 - Storage (HDFS, HBase)
 - Process & Analyze data (Hive)
 - Access data (Hue)
+
+Những hạn chế của Hadoop:
+- Xử lý transaction data vì không hỗ trợ tốt random access.
+- Các job khi không thể xử lý parallel.
+- Có dependency trong data, data này phụ thuộc vào data kia phải process trước sau.
+- Khi muốn access data với độ trễ thấp.
+- Xử lý nhiều file nhỏ.
+- Tính toán chuyên sâu với data nhỏ. => Hive (hỗ trợ HiveQL và các function thống kê) hay Pig tool (multi query approach, giảm số lần scan data) ra đời để giải quyết bài toán này.
 
 ### MapReduce
 
@@ -148,3 +161,68 @@ Hive cấu trúc gồm 1 số components quan trọng:
 - Minimum size là các regions (khái niệm giống data blocks trong HDFS).
 
 ![](/assets/images/hbase-architecture.png)
+
+
+## Spark Architecture
+
+![](/assets/images/spark-architecture.png)
+
+- Spark architecture có Driver và Executor processes, phối hợp bằng Spark Context bên trong Driver và cluster manager để cấp resource cho cluster chạy task.
+
+	- Driver Program là 1 process độc lập có nhiệm vụ tạo ra jobs, Spark Context tách job ra thành các task để chạy parallel trong Executor trên Cluster.
+	- Executors là nhiều các processes độc lập trên cluster thực thi các task in parallel. Executor được cấu hình thông qua số lượng worker node tùy nhu cầu.
+	- Spark Context có nhiệm vụ giao tiếp giữa Driver và Cluster manager cho mỗi Spark application. DF hay RDD được tạo trong context nào thì sẽ gắn với context đó suốt life cycle của context và context luôn phải được đảm bảo active trong quá trình sử dụng.
+	![](/assets/images/spark-context.png)
+	- Spark job là các computations có thể được thực thi parallel và được Spark context chia ra làm các task nhỏ hơn.
+	![](/assets/images/spark-job.png)
+
+	- Spark task được thực thi trên các partitions của data và hoạt động parallel với nhau.
+	![](/assets/images/spark-task.png)
+
+	- Spark Executor - Worker node là một cluster node trong cluster tung ra executor processes để chạy task mà nó đảm nhận. Bên trong worker node chứa Executor được cấp 1 số lượng core (theo cấu hình) và mỗi core sẽ chạy riêng lẻ 1 task tại 1 thời điểm cho đến khi tất cả core được sử dụng hết thì task khác sẽ phải đợi resource.
+	![](/assets/images/spark-executor.png)
+		- Nhìn chung thì nếu ta tăng số lượng executor trong config hoặc số core cấp cho worker node (executor) thì sẽ tăng cluster parallelism (tính đồng thời/song song của cluster).
+		- Sau khi finish 1 task thì executor sẽ gửi kết quả vào RDD partition mới hoặc transfer nó lại cho driver.
+		- Ta nên config giới hạn Executor với x core trên 1 node trên tổng số core available mà node đó có. Ví dụ 1 worker node có 8 cores có thể có 1 executor processe sử dụng đến 8 cores tùy ta giới hạn bao nhiêu.
+	
+
+- Stage là tập hợp các task trong 1 job có thể được thực hiện và hoàn thành tại cùng 1 partition. Nếu stage phụ thuộc vào 1 stage khác thì quá trình shuffle diễn ra.
+
+- Shuffle thì costly bởi nó đòi hỏi phải data serialization, disk và network I/O. Shuffle là cần thiết nếu có 1 operation nào đó cần data ở bên ngoài stage (khác partition hiện tại).
+
+- Driver có thể chạy trên Client Mode (Driver ở bên ngoài kết nối với Cluster) hoặc Cluster Mode (chạy Driver trên 1 worker trong cluster).
+
+- Cluster manager: giao tiếp giữa Driver và Cluster để cung cấp resource cho executor trên cluster và phân bổ nhiệm vụ cho cluster.
+
+
+### Spark cluster modes
+
+- Spark Standalone : có sẵn trong Spark installation nên không cần deploy dependencies, phù hợp cho setup đơn giản.
+Thành phần gồm Master và Worker, khi setup không được dành tất cả resource cho worker vì master cũng sử dụng resource trong cùng cluster.
+	![](/assets/images/spark-standalone.png)
+	- Cách setup:
+	![](/assets/images/spark-standalone-setup.png)
+
+
+- Apache Hadoop YARN : đây là cluster manager cho Hadoop project.
+	- Hỗ trợ nhiều big data ecosystem framework.
+	- Cần configuration và setup riêng.
+	- Cần setup thêm dependencies.
+	![](/assets/images/spark-yarn.png)
+
+- Apache Mesos : general-purpose cluster manager với 1 số benefit thêm.
+- Kubernetes : open-source chạy chương trình trên docker container.
+  	![](/assets/images/spark-k8s-setup.png)
+
+- Local mode: không connect đến cluster, thường dùng để test hoặc debug app, tuy nhiên nó dùng chung process với spark-submit và dùng threads để execute task.
+	![](/assets/images/spark-local-setup.png)
+
+### Spark submit
+
+Hoạt động như sau:
+- Parse command line arguments/options.
+- Đọc các thông tin bổ sung được nêu trong 'conf/spark-defaults.conf'.
+- Kết nối đến cluster manager được nêu ở --master argument hoặc chạy trên local mode
+- Truyền application (JARs hoặc Python files) và bất cứ file nào được chỉ định phân tán và chạy trên cluster.
+
+![](/assets/images/spark-submit-option.png)
