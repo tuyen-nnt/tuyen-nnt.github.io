@@ -61,3 +61,13 @@ Với Go, trong phần code gRPC server đầu tiên ta sẽ mở TCP port, star
 - Duplex streaming - có thể đọc ghi cùng lục
 - Có nhiều tổ hợp features như authentication, encryption, resiliency (deadline & timeout), metadata exchange, compression, load balancing, service discovery,...
 - Được tích hợp với cloud native systems và được support mạnh mẽ bởi các projects về cloud native vì gRPC thuộc tổ chức CNCF.
+- Đang được phát triển và được sử dụng rộng rãi, được test bởi Google và nhiều công ty lớn khác.
+
+
+#### Bất lợi 
+
+- Chưa thực sự phù hợp cho các external services vì nó được contract-driven không thay đổi cấu trúc service nên sẽ cản trở sự linh hoạt của các service bên ngoài hệ thống.
+- Các thay đổi về service definition dễ ảnh hưởng đến quá trình development vì thường phải regenerate code khi file proto có thay đổi. Tuy nhiên hầu hết các thay đổi trên service definition không ảnh hưởng đến service contract thì gRPC vẫn chấp nhận thích nghi và tương tác như 1 phiên bản proto khác thì không cần phải generate lại code.
+- Hệ sinh thái gRPC khá nhỏ không bằng REST hay HTTP. Các hỗ trợ cho gRPC trên browser và mobile app vẫn còn ở giai đoạn sơ khại
+
+
