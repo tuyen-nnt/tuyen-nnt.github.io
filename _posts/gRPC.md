@@ -1,11 +1,11 @@
 ### 1. Introduction
 
-- gRPC là một interprocess communication technology, là một protocol để giao tiếp giữa các services.
+- gRPC là một interprocess communication protocol dùng để giao tiếp giữa các services.
 - gRPC được phát triển dựa trên HTTP/2.
 - Chữ ``g`` để phân biệt với các version khác của RPC, đây là version mới và hiện đại hơn các version trước.
-- gRPC đặc biệt cho phép client gọi, connect, thao tác cũng như debug các apps không đồng nhất nhau trở nên đơn giản như gọi 1 local function trong chương trịnh.
+- gRPC đặc biệt cho phép client gọi, connect, thao tác cũng như debug các apps khác nhau trở nên đơn giản như gọi 1 local function trong chương trình.
 - Thường sử dụng gRPC để giao tiếp giữa các internal services trong microservice architecture vì nếu giao tiếp với external thì sẽ khó khăn hơn khi gRPC đòi hỏi phải define service interface từ đầu và generate ra code abstraction tương ứng để đơn giản hóa code trong service. Còn các external services thì muôn hình vạn trạng nên khó đáp ứng được, tuy nhiên với sự xuất hiện của gRPC gateway thì phần này có thể xử lý được.
-- Chỉ nên sử dụng gRPC khi HTTP/1 không thể đáp ứng được yêu cầu nữa.
+- Chỉ nên sử dụng gRPC khi HTTP/1 không thể đáp ứng được yêu cầu nữa hoặc có quá nhiều điểm overhead gây chậm hoặc lãng phí tài nguyên.
 
 ### 2. How it works
 
@@ -52,13 +52,13 @@ Với Go, trong phần code gRPC server đầu tiên ta sẽ mở TCP port, star
 
 
 ### Tại sao dùng gRPC?
-- Khả năng scale lớn, xử lý đồng thời nhiều request vì được build dựa trên HTTP/2.
+- Khả năng scale lớn, xử lý concurrency nhiều request đồng thời (ưu điểm so với HTTP/1) vì được build dựa trên HTTP/2.
 
 #### Ưu thế
-- Hiệu quả cho inter-process communication vì nó không dùng textual format mà dùng protocol buffer - based binary protocal để trao đổi giữa client và server. gRPC implement protocol buffer dựa trên HTTP/2 nên sẽ nhanh hơn các giao thức khác.
+- Hiệu quả cho inter-process communication vì nó không dùng textual format mà dùng protocol buffer - based binary protocal để trao đổi giữa client và server. gRPC implement protocol buffer dựa trên HTTP/2 nên sẽ nhanh và tiết kiệm traffic hơn các giao thức khác.
 - Có service interface và schema được define rõ ràng, đơn giản.
 - Polyglot - được thiết kế để hỗ trợ nhiều ngôn ngữ.
-- Duplex streaming - có thể đọc ghi cùng lục
+- Duplex streaming - có thể đọc ghi cùng lúc
 - Có nhiều tổ hợp features như authentication, encryption, resiliency (deadline & timeout), metadata exchange, compression, load balancing, service discovery,...
 - Được tích hợp với cloud native systems và được support mạnh mẽ bởi các projects về cloud native vì gRPC thuộc tổ chức CNCF.
 - Đang được phát triển và được sử dụng rộng rãi, được test bởi Google và nhiều công ty lớn khác.
@@ -69,5 +69,5 @@ Với Go, trong phần code gRPC server đầu tiên ta sẽ mở TCP port, star
 - Chưa thực sự phù hợp cho các external services vì nó được contract-driven không thay đổi cấu trúc service nên sẽ cản trở sự linh hoạt của các service bên ngoài hệ thống.
 - Các thay đổi về service definition dễ ảnh hưởng đến quá trình development vì thường phải regenerate code khi file proto có thay đổi. Tuy nhiên hầu hết các thay đổi trên service definition không ảnh hưởng đến service contract thì gRPC vẫn chấp nhận thích nghi và tương tác như 1 phiên bản proto khác thì không cần phải generate lại code.
 - Hệ sinh thái gRPC khá nhỏ không bằng REST hay HTTP. Các hỗ trợ cho gRPC trên browser và mobile app vẫn còn ở giai đoạn sơ khại
-
+- Khó debug hơn vì là giao thức binary thay vì plaintext như HTTP/1 
 
