@@ -26,7 +26,7 @@
 <meta property="twitter:image" content="https://tuyen-nnt.github.io/assets/images/kafka-connect.png" />
 <meta property="twitter:title" content="Kafka Connect" />
 <script type="application/ld+json">
-{"@type":"BlogPosting","author":{"@type":"Person","name":"tuyennnt"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://tuyen-nnt.github.io/kafka-connect/"},"image":"https://tuyen-nnt.github.io/assets/images/kafka-connect.png","headline":"Kafka Connect","dateModified":"2022-01-22T00:00:00+07:00","datePublished":"2022-01-22T00:00:00+07:00","url":"https://tuyen-nnt.github.io/kafka-connect/","description":"Write-head logging","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://tuyen-nnt.github.io/assets/images/ava.png"},"name":"tuyennnt"},"@context":"https://schema.org"}</script>
+{"mainEntityOfPage":{"@type":"WebPage","@id":"https://tuyen-nnt.github.io/kafka-connect/"},"url":"https://tuyen-nnt.github.io/kafka-connect/","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://tuyen-nnt.github.io/assets/images/ava.png"},"name":"tuyennnt"},"image":"https://tuyen-nnt.github.io/assets/images/kafka-connect.png","author":{"@type":"Person","name":"tuyennnt"},"description":"Write-head logging","dateModified":"2022-01-22T00:00:00+07:00","datePublished":"2022-01-22T00:00:00+07:00","headline":"Kafka Connect","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
     
@@ -191,13 +191,13 @@ Phụ thuộc vào Order service chạy hay không chạy (nếu service có mul
 </blockquote>
 
 <ul>
-  <li>Cách 2: Tạo Kafka producer độc lập đọc data từ Order database và produce đến Kafka broker.
-    <blockquote>
-      <p>Nhược điểm: cần maintain thêm service này cho Kafka producer
-Cần thiết kế để scalable, fault tolerance,…</p>
-    </blockquote>
-  </li>
+  <li>Cách 2: Tạo Kafka producer độc lập đọc data từ Order database và produce đến Kafka broker.</li>
 </ul>
+
+<blockquote>
+  <p>Nhược điểm: cần maintain thêm service này cho Kafka producer.
+Cần thiết kế để scalable, fault tolerance,…</p>
+</blockquote>
 
 <p>=&gt; Kafka Connect sử dụng cách 2.
 Hiện Kafka connect đã có open-source framework cho phép chọn loại connector (là loại source/target) rồi config và sử dụng, hoặc bạn có thể tự viết connector riêng dựa trên framework này.</p>
@@ -259,19 +259,18 @@ Bên phải là <code>Sink connector</code>: consume data từ topic và sink đ
 <p>Gồm các keyword chính:</p>
 
 <ul>
-  <li>
-    <p>1) Worker : là công nhân thực thi các task để gửi msgs đến Kafka cluster. (còn việc read/write từ/đến source thì là của Source/SinkTask theo config của ta xong rồi mới chuyển cho worker thực thi nhé)
-```
-Worker có 2 khả năng đặc biệt:</p>
-  </li>
-  <li>
-    <p>Fault tolerance: khi worker gặp sự cố sẽ phân task cho worker khác handle tiếp.</p>
-  </li>
-  <li>
-    <p>Self-managed: khi có worker mới các task sẽ được phân phối lại đảm bảo load balance.
-```
-=&gt; Có 4 tính năng Reliability, High avalability, Scalability, Load balancing.</p>
-  </li>
+  <li>1) Worker : là công nhân thực thi các task để gửi msgs đến Kafka cluster. (còn việc read/write từ/đến source thì là của Source/SinkTask theo config của ta xong rồi mới chuyển cho worker thực thi nhé)</li>
+</ul>
+
+<pre><code>Worker có 2 khả năng đặc biệt:
+
+* Fault tolerance: khi worker gặp sự cố sẽ phân task cho worker khác handle tiếp.
+
+* Self-managed: khi có worker mới các task sẽ được phân phối lại đảm bảo load balance.
+</code></pre>
+<p>=&gt; Có 4 tính năng Reliability, High avalability, Scalability, Load balancing.</p>
+
+<ul>
   <li>2) Connector : tạo API kết nối với các system</li>
   <li>3) Task : ví dụ transfer từ table 1 sang table 2 là 1 task</li>
 </ul>
@@ -469,6 +468,15 @@ https://en.wikipedia.org/wiki/ACID</p>
     
     
     <div class="blog-grid-container">
+        
+        
+            
+            
+        
+            
+        
+            
+        
         
         
             

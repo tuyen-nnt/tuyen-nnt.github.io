@@ -45,6 +45,18 @@ Tương tác với Kafka cluster/server:
 + REST APIs như GET, POST, PUT
 + Các 3rd party client được tạo bởi Kafka community
 
+### Summary
 
+- Zookeeper có nhiệm vụ:
+	- Quản lý các broker, truyển tải thông tin đến các broker khi có cập nhật data hoặc sự cố
+	- Lưu trữ metadata (các bootstrap server endpoint , offset,...) để cung cấp cho các bên cần sử dụng.
+	- Chọn ra Zookeeper Leader - Follower.
+	- Chọn ra Replication Leader - chỉ có thể read/write message từ leader.
 
+- Mỗi topic có 1 hoặc nhiều partition
+- Replicas gồm duy nhất 1 Replication leader và các ISR (in-sync replica) được đồng bộ message từ leader.
 
+- Đối với producer cần quan tâm:
+	- Ackowledgement: có thể setup acks=0/1/all cho mức độ nhận message đến đậu
+	- Round-robin: message mặc định đi vào các partition theo tuần tư.
+	- Message key - Hash key partitioning: có thể custom các message cùng key vào cùng partition.

@@ -5,9 +5,169 @@
     <description>Grow yourself and develop with me!</description>
     <link>https://tuyen-nnt.github.io/</link>
     <atom:link href="https://tuyen-nnt.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 20 Feb 2022 22:55:37 +0700</pubDate>
-    <lastBuildDate>Sun, 20 Feb 2022 22:55:37 +0700</lastBuildDate>
+    <pubDate>Tue, 05 Jul 2022 21:27:48 +0700</pubDate>
+    <lastBuildDate>Tue, 05 Jul 2022 21:27:48 +0700</lastBuildDate>
     <generator>Jekyll v3.9.0</generator>
+    
+      <item>
+        <title>Apache Druid</title>
+        <description>&lt;h3 id=&quot;apache-druid&quot;&gt;Apache Druid:&lt;/h3&gt;
+&lt;p&gt;cre:  https://druid.apache.org/&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Là một loại database&lt;/li&gt;
+  &lt;li&gt;Có các đặc điểm sau:
+    &lt;ul&gt;
+      &lt;li&gt;Real-time ingest data&lt;/li&gt;
+      &lt;li&gt;Hiệu suất query nhanh&lt;/li&gt;
+      &lt;li&gt;High uptime đảm bảo luôn đáp ứng được tính toán (quan trọng)&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Thường được sử dụng để:
+    &lt;ul&gt;
+      &lt;li&gt;Power cho GUIs&lt;/li&gt;
+      &lt;li&gt;Các ứng dụng analytical&lt;/li&gt;
+      &lt;li&gt;Là backend cho các highly-concurent APIs mà cần tính toán nhanh.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Thường sử dụng Druid cho những bài toán nào?&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;BI/OLAP&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Clickstream analytics (web và mobile)
+Đây là nơi chứa lượng data lớn như clicks, impressions, hoạt động view pages, add to card. Thông thường người ta sẽ tính toán lại các logic lấy được từ Google Analytics (được embedd vào web/mobile) về và kết hợp với sale data để cho ra các adhoc analysis phục vụ Biz.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Risk/Fraud analysis
+Khi đã có đủ dữ liệu thì tìm insight dễ dàng.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Application performance metrics:
+Lấy các chỉ số ví dụ như startup time, load pages từ hệ thống tracking về đưa vào Druid để monitor và alert realtime, giúp theo dõi và optimize hiệu năng của chương trình.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Server metrics storage&lt;/li&gt;
+  &lt;li&gt;Supply chain analytics (manufacturing metrics)&lt;/li&gt;
+  &lt;li&gt;Application performance metrics&lt;/li&gt;
+  &lt;li&gt;Digital marketing/advertising analytics&lt;/li&gt;
+  &lt;li&gt;Network telemetry analytics (network performance monitoring)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Triển khai thử với Druid cần gì?&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;3 em VM (8cores mỗi em thôi)&lt;/li&gt;
+  &lt;li&gt;kiến trúc microservice của Druid bắt buộc phải có: ZooKeeper, Coordinator, Overlord, Historical, Broker, Middlemanager.&lt;/li&gt;
+  &lt;li&gt;Khi số lượng node lên hàng chục hoặc hàng trăm thì phải cài đặt thông qua Ansible.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+&lt;h4 id=&quot;so-sánh-giữa-druid-và-spark&quot;&gt;So sánh giữa Druid và Spark:&lt;/h4&gt;
+
+&lt;h5 id=&quot;spark&quot;&gt;Spark:&lt;/h5&gt;
+&lt;p&gt;Spark là cluster computing framework được tạo ra dựa trên concept của Resilient Distributed Datasets (RDDs).&lt;/p&gt;
+
+&lt;p&gt;RDDs cho phép tái sử dụng lại dữ liệu bằng cách lưu trữ lại các kết quả trung gian trong memory và cho phép Spark cung cấp các tính toán nhanh cho các thuật toán hay lặp lại. =&amp;gt; phù hợp nhiều cho Machine learning&lt;/p&gt;
+
+&lt;p&gt;Tính tổng quan của Spark giúp nó phù hợp để làm sạch và transform dữ liệu.&lt;/p&gt;
+
+&lt;p&gt;Mặc dù Spark có khả năng truy vấn dữ liệu thông qua SparkSQL nhưng nó không phù hợp cho các tương tác query cần tốc độ nhanh trong vài giây.&lt;/p&gt;
+
+&lt;h5 id=&quot;druid&quot;&gt;Druid:&lt;/h5&gt;
+&lt;p&gt;Thường được sử dụng để tăng tốc cho OLAP queries trong Spark.&lt;/p&gt;
+
+&lt;p&gt;Sứ mệnh của nó là tập trung chủ yếu giảm độ trễ queries xuống mức tối đa và là framework lý tưởng để tăng tốc cho ứng dụng được sử dụng bởi hàng ngàn user. Làm sao để mà user có thể tương tác và nhận được kết quả nhanh chóng nhất.&lt;/p&gt;
+
+&lt;p&gt;Druid index vào toàn bộ data và có thể làm lớp đứng giữa Spark và ứng dụng của bạn.&lt;/p&gt;
+
+&lt;p&gt;Ứng dụng cơ bản nhất người ta setup đó là dùng Spark để xử lý data và load data đã được xử lý vào Druid để có thể truy cập query nhanh chóng.&lt;/p&gt;
+
+&lt;p&gt;cre: https://druid.apache.org/docs/latest/comparisons/druid-vs-spark.html&lt;/p&gt;
+
+&lt;p&gt;Đọc thêm: https://www.linkedin.com/pulse/combining-druid-spark-interactive-flexible-analytics-scale-butani&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h4 id=&quot;hadoop-là-gì&quot;&gt;Hadoop là gì?&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Là Apache framework viết bằng Java cho phép phát triển ứng dụng phân tán có cường độ dữ liệu lớn miễn phí. Được thiết kế để mở rộng máy chủ đơn sang hàng ngàn máy tính khác có tính toán và lưu trữ cục bộ (local computation và storage).
+=&amp;gt; Hadoop cung cấp môi trường để thực thi các Map-Reduce task.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Hadoop có cấu trúc liên kết master-slave, chỉ có 1 node master hoạt động tại 1 thời điểm và nhiều node slave:&lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li&gt;Node master có nhiệm vụ giao task cho các slave&lt;/li&gt;
+      &lt;li&gt;Node slave lưu trữ dữ liệu thực, thực tế thường không mạnh lắm.&lt;/li&gt;
+      &lt;li&gt;Node slave lưu trữ metadata (thông tin của tất cả các node).&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code&gt;Có 2 loại file metadata:
+FsImage: Là nơi lưu trữ trạng thái của các file system namespace (từ này hơi khó để dịch) kể từ khi namenode được khởi động.
+EditLogs: Là nơi lưu lại quá sửa đổi của các file system.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Kiến trúc Hadoop gồm có ba lớp chính đó là
+    &lt;ul&gt;
+      &lt;li&gt;HDFS (Hadoop Distributed File System)&lt;/li&gt;
+      &lt;li&gt;Map-Reduce&lt;/li&gt;
+      &lt;li&gt;Yarn&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;hdfs-hadoop-distributed-file-system&quot;&gt;HDFS (Hadoop Distributed File System)&lt;/h5&gt;
+
+&lt;p&gt;Là hệ thống phân tán cung cấp khả năng lưu trữ dữ liệu khổng lồ và tính năng giúp tối ưu việc sử dụng băng thông giữa các node.&lt;/p&gt;
+
+&lt;p&gt;Đặc biệt cho phép truy cập nhiều disk như là 1 disk. Nói cách khác là không bị giới hạn về dung lượng, nếu cần thêm chỉ cần thêm Node vào hệ thống là ok.&lt;/p&gt;
+
+&lt;p&gt;Có thể được sử dụng để chạy trên cluster lớn với hàng chục ngàn node.&lt;/p&gt;
+
+&lt;p&gt;Có kiến trúc Master-Slave với:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;NameNode chạy trên Master, có task quản lý Namespace (địa chỉ của file đó được chia và lưu trên các datanode nào) và điều chỉnh truy cập tệp của client cũng như điều khiển load-balancing cho các datanode.&lt;/li&gt;
+  &lt;li&gt;DataNode chạy trên các Slave, có task lưu trữ biz data thực tế.
+Tìm hiểu thêm tại: https://phambinh.net/bai-viet/kien-truc-cua-hdfs/&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/hdfs1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Một tập tin HDFS sẽ được chia làm nhiều block và được lưu trữ trong các DataNodes. Kích thước 1 block thường là 64MB và có thể thay đổi bằng việc cấu hình.&lt;/p&gt;
+
+&lt;h4 id=&quot;map-reduce&quot;&gt;Map-Reduce&lt;/h4&gt;
+&lt;p&gt;Là framework dùng để viết các application giúp xử lý song song lượng dữ liệu lớn có khả năng&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;p&gt;https://www.youtube.com/watch?v=nfMANR13ZSA&lt;/p&gt;
+
+&lt;h3 id=&quot;apache-flink&quot;&gt;Apache Flink:&lt;/h3&gt;
+&lt;p&gt;Là framework để xử lý data.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Use case:
+    &lt;ul&gt;
+      &lt;li&gt;Fraud Detection =&amp;gt; realtime&lt;/li&gt;
+      &lt;li&gt;Offer Recommendation based on browsing history =&amp;gt; realtime&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Batch: Data at rest -&amp;gt; analysis on historical data&lt;/li&gt;
+  &lt;li&gt;Realtime: processing the event as and when it happens&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Sat, 07 May 2022 00:00:00 +0700</pubDate>
+        <link>https://tuyen-nnt.github.io/apache-druid/</link>
+        <guid isPermaLink="true">https://tuyen-nnt.github.io/apache-druid/</guid>
+        
+        
+      </item>
     
       <item>
         <title>Kafka Connect</title>
@@ -50,13 +210,13 @@ Phụ thuộc vào Order service chạy hay không chạy (nếu service có mul
 &lt;/blockquote&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;Cách 2: Tạo Kafka producer độc lập đọc data từ Order database và produce đến Kafka broker.
-    &lt;blockquote&gt;
-      &lt;p&gt;Nhược điểm: cần maintain thêm service này cho Kafka producer
-Cần thiết kế để scalable, fault tolerance,…&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
+  &lt;li&gt;Cách 2: Tạo Kafka producer độc lập đọc data từ Order database và produce đến Kafka broker.&lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Nhược điểm: cần maintain thêm service này cho Kafka producer.
+Cần thiết kế để scalable, fault tolerance,…&lt;/p&gt;
+&lt;/blockquote&gt;
 
 &lt;p&gt;=&amp;gt; Kafka Connect sử dụng cách 2.
 Hiện Kafka connect đã có open-source framework cho phép chọn loại connector (là loại source/target) rồi config và sử dụng, hoặc bạn có thể tự viết connector riêng dựa trên framework này.&lt;/p&gt;
@@ -118,19 +278,18 @@ Bên phải là &lt;code&gt;Sink connector&lt;/code&gt;: consume data từ topic
 &lt;p&gt;Gồm các keyword chính:&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;1) Worker : là công nhân thực thi các task để gửi msgs đến Kafka cluster. (còn việc read/write từ/đến source thì là của Source/SinkTask theo config của ta xong rồi mới chuyển cho worker thực thi nhé)
-```
-Worker có 2 khả năng đặc biệt:&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Fault tolerance: khi worker gặp sự cố sẽ phân task cho worker khác handle tiếp.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Self-managed: khi có worker mới các task sẽ được phân phối lại đảm bảo load balance.
-```
-=&amp;gt; Có 4 tính năng Reliability, High avalability, Scalability, Load balancing.&lt;/p&gt;
-  &lt;/li&gt;
+  &lt;li&gt;1) Worker : là công nhân thực thi các task để gửi msgs đến Kafka cluster. (còn việc read/write từ/đến source thì là của Source/SinkTask theo config của ta xong rồi mới chuyển cho worker thực thi nhé)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code&gt;Worker có 2 khả năng đặc biệt:
+
+* Fault tolerance: khi worker gặp sự cố sẽ phân task cho worker khác handle tiếp.
+
+* Self-managed: khi có worker mới các task sẽ được phân phối lại đảm bảo load balance.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;=&amp;gt; Có 4 tính năng Reliability, High avalability, Scalability, Load balancing.&lt;/p&gt;
+
+&lt;ul&gt;
   &lt;li&gt;2) Connector : tạo API kết nối với các system&lt;/li&gt;
   &lt;li&gt;3) Task : ví dụ transfer từ table 1 sang table 2 là 1 task&lt;/li&gt;
 &lt;/ul&gt;
@@ -2515,304 +2674,6 @@ https://developer.ibm.com/articles/what-is-curl-command/&lt;/p&gt;
         <category>Blog</category>
         
         <category>Web</category>
-        
-      </item>
-    
-      <item>
-        <title>Python - Part 2</title>
-        <description>&lt;h4 id=&quot;1-dictionaries&quot;&gt;1. Dictionaries&lt;/h4&gt;
-&lt;p&gt;Là tập hợp các cặp &lt;code&gt;key:value&lt;/code&gt; khi cần kết nối dữ liệu với nhau như 1 table để tra cứu nhanh và có thể chỉ ra unique keys khi tra cứu, thay vì nối 2 list lại để lấy index rồi tra cứu value.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;So sánh giữa list và dict:
-&lt;img src=&quot;/assets/images/list-vs-dict.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Cú pháp tạo dict như sau:&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;code&gt;my_dict = {
-	key:value,
-	key:value
-}&lt;/code&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Access dict như sau:
-&lt;code&gt;my_dict['key']&lt;/code&gt; =&amp;gt; cho ra value của key đó.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Thêm key:value vào dict:
-&lt;code&gt;world[&quot;sealand&quot;] = 0.25&lt;/code&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Check xem dict đã được thêm key ở trên vào chưa: 
-&lt;code&gt;sealand in world&lt;/code&gt; =&amp;gt; trả về True/False.
-Với ‘seadland’ là key và word là tên dict.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Cập nhật lại giá trị cho key &lt;code&gt;sealand&lt;/code&gt;:
-&lt;code&gt;world['sealand'] = 0.28&lt;/code&gt;
-Vì key trong dict là unique nên Python hiểu là bạn muốn thay đổi giá trị chứ không phải tạo mới cặp key:value.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Xóa cặp key:value:
-&lt;code&gt;del(world['sealand'])&lt;/code&gt;&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Dict trong dict:
-Cũng như list có thể chứa list trong list. Xem ví dụ:&lt;/p&gt;
-    &lt;pre&gt;&lt;code&gt;# Dictionary of dictionaries
-europe = { 'spain': { 'capital':'madrid', 'population':46.77 },
-         'france': { 'capital':'paris', 'population':66.03 },
-         'germany': { 'capital':'berlin', 'population':80.62 },
-         'norway': { 'capital':'oslo', 'population':5.084 } }
-&lt;/code&gt;&lt;/pre&gt;
-    &lt;p&gt;Để access giá trị của dict, ta sẽ dùng dấu [] như trong array:&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;code&gt;europe['spain']['population']&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;=&amp;gt; Vậy để add thêm cặp key:dict vào trong dict trên thì làm thế nào?&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;# Create sub-dictionary data
-data = {
-    'capital':'rome',
-    'population':59.83
-}
-
-# Add data to europe under key 'italy'
-europe['italy'] = data
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Ta chỉ cần tách ra tạo dict phụ trước và gán nó vào biến lưu object value. Sau đó ta thêm cặp key:value vào dict như bình thường.&lt;/p&gt;
-
-&lt;p&gt;Lưu ý:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Keys không được trùng nhau trong 1 dict, vì nếu trùng, nó sẽ chỉ lấy giá trị cuối cùng.&lt;/li&gt;
-  &lt;li&gt;Keys phải là immutable object (không đổi), còn list thì mutable nên list cũng không được là key trong dict.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;2-pandas&quot;&gt;2. Pandas&lt;/h4&gt;
-
-&lt;h5 id=&quot;tabular-dataset-trong-python&quot;&gt;Tabular dataset trong Python&lt;/h5&gt;
-&lt;p&gt;row = observations&lt;/p&gt;
-
-&lt;p&gt;column = variable&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Để làm việc với dạng data này thì cần cấu trúc dạng chữ nhật.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;=&amp;gt; 2D Numpy array&lt;/p&gt;
-
-&lt;p&gt;=&amp;gt; Nhưng với các dữ liệu có nhiều thông tin với nhiều datatype khác nhau như str, float,… thì Numpy chưa hiệu quả.&lt;/p&gt;
-
-&lt;p&gt;Vậy nên pandas package chính là solution và quen thuộc trong Data science.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Nó được build dựa trên Numpy.&lt;/li&gt;
-  &lt;li&gt;Là tool ở cấp độ cao trong thao tác với dữ liệu.&lt;/li&gt;
-  &lt;li&gt;Pandas lưu dữ liệu bảng trong object gọi là Dataframe.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Cách tạo dataframe từ dictionary:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;import pandas as pd
-brics = pd.DataFrame(dict)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&quot;/assets/images/create-df.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Để tạo index cho observations trong df, ta dùng attribute &lt;code&gt;index&lt;/code&gt; và gán 1 list với thứ tự chính xác các index mong muốn:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;brics.index = [...,...]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&quot;/assets/images/index-df.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h5 id=&quot;csv-file&quot;&gt;CSV file&lt;/h5&gt;
-&lt;p&gt;Nhưng thực tế trong Data science, ta phải đối mặt với lượng data khổng lồ tùy trường hợp cụ thể, nên thông thường ta không tự tạo dataframe. Giả sử các data đến từ file có &lt;code&gt;.csv&lt;/code&gt; viết tắt của comma separated values.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Để import vào môi trường Python ta dùng cú pháp:&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;pre&gt;&lt;code&gt;brics = pd.read_csv(&quot;path/to/brics.csv&quot;)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;ul&gt;
-  &lt;li&gt;Tuy nhiên đối với file có index, khi import vào thì cột index đầu tiên sẽ bị ngầm hiểu là cột đầu của dữ liệu chính. Để tránh điều này, ta phải thêm argument &lt;code&gt;index_col=0&lt;/code&gt;, kết quả:&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/csv-import.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Để thay đổi index tự động từ 0-n bằng label được định nghĩa trong 1 list tạo riêng tự chọn, ta dùng cú pháp:
-```
-    &lt;h1 id=&quot;definition-of-row_labels&quot;&gt;Definition of row_labels&lt;/h1&gt;
-    &lt;p&gt;row_labels = [‘US’, ‘AUS’, ‘JPN’, ‘IN’, ‘RU’, ‘MOR’, ‘EG’]&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;specify-row-labels-of-cars&quot;&gt;Specify row labels of cars&lt;/h1&gt;
-&lt;p&gt;cars.index = row_labels&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-##### Cách để access Dataframe
-Ta input vào label hoặc index của column hoặc row. Ví dụ cụ thể ta có df là cars, xem cú pháp dưới đây: 
-
-* Access COLUMN (cột):
-	* Dùng [] : 
-	- Nếu muốn output là Series object: ``cars['country', ... ]``
-	- Nếu muốn output là Dataframe, dùng double ngoặc vuông:
-``cars[['country', ... ]]``
-&amp;gt; Nhìn ở góc khác, ta đang input vào ngoặc vuông 1 list chứa column labels.
-
-	* Dùng ``loc`` (chọn 1 phần data dựa trên label-based) hoặc ``iloc`` (chọn data dựa trên integer position-based)
-	- cars.loc['country', ...] hoặc cars.loc[['country', ...]] 
-	- car.iloc[0, ..., ...] hoặc car.iloc[[0, ..., ...]]
-	
-* Access ROW (quan sát)	
-	* Chỉ có cách là dùng [] nhưng input vào số:
-	- Nếu muốn lấy row từ index 1 đến 3:
-``cars[1:4]`` 
-	* Dùng loc hoặc iloc và input vào index của row thay vì tên cột như truy cập vào column.
-
-* Access ROWs &amp;amp; COLUMNs bất kì:
-	* Sử dụng loc và iloc tiện lợi:
-	- Ta chỉ cần đặt vào label của row và column trong loc hoặc iloc theo thứ tự ``row, column``. 
-	- Nếu chọn nhiều hơn 1 label trong row hoặc column, ta biến argument row hoặc column thành list.
-
-Xem	 hình ví dụ:
-	
-![](/assets/images/loc-iloc.png)
-
-	
-&amp;gt; Nhận xét: 
-
-- Dấu ngoặc vuông``[]`` có giới hạn chức năng và lý tưởng nhất là sử dụng trong 2D Numpy array để access value dễ dàng nhất.	
-- Nếu muốn dấu``[]``có thể mở rộng khả năng access value trong pandas như  dấu``[]``trong 2D Numpy array, thì ta cần sử dụng ``loc`` và ``iloc``.
-
-![](/assets/images/iloc-loc.png)
-	
-	
-##### Filter dataframe
-
-* Bước 1: Access cột trả về series object.
-
-* Bước 2: Xác định điều kiện filter và trả về Boolean Series. Nếu &amp;gt; 2 điều kiện thì phải sử dụng Numpy variants của toán tử and, or, not.
-
-* Bước 3: Dùng Boolean Series là kết quả của bước 1 làm input trong dấu ngoặc vuông của Dataframe. Kết quả trả về các record thỏa điều kiện.
-
-&amp;gt; You'll want to build up a boolean Series, that you can then use to subset the cars DataFrame to select certain observations. If you want to do this in a one-liner, that's perfectly fine!
-
-
-#### 3. LOOP
-
-##### WHILE
-
-
-##### FOR 
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;for var in seq :
-	expression&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-Trong đó ``var`` là biến bất kỳ có thể đặt tên sao cũng được. Python dùng nó để quét lần lượt cái phần tử trong ``seq``.
-
-
-FOR còn dùng để lặp từng char trong string.
-![](/assets/images/string-loop.png)
-
-* enumerate() : cung cấp 2 giá trị cho mỗi lần lặp gồm ``index`` và ``value (giá trị)``.
-
-![](/assets/images/enumerate-for.png)
-
-
-
-Mỗi data structure sẽ có cách loop các nhau và cách định nghĩa sequence khác nhau (seq). Cụ thể các bạn xem dưới đây nhé:
-
-##### Loop với List của Lists 
-* Nếu list mà bạn cần lặp là list của list, thì dùng cách như sau:
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h1 id=&quot;house-list-of-lists&quot;&gt;house list of lists&lt;/h1&gt;
-&lt;p&gt;house = [[“hallway”, 11.25], 
-         [“kitchen”, 18.0], 
-         [“living room”, 20.0], 
-         [“bedroom”, 10.75], 
-         [“bathroom”, 9.50]]&lt;/p&gt;
-
-&lt;h1 id=&quot;build-a-for-loop-from-scratch&quot;&gt;Build a for loop from scratch&lt;/h1&gt;
-&lt;h1 id=&quot;x-quét-từng-list-trong-list-dùng--để-truy-cập-phần-tử-của-sub-list&quot;&gt;x quét từng list trong list, dùng [] để truy cập phần tử của sub-list&lt;/h1&gt;
-
-&lt;p&gt;for x in house :
-    print(“the “ + x[0] + “ is “ + str(x[1]) + “ sqm”)
-```&lt;/p&gt;
-
-&lt;h5 id=&quot;loop-với-dictionary&quot;&gt;Loop với Dictionary&lt;/h5&gt;
-&lt;p&gt;Sử dụng method &lt;code&gt;items()&lt;/code&gt; :&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;for key, val in my_dict.items() :&lt;/code&gt;&lt;/p&gt;
-
-&lt;h5 id=&quot;loop-với-numpy-array&quot;&gt;Loop với Numpy array&lt;/h5&gt;
-&lt;p&gt;Sử dụng function &lt;code&gt;np.nditer(my_array)&lt;/code&gt; đặc biệt là với 2D array.&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;for val in np.nditer(my_array) :&lt;/code&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Với 1D array ta có thể sử dụng loop thông thường, nhưng với 2D thì nó sẽ in ra 2D array thay vì ra các giá trị cần lấy trong loop.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Dùng &lt;code&gt;nditer&lt;/code&gt; sẽ giúp in ra từng giá trị từ trái sang phải từ trên xuống dưới của 2D array.&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;pandas-dataframe&quot;&gt;Pandas DataFrame&lt;/h5&gt;
-
-&lt;p&gt;&lt;code&gt;iterrows()&lt;/code&gt; : Trong mỗi lần lặp, method này sẽ generate ra 2 giá trị:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Label của row (nếu ko có thì là index tự động)&lt;/li&gt;
-  &lt;li&gt;Data của row (là Pandas Series có index/label là tên cột - còn gọi là fieldname)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/iterrows.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Để loop in ra giá trị của cột mong muốn cho mỗi lần lặp, ta chỉ cần:&lt;/p&gt;
-
-&lt;p&gt;print(row[“tên cột”])&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Thêm cột vào Dataframe bằng loop:&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Ví dụ ta muốn thêm cột tính độ dài của cột “country”:
-&lt;code&gt;brics.loc[lab, &quot;tên cột mới&quot;] = len(row[&quot;country&quot;])&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/new-col.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Nhận xét: Cách này tốt trong trường hợp ít record. Vì ta đang tạo ra Series object cho mỗi vòng lặp và nó sẽ không hiệu quả với các dataset khổng lồ, thậm chí gây ra vấn đề khi xử lý dữ liệu.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Vậy nên, cách tốt nhất là ta sử dụng function &lt;code&gt;apply(tên function)&lt;/code&gt; cho mỗi cột mà ta muốn tính toán rồi gán vào cột mới trong dataframe:&lt;/p&gt;
-
-&lt;p&gt;&lt;code&gt;brics[&quot;cột mới&quot;] = brics[&quot;country&quot;].apply(len)&lt;/code&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Cách hoạt động: Function &lt;code&gt;apply()&lt;/code&gt; sẽ gọi function &lt;code&gt;len()&lt;/code&gt; mà mỗi giá trị của cột country sẽ là input để tính độ dài từng country. Kết quả trả về là 1 array mà chúng ta có thể dễ dàng lưu thành cột mới trong Dataframe.&lt;/p&gt;
-&lt;/blockquote&gt;
-</description>
-        <pubDate>Mon, 02 Aug 2021 00:00:00 +0700</pubDate>
-        <link>https://tuyen-nnt.github.io/python-intermediate/</link>
-        <guid isPermaLink="true">https://tuyen-nnt.github.io/python-intermediate/</guid>
-        
-        
-        <category>Data</category>
-        
-        <category>Programing</category>
-        
-        <category>Python</category>
         
       </item>
     

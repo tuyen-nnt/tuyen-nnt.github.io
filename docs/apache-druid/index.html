@@ -1,0 +1,150 @@
+<h3 id="apache-druid">Apache Druid:</h3>
+<p>cre:  https://druid.apache.org/</p>
+
+<ul>
+  <li>Là một loại database</li>
+  <li>Có các đặc điểm sau:
+    <ul>
+      <li>Real-time ingest data</li>
+      <li>Hiệu suất query nhanh</li>
+      <li>High uptime đảm bảo luôn đáp ứng được tính toán (quan trọng)</li>
+    </ul>
+  </li>
+  <li>Thường được sử dụng để:
+    <ul>
+      <li>Power cho GUIs</li>
+      <li>Các ứng dụng analytical</li>
+      <li>Là backend cho các highly-concurent APIs mà cần tính toán nhanh.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Thường sử dụng Druid cho những bài toán nào?</p>
+
+<ul>
+  <li>BI/OLAP</li>
+  <li>
+    <p>Clickstream analytics (web và mobile)
+Đây là nơi chứa lượng data lớn như clicks, impressions, hoạt động view pages, add to card. Thông thường người ta sẽ tính toán lại các logic lấy được từ Google Analytics (được embedd vào web/mobile) về và kết hợp với sale data để cho ra các adhoc analysis phục vụ Biz.</p>
+  </li>
+  <li>
+    <p>Risk/Fraud analysis
+Khi đã có đủ dữ liệu thì tìm insight dễ dàng.</p>
+  </li>
+  <li>
+    <p>Application performance metrics:
+Lấy các chỉ số ví dụ như startup time, load pages từ hệ thống tracking về đưa vào Druid để monitor và alert realtime, giúp theo dõi và optimize hiệu năng của chương trình.</p>
+  </li>
+  <li>Server metrics storage</li>
+  <li>Supply chain analytics (manufacturing metrics)</li>
+  <li>Application performance metrics</li>
+  <li>Digital marketing/advertising analytics</li>
+  <li>Network telemetry analytics (network performance monitoring)</li>
+</ul>
+
+<p>Triển khai thử với Druid cần gì?</p>
+
+<ul>
+  <li>3 em VM (8cores mỗi em thôi)</li>
+  <li>kiến trúc microservice của Druid bắt buộc phải có: ZooKeeper, Coordinator, Overlord, Historical, Broker, Middlemanager.</li>
+  <li>Khi số lượng node lên hàng chục hoặc hàng trăm thì phải cài đặt thông qua Ansible.</li>
+</ul>
+
+<hr />
+<h4 id="so-sánh-giữa-druid-và-spark">So sánh giữa Druid và Spark:</h4>
+
+<h5 id="spark">Spark:</h5>
+<p>Spark là cluster computing framework được tạo ra dựa trên concept của Resilient Distributed Datasets (RDDs).</p>
+
+<p>RDDs cho phép tái sử dụng lại dữ liệu bằng cách lưu trữ lại các kết quả trung gian trong memory và cho phép Spark cung cấp các tính toán nhanh cho các thuật toán hay lặp lại. =&gt; phù hợp nhiều cho Machine learning</p>
+
+<p>Tính tổng quan của Spark giúp nó phù hợp để làm sạch và transform dữ liệu.</p>
+
+<p>Mặc dù Spark có khả năng truy vấn dữ liệu thông qua SparkSQL nhưng nó không phù hợp cho các tương tác query cần tốc độ nhanh trong vài giây.</p>
+
+<h5 id="druid">Druid:</h5>
+<p>Thường được sử dụng để tăng tốc cho OLAP queries trong Spark.</p>
+
+<p>Sứ mệnh của nó là tập trung chủ yếu giảm độ trễ queries xuống mức tối đa và là framework lý tưởng để tăng tốc cho ứng dụng được sử dụng bởi hàng ngàn user. Làm sao để mà user có thể tương tác và nhận được kết quả nhanh chóng nhất.</p>
+
+<p>Druid index vào toàn bộ data và có thể làm lớp đứng giữa Spark và ứng dụng của bạn.</p>
+
+<p>Ứng dụng cơ bản nhất người ta setup đó là dùng Spark để xử lý data và load data đã được xử lý vào Druid để có thể truy cập query nhanh chóng.</p>
+
+<p>cre: https://druid.apache.org/docs/latest/comparisons/druid-vs-spark.html</p>
+
+<p>Đọc thêm: https://www.linkedin.com/pulse/combining-druid-spark-interactive-flexible-analytics-scale-butani</p>
+
+<hr />
+
+<h4 id="hadoop-là-gì">Hadoop là gì?</h4>
+
+<ul>
+  <li>
+    <p>Là Apache framework viết bằng Java cho phép phát triển ứng dụng phân tán có cường độ dữ liệu lớn miễn phí. Được thiết kế để mở rộng máy chủ đơn sang hàng ngàn máy tính khác có tính toán và lưu trữ cục bộ (local computation và storage).
+=&gt; Hadoop cung cấp môi trường để thực thi các Map-Reduce task.</p>
+  </li>
+  <li>
+    <p>Hadoop có cấu trúc liên kết master-slave, chỉ có 1 node master hoạt động tại 1 thời điểm và nhiều node slave:</p>
+    <ul>
+      <li>Node master có nhiệm vụ giao task cho các slave</li>
+      <li>Node slave lưu trữ dữ liệu thực, thực tế thường không mạnh lắm.</li>
+      <li>Node slave lưu trữ metadata (thông tin của tất cả các node).</li>
+    </ul>
+  </li>
+</ul>
+
+<pre><code>Có 2 loại file metadata:
+FsImage: Là nơi lưu trữ trạng thái của các file system namespace (từ này hơi khó để dịch) kể từ khi namenode được khởi động.
+EditLogs: Là nơi lưu lại quá sửa đổi của các file system.
+</code></pre>
+
+<ul>
+  <li>Kiến trúc Hadoop gồm có ba lớp chính đó là
+    <ul>
+      <li>HDFS (Hadoop Distributed File System)</li>
+      <li>Map-Reduce</li>
+      <li>Yarn</li>
+    </ul>
+  </li>
+</ul>
+
+<h5 id="hdfs-hadoop-distributed-file-system">HDFS (Hadoop Distributed File System)</h5>
+
+<p>Là hệ thống phân tán cung cấp khả năng lưu trữ dữ liệu khổng lồ và tính năng giúp tối ưu việc sử dụng băng thông giữa các node.</p>
+
+<p>Đặc biệt cho phép truy cập nhiều disk như là 1 disk. Nói cách khác là không bị giới hạn về dung lượng, nếu cần thêm chỉ cần thêm Node vào hệ thống là ok.</p>
+
+<p>Có thể được sử dụng để chạy trên cluster lớn với hàng chục ngàn node.</p>
+
+<p>Có kiến trúc Master-Slave với:</p>
+<ul>
+  <li>NameNode chạy trên Master, có task quản lý Namespace (địa chỉ của file đó được chia và lưu trên các datanode nào) và điều chỉnh truy cập tệp của client cũng như điều khiển load-balancing cho các datanode.</li>
+  <li>DataNode chạy trên các Slave, có task lưu trữ biz data thực tế.
+Tìm hiểu thêm tại: https://phambinh.net/bai-viet/kien-truc-cua-hdfs/</li>
+</ul>
+
+<p><img src="/assets/images/hdfs1.png" alt="" /></p>
+
+<p>Một tập tin HDFS sẽ được chia làm nhiều block và được lưu trữ trong các DataNodes. Kích thước 1 block thường là 64MB và có thể thay đổi bằng việc cấu hình.</p>
+
+<h4 id="map-reduce">Map-Reduce</h4>
+<p>Là framework dùng để viết các application giúp xử lý song song lượng dữ liệu lớn có khả năng</p>
+
+<hr />
+<p>https://www.youtube.com/watch?v=nfMANR13ZSA</p>
+
+<h3 id="apache-flink">Apache Flink:</h3>
+<p>Là framework để xử lý data.</p>
+
+<ul>
+  <li>Use case:
+    <ul>
+      <li>Fraud Detection =&gt; realtime</li>
+      <li>Offer Recommendation based on browsing history =&gt; realtime</li>
+    </ul>
+  </li>
+  <li>Batch: Data at rest -&gt; analysis on historical data</li>
+  <li>Realtime: processing the event as and when it happens</li>
+</ul>
+
