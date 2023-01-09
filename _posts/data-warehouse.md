@@ -58,7 +58,7 @@ OLTP:
 
 	
 
-### Kimball 4 step process
+#### Kimball 4 step process
 
 
 1) Select the organizational process
@@ -77,5 +77,39 @@ Ex: Music service => Song grain
 Ex: Time (year, quarter, month), Location (address, state, country), Users (names, email)
 
 4) Identify the facts
+- Numerical facts for each fact table row.
+- Ask yourself "What are we answering?" to identify numberical facts to include.
+- Metrics should be true at selected grain.
+Ex:
+- Music service: total number of sales, sales revenue of a song
 
+
+
+#### Slowly changing dimensions
+
+Overtime, some values in our dimentional tables need to be updated. Ex: the price of gold change by time, each time the price referenced to the fact table is different.
+
+There are 3 historic solutions:
+
+- Type I: 
+	- Update value in table (overwrite)
+	- Will lose any history
+	
+- Type II:
+	- Add a row with the updated value, new ID.
+	- The history is retained
+	- Add new collumn as Start date and End date to track the time when new values are in effect.
+	
+- Type III:
+	- Add collumn to dimensional table to track changes. Ex: Category => add PastCategory.
+	- If rerun a historical report, reference thhe PastCategory collumn => change code for historical reports (ex: if run_date < 09012023, apply old collumn)
+	- Should add a column to track the date when we change.
+	
+There is a modern approach:
+- Lower storage cost
+- Update value as Type I
+- Warehouse system creates snapshot the whole dimension table and stores it.	
+- If rerun historical report, use the snapshot at available current time (at run_time/run_date).
+
+	
 
