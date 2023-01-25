@@ -85,7 +85,9 @@ Ex:
 
 
 
-#### Slowly changing dimensions
+#### Slowly changing dimensions (SCD)
+
+A slowly changing dimension is a dimension that contains relatively static data which can change slowly but unpredictably.
 
 Overtime, some values in our dimentional tables need to be updated. Ex: the price of gold change by time, each time the price referenced to the fact table is different.
 
@@ -96,11 +98,12 @@ There are 3 historic solutions:
 	- Will lose any history
 	
 - Type II:
-	- Add a row with the updated value, new ID.
+	- Add a row with the updated value, new ID to track.
 	- The history is retained
 	- Add new collumn as Start date and End date to track the time when new values are in effect.
+	- A Type II approach maintains historical reporting because all references to historical facts point to the old row within the dimension table.
 	
-- Type III:
+- Type III:	
 	- Add collumn to dimensional table to track changes. Ex: Category => add PastCategory.
 	- If rerun a historical report, reference thhe PastCategory collumn => change code for historical reports (ex: if run_date < 09012023, apply old collumn)
 	- Should add a column to track the date when we change.
@@ -112,4 +115,88 @@ There is a modern approach:
 - If rerun historical report, use the snapshot at available current time (at run_time/run_date).
 
 	
+=> Understanding how an approach will affect historical reporting should be an important consideration in choosing an approach to slowly changing dimensions.
+
+
+#### Row & column data store
+
+Choosing a suitable format is important for optimizing queries for speed.
+
+- Column store format for data warehouse tables is best for analytic workloads.
+
+##### Basics of computer storage
+
+- Computer stores data  in block.
+- It reads the required blocks when retrieving data.
+- Reading fewer blocks increase the overall speed of the process.
+
+##### Row store
+- Row data is stored together in blocks.
+- Ideal for transactional workload.
+- Add block data is faster column store.
+
+
+##### Column store
+- Column data is stored together in blocks.
+- Ideal for analytical workload.
+- Better data compression.
+- Less read when answer an analytic question. Ex: Average percentage of something in 2019 => only 2 blocks (2019 & percentage) need to be read. Instead of read all blocks has 2019 like row store.
+- Add block data is slower because it re-categorize to put in appropriate block.
+
+
+#### ETL & ELT
+
+##### ETL
+
+- Data transformed during the move.
+- Uses separate system to process data.
+- Pros:
+	- Lower data storage cost.
+	- PII security compliance.
+- Cons:
+	- Transformation errors/changes require new data pulls from source.
+	- Cost of separate system to process data.
+	
+##### ELT
+
+- Data is loaded, then transformed.
+- Uses the warehouuse to transform the data.
+
+- Pros:
+	- No separate system to process data
+	- Transformation can be rerun without impacting source systems.
+	- Works well for near-realtime requirements, because load data is not in complicated transformation process.
+	
+- Cons:
+	- Increased storage needs from raw data.
+	- Compliance with PII security standards, store sensitive data before transformed.
+	
+	
+#### Data cleaning in Transform
+
+Evaluate before implementing in combination of some techniques:
+- Data format revision
+	- Update value to an expected format: Date, Names of options, Capitalization.
+	- Ensure output is in a consistent format by using organizational rules.
+	
+- Address parsing
+	- Divide a street address into its components such as City, State, Zip.
+	
+- Data validation: 2 kinds
+	- RANGE check: "Is the value within the expected range?"
+	Ex: person's age
+		- 
+		
+	- TYPE check: "Is the value the proper data type?"
+	Ex: Age is with String is invalid, must be Integer.
+=> It is better to fix the issue in the input source if possible, if not maybe use organizational rule to set a default value or exclude rows that fail validation checks.
+
+- De-duplication: remove repeated rows of data.
+
+
+##### Data governance
+
+A strong data governance looks to develop rules & definitions around the data and detect & correct the data the deviates from its definitions. A solid organizational data governance program will require less data cleaning within the ETL or ELT process.
+
+=> Aims to reduce data cleaning
 
