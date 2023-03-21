@@ -109,6 +109,7 @@ Maybe you want to go the other direction, and put a pandas DataFrame into a Spar
 The .createDataFrame() method takes a pandas DataFrame and returns a Spark DataFrame.
 
 The output of this method is stored locally, not in the SparkSession catalog. This means that you can use all the Spark DataFrame methods on it, but you can't access the data in other contexts.
+=> Spark dataframe sẽ được lưu local trên Spark cluster, không nằm trong SparkSession catalog
 
 For example, a SQL query (using the .sql() method) that references your DataFrame will throw an error. To access the data in this way, you have to save it as a temporary table.
 
@@ -116,6 +117,7 @@ You can do this using the .createTempView() Spark DataFrame method, which takes 
 
 There is also the method .createOrReplaceTempView(). This safely creates a new temporary table if nothing was there before, or updates an existing table if one was already defined. You'll use this method to avoid running into problems with duplicate tables.
 
+=> ``.createOrReplaceTempView()`` sử dụng hàm này để đưa Spark dataframe vào Catalog của SparkSession, khi đó ta mới có thể truy cập đến dataframe này trong các hàm khác (ví dụ ``.sql()``) thuộc cùng SparkSession đã tạo ra Dataframe đó.
 
 
 ```
