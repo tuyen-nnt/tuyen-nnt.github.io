@@ -104,7 +104,7 @@ Client gửi request nhờ name node gửi vị trí data node => name node veri
 	Nếu file chưa tồn tại trên hệ thống, client sẽ được cấp quyền ghi files.
 	Client ghi file xong thì data node bắt đầu tạo replicas và gửi xác nhận lại cho client
 	
-```
+
 Client gửi request write data => Name node verify quyền write của client & file đó chưa tồn tại trên hệ thống => nếu verify ok, client bắt đầu ghi data => Data node bắt đầu tạo replicas và gửi confirmation lại cho client
 
 #### HDFS Architecture

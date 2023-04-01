@@ -136,3 +136,44 @@ spark_temp.createOrReplaceTempView("temp")
 # Examine the tables in the catalog again
 print(spark.catalog.listTables())
 ```
+
+
+### Using broadcasting on Spark joins
+
+Remember that table joins in Spark are split between the cluster workers. If the data is not local, various shuffle operations are required and can have a negative impact on performance. Instead, we're going to use Spark's broadcast operations to give each node a copy of the specified data.
+
+A couple tips:
+
+    Broadcast the smaller DataFrame. The larger the DataFrame, the more time required to transfer to the worker nodes.
+    On small DataFrames, it may be better skip broadcasting and let Spark figure out any optimization on its own.
+    If you look at the query execution plan, a broadcastHashJoin indicates you've successfully configured broadcasting.
+    
+    
+### Driver & Worker
+
+- Driver:
+	- Task assignment
+	- Result consolidation
+	- Share data access for worker
+Should have double memory of the worker.
+Fast local storage is helpful.
+
+- Worker:
+	- Run actual tasks
+	- Idealy has all code, data and resource for given task
+More worker nodes is often better than large one.
+Test to find the balance (cost & time).
+Fast local storage (SSD/NVMe) extremely helpful for caching, intermediate files.
+
+
+### Data validation 
+
+Definition:
+- Verify a dataset complies with the expected format. => can use inner join to filter as your requirement.
+- Number of rows/columns
+- Data types
+- Complex validation rules to validate logic.
+	- Calculations.
+	- External source: web service, local files, API calls.
+	- Likely use UDF to modify/verify the DF.
+
